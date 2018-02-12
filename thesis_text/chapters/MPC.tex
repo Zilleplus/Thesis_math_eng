@@ -1,0 +1,130 @@
+\chapter{Optimal control}
+
+\section{MPC}
+	\subsection{System}
+		A physical system can be represented as $\dot{x}=F_c(x,u)$, where x is the current state and u is the current input. By using a discrete integrator the system can be written as $x^{k+1}=F_d(x^{k},u^{k})$. $F_d$ should be expressible as an series of elementary operations.
+	\subsection{Problem definition}
+		\subsubsection{Problem form}
+			The goal is to define the problem as equation~\ref{eq:PANOC MPC form}, and then solve it for u given $x_0$, the current state of the system. Sometimes $x_0$ will be assumed to be part of the function f and the form of equation~\ref{eq:PANOC form} will be used.
+			\begin{equation}
+				\underset{u}{\minimize} \  f(x_0,u) + g(u)
+				\label{eq:PANOC MPC form}
+			\end{equation}
+			
+			\begin{equation}
+				\underset{u}{\minimize} \  f(u) + g(u)
+				\label{eq:PANOC form}
+			\end{equation}
+		\subsubsection{Single shoot}
+			If the horizon is N then the problem is solved for the inputs $u=[u_0,u_1,... u_{N-1}]$ where each $u_k$ is a vector of all the inputs of the system. This means that the vector u is of size (Horizon-1)*dimension\_input .
+			
+			Define the cost for each step in the horizon as \ref{eq:single shot iteration cost}.
+			\begin{equation}
+				\begin{aligned}
+				& l_k(x_0,u) = &&  x_k^T Q x_k  +  u_k^T R u_k \\
+				& \text{subject to}			&& x_0 = \bar{x} \\
+				& 							&&  x_{n+1} = F_d(x_n,u_n), n=0...N-1
+				\end{aligned}
+				\label{eq:single shot iteration cost}
+			\end{equation}
+			
+			Define the terminal cost as equation~\ref{eq:single shot terminal cost}.
+			\begin{equation}
+			\begin{aligned}
+			& l_N(x_0,u) = && x_N^TSx_N \\
+			& \text{subject to}			&& x_0 = \bar{x} \\
+			& 							&&  x_{n+1} = F_d(x_n,u_n), n=0...N-1
+			\end{aligned}
+			\label{eq:single shot terminal cost}
+			\end{equation}
+			
+			$f(x_0,u)$ can then be defined as in equation~\ref{eq:single shot definition} the sum of the cost of all iterations plus the terminal cost.
+			\begin{equation}
+				f(x_0,u) = \sum_{k=1}^{N-1} l_k(x_0,u) + l_N
+				\label{eq:single shot definition}
+			\end{equation}
+			
+			As a side note, an other term can be added to equation~\ref{eq:single shot definition} to represent the obstacle avoidance.
+		\subsection{Multiple shoot}
+			In multiple shoot mode the optimization algorithm needs more than just an initial state. It requires a guess of all of the intermediate states that where derived using the initial state in  single shot mode. The initial guesses will be referred to as $x_i$ and the states derived from this initial gas and its corresponding input will be referred to as $\bar{x_i}$. As before the goal of the optimization algorithm is to find the optimal inputs $u_i$, so that $\bar{x_i}$ is optimal.
+			
+			\begin{equation}
+				\bar{x_i} = F(x_i,u_i)
+				\label{eq:}
+			\end{equation}
+			
+			In addition to getting the states to a specific reference state, the algorithm also needs continuity conditions. These continuity conditions are displayed in equation~\ref{eq:continuety condition multiple shot} and were not necessary in single shot as every solution already complies with it automatically. If the initial state guesses are relatively close to the solution, a significant speed increase can be accomplished. As we are able to incorporate more information into the algorithm.
+			
+			\begin{equation}
+				\bar{x_i} - x_{i+1} = 0
+				\label{eq:continuety condition multiple shot}
+			\end{equation}
+			
+			The final cost definition looks like equation~\ref{eq:multiple shot cost} and has an extra equality condition compared to the single shoot. This equality condition will be added as a soft constraints to the cost function. This is displayed in equation~\ref{eq:multiple shot cost with soft constraint}
+			
+			\begin{equation}
+				\begin{aligned}
+				L =  & \sum_{i=1}^{N} l(\bar{x_i},u_i) \\
+				& \text{subject to}			&& \bar{x_i} = F(x_i,u_i) \\
+				& 							&& \bar{x_i} - x_{i+1} = 0
+				\end{aligned}
+				\label{eq:multiple shot cost}
+			\end{equation}
+			
+			\begin{equation}
+			\begin{aligned}
+			L =  & \sum_{i=1}^{N} l(\bar{x_i},u) + ||\bar{x_i} - x_{i+1}||\\
+			& \text{subject to}			&& \bar{x_i} = F(x_i,u_i) \\
+			\end{aligned}
+			\label{eq:multiple shot cost with soft constraint}
+			\end{equation}
+			
+		\subsection{Obstacle avoidance}
+			The obstacle avoidance is based on the soft constraint described in \cite{AjaySathya2017}.
+			\subsubsection{As set}
+				An obstacle can be defined as an open set, as illustrated by equation~\ref{eq:obstacle as open set}. It is defined by the intersection of a number of nonlinear inequalities.
+				\begin{equation}
+					O = {z \in \Re^d : h^i(z)>0,\ i \in N}
+					\label{eq:obstacle as open set}
+				\end{equation}
+				
+			\subsubsection{As constraint}
+				\begin{equation}
+					[z]_+ =  \max\{0,z\}
+				\end{equation}
+				
+				The statement $h(x)<0$ is equivalent to saying $[h(x)]_+=0$,so equation~ref{eq:obstacle as open set} is equivalent to saying that equation~\ref{eq:obstacle as equality} needs to be zero.
+				
+				\begin{equation}
+					\Phi_0(z) =  \frac{1}{2} \prod_{i=1}^m \Big( [h^i(z)]_+ \Big)^2
+					\label{eq:obstacle as equality}
+				\end{equation}
+				
+				The gradient of equation~\ref{eq:obstacle as equality} is define as equation~\ref{eq:obstacle as equality}
+				
+				\begin{equation}
+					\nabla \Phi =
+					\begin{cases}
+						\sum_{i=1}^{m} h^i(z)\prod_{j \ne i} \Big( [h^i(z)]_+ \Big)^2 \nabla h^i(z)
+						& x \in O \\
+						0 & else
+					\end{cases}
+					\label{eq:derivative obstacle as equality}
+				\end{equation}
+			
+			\subsubsection{Polyhedral obstacle}
+				A simple obstacle can be defined as equation~\ref{eq:polyhedral constraint} a polyhedral.
+				\begin{equation}
+					\prod \Big([b_i - a_i^t z]_+ \Big)^2 = 0
+					\label{eq:polyhedral constraint}
+				\end{equation}
+			
+			\subsubsection{Obstacle as soft constraint}
+				The obstacle avoidance is added as a soft constraint to the cost function. As demonstrated in equation~\ref{eq:derivative obstacle as equality}, the gradient is defined and so this does not break the condition that the cost functions needs a gradient to be solved with the PANOC algorithm.
+			
+		\subsection{Constraints}
+			An other important aspect of a MPC problem are the constraints. In practice inputs have to comply with the physical properties of the devices. Absurdly high or low input values might in theory lead to a fast solution, but are not feasible in practice.
+			
+			An major advantage of the PANOC algorithm is that it can take non linear or non convex constraints. As longs as the proximal operation is analytically defined on the constraint. 
+			
+			A simple example is the indicator box function, which allows to set a maximum and minimum value on the inputs. (The indicator box function is defined in the appendix) This means that every feasible solution lies within the bounds of the user defined box.

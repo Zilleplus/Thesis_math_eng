@@ -1,9 +1,9 @@
 \documentclass[master=eelt,masteroption=ei]{kulemt}
-\setup{title={The best master's thesis ever},
-  author={First Author\and Second Author},
-  promotor={Prof.\,dr.\,ir.\ Knows Better},
-  assessor={Ir.\,Kn. Owsmuch\and K. Nowsrest},
-  assistant={Ir.\ An~Assistent \and A.~Friend}}
+\setup{title={Newton-type operator splitting methods for embedded model predictive control},
+  author={Willem Melis},
+  promotor={Prof.\,dr.\,ir.\ Panos Patrinos},
+  assessor={Prof.\,dr.\,ir.\ Bart De Moor},
+  assistant={Ir.\,Pantelis Sopasakis}}
 % The following \setup may be removed entirely if no filing card is wanted
 \setup{filingcard,
   translatedtitle=,
@@ -11,90 +11,69 @@
   shortabstract={Here comes a very short abstract, containing no more than 500
     words. \LaTeX\ commands can be used here. Blank lines (or the command
     \texttt{\string\pa r}) are not allowed!
-    \endgraf \lipsum[2]}}
+    \endgraf endgraf}}
 % Uncomment the next line for generating the cover page
 %\setup{coverpageonly}
-% Uncomment the next \setup to generate only the first pages (e.g., if you
-% are a Word user.
-%\setup{frontpagesonly}
 
 % Choose the main text font (e.g., Latin Modern)
 \setup{font=lm}
 
-% If you want to include other LaTeX packages, do it here. 
+\usepackage{algorithm} 
+\usepackage{algcompatible}
+\usepackage{algpseudocode}
+%\usepackage[parfill]{parskip} % paragraphs are seperated with an enter space
 
 % Finally the hyperref package is used for pdf files.
 % This can be commented out for printed versions.
 \usepackage[pdfusetitle,colorlinks,plainpages=false]{hyperref}
 
-%%%%%%%
-% The lipsum package is used to generate random text.
-% You never need this in a real master's thesis text!
-\IfFileExists{lipsum.sty}%
- {\usepackage{lipsum}\setlipsumdefault{11-13}}%
- {\newcommand{\lipsum}[1][11-13]{\par And some text: lipsum ##1.\par}}
-%%%%%%%
+\usepackage{graphicx}
+\graphicspath{{./figs/}}
+
+\usepackage{amsmath,amsthm,amssymb}
+\DeclareMathOperator{\project}{project}
+\DeclareMathOperator{\prox}{prox}
+\DeclareMathOperator{\argmax}{argmax}
+\DeclareMathOperator*{\minimize}{minimize}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
 
 %\includeonly{chap-n}
 \begin{document}
 
-\begin{preface}
-  I would like to thank everybody who kept me busy the last year,
-  especially my promoter and my assistants. I would also like to thank the
-  jury for reading the text. My sincere gratitude also goes to my wive and
-  the rest of my family.
-\end{preface}
+%\begin{preface}
+%  I would like to thank everybody who kept me busy the last year,
+%  especially my promoter and my assistants. I would also like to thank the
+%  jury for reading the text. My sincere gratitude also goes to my wive and
+%  the rest of my family.
+%\end{preface}
 
 \tableofcontents*
 
-\begin{abstract}
-  The \texttt{abstract} environment contains a more extensive overview of
-  the work. But it should be limited to one page.
-
-  \lipsum[1]
-\end{abstract}
+%\include{./extra/abstract}
 
 % A list of figures and tables is optional
 %\listoffigures
 %\listoftables
 % If you only have a few figures and tables you can use the following instead
-\listoffiguresandtables
+
 % The list of symbols is also optional.
 % This list must be created manually, e.g., as follows:
-\chapter{List of Abbreviations and Symbols}
-\section*{Abbreviations}
-\begin{flushleft}
-  \renewcommand{\arraystretch}{1.1}
-  \begin{tabularx}{\textwidth}{@{}p{12mm}X@{}}
-    LoG   & Laplacian-of-Gaussian \\
-    MSE   & Mean Square error \\
-    PSNR  & Peak Signal-to-Noise ratio \\
-  \end{tabularx}
-\end{flushleft}
-\section*{Symbols}
-\begin{flushleft}
-  \renewcommand{\arraystretch}{1.1}
-  \begin{tabularx}{\textwidth}{@{}p{12mm}X@{}}
-    42    & ``The Answer to the Ultimate Question of Life, the Universe,
-            and Everything'' according to \cite{h2g2} \\
-    $c$   & Speed of light \\
-    $E$   & Energy \\
-    $m$   & Mass \\
-    $\pi$ & The number pi \\
-  \end{tabularx}
-\end{flushleft}
+%\include{./extra/symbols_abbreviations}
 
 % Now comes the main text
 \mainmatter
 
-\include{intro}
-\include{chap-1}
-\include{conclusion}
+%\include{./extra/intro}
+\include{./chapters/MPC}
+\include{./chapters/part2_prox_gradient}
+\include{./chapters/part3_PANOC}
+%\include{./extra/conclusion}
 
 % If you have appendices:
-\appendixpage*          % if wanted
-\appendix
-\include{app-A}
+%\appendixpage*          % if wanted
+%\appendix
+%\include{./appendix/app-A}
 
 
 \backmatter
@@ -104,8 +83,3 @@
 \bibliography{references}
 
 \end{document}
-
-%%% Local Variables: 
-%%% mode: latex
-%%% TeX-master: t
-%%% End: 
