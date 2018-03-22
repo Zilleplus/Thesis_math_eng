@@ -1,9 +1,9 @@
-\documentclass[master=eelt,masteroption=ei]{kulemt}
+\documentclass[master=ewit]{kulemt}
 \setup{title={Newton-type operator splitting methods for embedded model predictive control},
   author={Willem Melis},
   promotor={Prof.\,dr.\,ir.\ Panos Patrinos},
   assessor={Prof.\,dr.\,ir.\ Bart De Moor},
-  assistant={Ir.\,Pantelis Sopasakis}}
+  assistant={dr.\ Ir.\,Pantelis Sopasakis}}
 % The following \setup may be removed entirely if no filing card is wanted
 \setup{filingcard,
   translatedtitle=,
@@ -29,6 +29,8 @@
 
 \usepackage{graphicx}
 \graphicspath{{./figs/}}
+\usepackage{caption}
+\usepackage{subcaption}
 
 \usepackage{amsmath,amsthm,amssymb}
 \DeclareMathOperator{\project}{project}
@@ -68,6 +70,9 @@
 \include{./chapters/MPC}
 \include{./chapters/part2_prox_gradient}
 \include{./chapters/part3_PANOC}
+\include{./chapters/part4_LBFGS}
+\include{./chapters/part5}
+\include{./chapters/part6}
 %\include{./extra/conclusion}
 
 % If you have appendices:

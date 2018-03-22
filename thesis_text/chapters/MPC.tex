@@ -1,8 +1,44 @@
-\chapter{Optimal control}
+\chapter{Control Systems}
+\section{Optimal control}
+	The optimal control problem goes back more than 300 years. From Galileo and Newton to Johann Bernoulli and Euler with the brachistochrone problem. The optimal control problem is the problem of finding the proper inputs so that the system behaves in a certain way.
+	
+	A typical optimal control problem exists out of a set of differential equations that describes the behavior of the system. And a cost function that describes the cost of the specific trajectory integrated on the differential equations. The most optimal solution to the optimal control problem will have the lowest cost possible.
+	
+	Optimal control problems can be mathematically defined as the cost function equation~\ref{eq:optimal control definition}(With boundary conditions equation~\ref{eq:optimal control definition state equations boundary conditions})  and the behavior of the system equation~\ref{eq:optimal control definition state equations}. In addition constraints can be placed on the state and inputs, as shown by equation~\ref{eq:optimal control definition state equations path constraints}. 
+	
+	\begin{equation}
+		J = S[x(t_0),t_0,x(T),T] + \int_{t_0}^{T} L[x(t),u(t),t]
+		\label{eq:optimal control definition}
+	\end{equation}
+	\begin{equation}
+		\dot{x}(t) = F(x(t),u(t),t)
+		\label{eq:optimal control definition state equations}
+	\end{equation}
+	\begin{equation}
+		C[x(t),u(t),t]\le 0
+		\label{eq:optimal control definition state equations path constraints}
+	\end{equation}
+	\begin{equation}
+		S[x(t_0),t_0,x(T),T]=0
+		\label{eq:optimal control definition state equations boundary conditions}
+	\end{equation}
 
 \section{MPC}
+	Model predictive control is an advanced process control method that continuously solves a series of optimal control problems. At a constant rate the state is measured, a prediction is made with possible future inputs of the future states. The future inputs are changed so that the simulated state is close to the reference state. The input is applied to the system, and the cycle repeats itself.
+	
+	A physical system can be represented as $\dot{x}=F_c(x,u)$, where x is the current state and u is the current input. By using a discrete integrator the system can be written as $x^{k+1}=F_d(x^{k},u^{k})$. 
+	
+	Figure~\ref{fig:MPC diagram} is a simple diagram that illustrates MPC. The reference trajectory is the behavior we want, the predicted control input is the control input that was calculated and in the simulations lead to the predicted output.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\textwidth]{MPC_scheme}
+		\caption{A simple MPC diagram from the wikipedia page}
+		\label{fig:MPC diagram}
+	\end{figure}
+			
 	\subsection{System}
-		A physical system can be represented as $\dot{x}=F_c(x,u)$, where x is the current state and u is the current input. By using a discrete integrator the system can be written as $x^{k+1}=F_d(x^{k},u^{k})$. $F_d$ should be expressible as an series of elementary operations.
+		
 	\subsection{Problem definition}
 		\subsubsection{Problem form}
 			The goal is to define the problem as equation~\ref{eq:PANOC MPC form}, and then solve it for u given $x_0$, the current state of the system. Sometimes $x_0$ will be assumed to be part of the function f and the form of equation~\ref{eq:PANOC form} will be used.
@@ -15,7 +51,7 @@
 				\underset{u}{\minimize} \  f(u) + g(u)
 				\label{eq:PANOC form}
 			\end{equation}
-		\subsubsection{Single shoot}
+		\subsubsection{Direct Single shoot}
 			If the horizon is N then the problem is solved for the inputs $u=[u_0,u_1,... u_{N-1}]$ where each $u_k$ is a vector of all the inputs of the system. This means that the vector u is of size (Horizon-1)*dimension\_input .
 			
 			Define the cost for each step in the horizon as \ref{eq:single shot iteration cost}.
@@ -30,12 +66,12 @@
 			
 			Define the terminal cost as equation~\ref{eq:single shot terminal cost}.
 			\begin{equation}
-			\begin{aligned}
-			& l_N(x_0,u) = && x_N^TSx_N \\
-			& \text{subject to}			&& x_0 = \bar{x} \\
-			& 							&&  x_{n+1} = F_d(x_n,u_n), n=0...N-1
-			\end{aligned}
-			\label{eq:single shot terminal cost}
+				\begin{aligned}
+					& l_N(x_0,u) = && x_N^TSx_N \\
+					& \text{subject to}			&& x_0 = \bar{x} \\
+					& 							&&  x_{n+1} = F_d(x_n,u_n), n=0...N-1
+				\end{aligned}
+				\label{eq:single shot terminal cost}
 			\end{equation}
 			
 			$f(x_0,u)$ can then be defined as in equation~\ref{eq:single shot definition} the sum of the cost of all iterations plus the terminal cost.
@@ -45,7 +81,7 @@
 			\end{equation}
 			
 			As a side note, an other term can be added to equation~\ref{eq:single shot definition} to represent the obstacle avoidance.
-		\subsection{Multiple shoot}
+		\subsection{Direct Multiple shoot}
 			In multiple shoot mode the optimization algorithm needs more than just an initial state. It requires a guess of all of the intermediate states that where derived using the initial state in  single shot mode. The initial guesses will be referred to as $x_i$ and the states derived from this initial gas and its corresponding input will be referred to as $\bar{x_i}$. As before the goal of the optimization algorithm is to find the optimal inputs $u_i$, so that $\bar{x_i}$ is optimal.
 			
 			\begin{equation}

@@ -1,0 +1,140 @@
+\chapter{L-BFGS}
+	In this chapter the implementation to solving equation~\ref{eq:LBFGS problem} with L-BFGS is discussed. A naive implementation can sometimes lead to strange behavior. So it's import to spend little time on the lbfgs.
+	
+	\begin{equation}
+		R(x) = \frac{1}{\gamma}\left[ x - \prox_g( x - \nabla f(x)\gamma) \right] = 0
+		\tag{\ref{eq:LBFGS problem} revisited}
+	\end{equation}
+	
+	\section{Exact newton method}
+	The exact Newton method can be derived from a Taylor expansion.It's super linear convergence makes it a popular choice to find optimal points. Typically the great end of the function is set to zero and solved. However convergence is not guaranteed and only super linear if it is close enough to the solution. The Hessiaan matrix must be available to the algorithm, and is used in each iteration of the algorithm to solve a system.
+	
+		\begin{equation}
+			g(x_{k+1}) = g(x_k) + \nabla g(x_k)(x_{k+1}-x_k)
+			\label{eq:Taylor expansion}
+		\end{equation}
+		
+		\begin{equation}
+			x_{k+1}-x_k = -(\nabla g(x_k))^{-1} \cdot g(x_k)
+			\label{eq:Taylor expansion reshaped}
+		\end{equation}
+	A Taylor expansion in point $x^k$ can be written as equation~\ref{eq:Taylor expansion}, if $g(x^{k+1})$ is set to zero the equation becomes equation~\ref{eq:Taylor expansion reshaped}. This leads to equation~\ref{eq:newton method} where $g(x)=\nabla f(x)$ and the step towards zero is p. Typically some sort of line sources used to accelerate convergence, so the next location is found using equation~\ref{eq:newton method linesearch} with all for being the line search parameter.	
+		\begin{equation}
+			p = x_{k+1}-x_k = -(\nabla^2 f(x_k))^{-1} \cdot \nabla f(x_k)
+			\label{eq:newton method}	
+		\end{equation}
+	
+		\begin{equation}
+		 	x_{k+1} = x_k + \alpha p
+		 	\label{eq:newton method linesearch}
+		\end{equation}
+		
+	\section{Quasi Newton Method:BFGS}
+	As mentioned in the previous sub section in order to use the exact Newton method the Hessian matrix must be available. Sometimes this matrix exists but is not available, it might be hard to express analytically. In this case it is possible to approximate the Hessian matrix as illustrated in equation~\ref{eq:quasi newton method approx Hessian}. This leads to the secant condition equation~\ref{eq:secant condition}. One popular formulation that satisfies the secant condition is that of the BFGS formula.
+		
+		\begin{equation}
+			B_{k+1}(x_{k+1}-x_k) = \nabla f(x_{k+1}) - \nabla f(x_k)
+			\label{eq:quasi newton method approx Hessian}	
+		\end{equation}
+		
+		\begin{eqnarray}
+			s_k = x_{k+1} - x_{k} \\
+			y_k = \nabla f(x_{k+1}) - \nabla f(x_{k}) \\
+			\rho_k = \frac{1}{y_k^T \cdot s_k}
+		\end{eqnarray}
+	
+		
+		\begin{equation}
+			B_{k+1} s_{k} = y_{k}
+			\label{eq:secant condition}
+		\end{equation}
+		
+		\begin{equation}
+			B_{k+1} = B_{k} + \frac{y_k y_k^T}{ y_k^T s_k} - \frac{B_k s_k s_k^T B_k^T}{s_k^TB_ks_k}
+			\label{eq:quasi newton method approx Hessian with past values}
+		\end{equation}
+	Calculating the inverse of the B matrix is an expensive operation. Equation~\ref{eq:quasi newton method inverse hessian} expresses the inverse of the Hessian in a function of the past function values. In every iteration the step is calculated using equation~\ref{eq:quasi newton method} , the new location is calculated and used update the inverse hessian using equation~\ref{eq:quasi newton method inverse hessian}.
+		\begin{equation}
+			V_k = I - \rho_ky_ks_k^T
+		\end{equation}
+	
+		\begin{equation}
+			H^{k+1} = V_k^TH_kV_k + \rho_ks_ks_k^T
+			\label{eq:quasi newton method inverse hessian}	
+		\end{equation}
+		
+		\begin{equation}
+		p = x_{k+1}-x_k = -(B_k)^{-1} \cdot \nabla f(x_k) = -H_k\cdot \nabla f(x_k)
+		\label{eq:quasi newton method}	
+		\end{equation}
+		
+	\section{Quasi Newton Method:L-BGFS}
+	A variation on the BFGS algorithm is the L-BFGS algorithm. The L-BFGS algorithm does not express the Hessian matrix explicitly, this way less memory is needed to run the algorithm. Which is very useful if either your problem is very large, or the computer is very small. As nmpc-codegen is aimed at embedded devices the latter is very important.
+	
+	Equation~\ref{eq:quasi newton method inverse hessian} can be written out recursively as illustrated in equation~\ref{eq:quasi newton method inverse hessian recursive}. Equation can also be expressed in two loops as illustrated in algorithm~\ref{alg:LBFGS}. The initial Hessian $H^0_k$ can be estimated using the most recent s and y values, as illustrated in equation~\ref{eq:quasi newton method initial Hessian}. If the optimal point is a local minimum, it's advisable to check if the new initial Hessian is positive definite.
+	
+		\begin{eqnarray}	 
+			\begin{aligned}
+				H_k = 
+				& (V^T_{k-1} ... V^T_{k-m})H^0_k(V^T_{k-m} ... V_{k-1}) \\
+				& + \rho{k-m} (V^T_{k-1} ... V^T_{k-m+1})s_{k-m}s_{k-m}^T(V^T_{k-m+1} ... V_{k-1}) \\
+				& + \rho{k-m+1} (V^T_{k-1} ... V^T_{k-m+2})s_{k-m+1}s_{k-m+1}^T(V^T_{k-m+2} ... V_{k-1}) \\
+				& + ... \\
+				& + \rho_{k-1}s_{k-1}s_{k-1}^T
+			\end{aligned}
+			\label{eq:quasi newton method inverse hessian recursive}
+		\end{eqnarray}
+		
+		\begin{equation}
+			H_k^0 = \frac{s_k^Ty_k}{y_k^Ty_k}
+			\label{eq:quasi newton method initial Hessian}
+		\end{equation}
+	
+	The LBFGS  algorithm will calculate the step $p = \nabla f(x_k) H_k$ Without ever expressing the hessian  explicitly. The next location then becomes $x_{k+1} = x_{k}+ \alpha \cdot p$ with alpha being the line search parameter.Typically either a wolf-type or Armijo-type line search is used, however panoc uses neither of these methods so they are not discussed.
+	
+	\section{Cautious update L-BGFS}
+	As mentioned before when updating the initial hessian value it's good practice to check if it's positive. If it is negative, there's no point in updating the Hessian value. However even with this safety mechanism it is still possible to get bad updates. As in updates that lower the convergence rate.
+	
+	\begin{equation}
+		\frac{s_k^Ts_k}{s_k^Ts_k} \ge \epsilon ||\nabla f(x_k)||^\alpha
+		\label{eq:cautious update}
+	\end{equation}
+	
+	\cite{Dong-HuiLi1999} suggests a cautious update based on the size of the gradient and $\frac{s_k^Ts_k}{s_k^Ts_k}$as illustrated in equation~\ref{eq:cautious update}. The two parameters epsilon and alpha are both positive constants. The condition of equation~\ref{eq:cautious update} will be relevant when the algorithm is near fixed point, and the step size is so small the function values hardly change. The information in $s_k$ and $y_k$ is mostly noise and cannot be trusted.
+	
+	\subsection{L-BFGS implementation}
+		The LBFGS algorithm(algorithm~\ref{alg:LBFGS})is used to solve equation~\ref{eq:LBFGS problem} is , the first iteration is not displayed.(the direction is equal to the Proximal gradient step) And current\_buffersize will increase every iteration from 1 to the limit specified by the controller designer.
+		\begin{equation}
+		R(x) = \frac{1}{\gamma}\left[ x - \prox_g( x - \nabla f(x)\gamma) \right] = 0
+		\label{eq:LBFGS problem}
+		\end{equation}
+		\begin{algorithm}
+			\caption{LBFGS}
+			\label{alg:LBFGS}
+			\begin{algorithmic}[1]
+				\Procedure {LBFGS}{$x^k$,M=current\_buffersize}
+				\State $q = R(x^k)$
+				\For{i=M:1}
+				\State $\alpha(i)=\rho(i) \cdot s(:,i)^Tq$
+				\State $q = q - \alpha(i) \cdot y(:,i)$
+				\EndFor
+				\State $H_k^0 = y(:,M) \cdot s(:,M)^T \cdot  \frac{1}{y(:,M)^T \cdot y(:,M)}$
+				\State $H^0_k \cdot R(x^k)$
+				\For{i=1:M}
+				\State $\beta(i) = \rho(i) \cdot y(:,i)^T \cdot z$
+				\State $z = z + s(:,i)[\alpha(i)-\beta(i)]$
+				\EndFor
+				\For{i=1:M-1}
+				\State $s(:,i+1)=s(:,i)$
+				\State $y(:,i+1)=y(:,i)$
+				\EndFor
+				\State $$\begin{cases}
+				s(:,1) = x_{k+1} - x_k \\
+				y(:,1) = \nabla f(x_{k+1}) - \nabla f(x_k)\\
+				\rho_k(1) = \frac{1}{y(:,1)^T \cdot s(:,1)} \\ 
+				\end{cases}
+				$$
+				\State \Return direction=$-z=-H_k \cdot R(x^k)$
+				\EndProcedure
+			\end{algorithmic}
+		\end{algorithm}

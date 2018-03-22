@@ -30,42 +30,6 @@
 			x^{k+1} - x^k = H_{K+1} \Big( R_{\gamma}(x^{k+1})- R_{\gamma}(x^k) \Big)
 			\label{eq:newton iteration residual inverse secant}
 			\end{equation}
-		\subsubsection{LBFGS}
-			The variation of LBFGS used to solve equation~\ref{eq:LBFGS problem} is algorithm~\ref{alg:LBFGS}, the first iteration is not displayed.(the direction is equal to the gradient) And the current\ buffersize will increase every iteration from 1 to the limit specified by the controller designer.
-			\begin{equation}
-				R(x) = \frac{1}{\gamma}\left[ x - \prox_g( x - \nabla f(x)\gamma) \right] = 0
-				\label{eq:LBFGS problem}
-			\end{equation}
-			\begin{algorithm}
-				\caption{LBFGS}
-				\label{alg:LBFGS}
-				\begin{algorithmic}[1]
-					\Procedure {LBFGS}{$x^k$,M=current\_buffersize}
-					\State $q = R(x^k)$
-					\For{i=M:1}
-						\State $\alpha(i)=\rho(i) \cdot s(:,i)^Tq$
-						\State $q = q - \alpha(i) \cdot y(:,i)$
-					\EndFor
-					\State $H_k^0 = y(:,M) \cdot s(:,M)^T \cdot  \frac{1}{y(:,M)^T \cdot y(:,M)}$
-					\State $H^0_k \cdot R(x^k)$
-					\For{i=1:M}
-						\State $\beta(i) = \rho(i) \cdot y(:,i)^T \cdot z$
-						\State $z = z + s(:,i)[\alpha(i)-\beta(i)]$
-					\EndFor
-					\For{i=1:M-1}
-						\State $s(:,i+1)=s(:,i)$
-						\State $y(:,i+1)=y(:,i)$
-					\EndFor
-					\State $$\begin{cases}
-								s(:,1) = x_{k+1} - x_k \\
-								y(:,1) = \nabla f(x_{k+1}) - \nabla f(x_k)\\
-								\rho_k(1) = \frac{1}{y(:,1)^T \cdot s(:,1)} \\ 
-							\end{cases}
-							$$
-					\State \Return direction=$-z=-H_k \cdot R(x^k)$
-					\EndProcedure
-				\end{algorithmic}
-			\end{algorithm}
 		
 	\subsection{Forward backward envelop}	
 		Newton iterations only converge quickly when they are close to the solution. In order to get better global behavior a proper global strategy is required. The optimization problem is changed from $\varphi(x) = f(x) + g(x)$ to equation~\ref{eq:FBE definition using Moreau envelope}. This problem is smoother while it still has the same optimal solution.(proof see \cite{LorenzoStella2017} and \cite{Themelis}) The same $\gamma$ as with the proximal gradient should be used, notice how the FBE contains the line-search condition use in the proximal gradient. (more on the FBE in \cite{Themelis})
@@ -161,7 +125,7 @@
 				\State $ dir_{LBFGS}$ = LBFGS($x^k$)
 				\State $\tau =1$
 				\State $x^{k+1} = x_k - (1-\tau_k)\cdot (x-\bar{x}) + \tau \cdot dir_{LBFGS}$
-				\While{$\varphi_{\gamma}(x^{k+1}) > 		\varphi_{\gamma}(x^{k}) - \frac{\beta \gamma}{2} ||(x-\bar{x})||^2$}
+				\While{$\varphi_{\gamma}(x^{k+1}) > 		\varphi_{\gamma}(x^{k}) - \alpha \frac{\beta}{\gamma \cdot 2} ||(x-\bar{x})||^2$}
 				\State $\tau = \tau / 2$
 				\State $x^{k+1} = x_k - (1-\tau_k)\cdot (x-\bar{x}) + \tau \cdot dir_{LBFGS}$
 				\EndWhile
