@@ -1,9 +1,10 @@
 \chapter{L-BFGS}
 	In this chapter the implementation to solving equation~\ref{eq:LBFGS problem} with L-BFGS is discussed. A naive implementation can sometimes lead to strange behavior. So it's import to spend little time on the lbfgs.
 	
+	
 	\begin{equation}
-		R(x) = \frac{1}{\gamma}\left[ x - \prox_g( x - \nabla f(x)\gamma) \right] = 0
-		\tag{\ref{eq:LBFGS problem} revisited}
+	R(x) = \frac{1}{\gamma}\left[ x - \prox_g( x - \nabla f(x)\gamma) \right] = 0
+	\label{eq:LBFGS problem}
 	\end{equation}
 	
 	\section{Exact newton method}
@@ -96,7 +97,7 @@
 	As mentioned before when updating the initial hessian value it's good practice to check if it's positive. If it is negative, there's no point in updating the Hessian value. However even with this safety mechanism it is still possible to get bad updates. As in updates that lower the convergence rate.
 	
 	\begin{equation}
-		\frac{s_k^Ts_k}{s_k^Ts_k} \ge \epsilon ||\nabla f(x_k)||^\alpha
+		\frac{y_k^Ts_k}{s_k^Ts_k} \ge \epsilon ||\nabla f(x_k)||^\alpha
 		\label{eq:cautious update}
 	\end{equation}
 	
@@ -104,10 +105,12 @@
 	
 	\subsection{L-BFGS implementation}
 		The LBFGS algorithm(algorithm~\ref{alg:LBFGS})is used to solve equation~\ref{eq:LBFGS problem} is , the first iteration is not displayed.(the direction is equal to the Proximal gradient step) And current\_buffersize will increase every iteration from 1 to the limit specified by the controller designer.
+		
 		\begin{equation}
-		R(x) = \frac{1}{\gamma}\left[ x - \prox_g( x - \nabla f(x)\gamma) \right] = 0
-		\label{eq:LBFGS problem}
+			R(x) = \frac{1}{\gamma}\left[ x - \prox_g( x - \nabla f(x)\gamma) \right] = 0
+			\tag{\ref{eq:LBFGS problem} revisited}
 		\end{equation}
+		
 		\begin{algorithm}
 			\caption{LBFGS}
 			\label{alg:LBFGS}
@@ -138,3 +141,14 @@
 				\EndProcedure
 			\end{algorithmic}
 		\end{algorithm}
+	
+	\subsection{Notes on implementing L-BFGS with panoc}
+	Even tough the papers on the panoc algorithm sudgest that the problem solved with lbfgs is equation~\ref{eq:LBFGS problem}. Using $R'(x) = \left[ x - \prox_g( x - \nabla f(x)\gamma) \right]$ with the lbfgs will give better numerical results.
+	\begin{equation}
+	R(x) = \frac{1}{\gamma}\left[ x - \prox_g( x - \nabla f(x)\gamma) \right] = 0
+	\tag{\ref{eq:LBFGS problem} revisited}
+	\end{equation}
+	
+	Every time the search parameter $\gamma$ changes the lbfgs buffer must be flushed. Because the residual changes if $\gamma$ changes. It is unlikely that this flushed happens 2-3 times before the algorithm  converges to the required tolerance. 
+	\subsection{L-BFGS simulation}
+	TODO simulation that demonstrates the speedup accomplished with lbfgs

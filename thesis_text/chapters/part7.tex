@@ -1,0 +1,90 @@
+\chapter{Code analysis of panoc}
+
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{intel_analysis/solution}
+	\caption{solution nmpc problem analysis}
+	\label{fig:solution nmpc problem analysis}
+\end{figure}
+
+\section{Intel Profiler}
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width=1.2\textwidth]{intel_analysis/no_mkl}
+		\caption{no mkl}
+		\label{fig:hotspot no mkl}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width=1.2\textwidth]{intel_analysis/with_mkl}
+		\caption{with mkl}
+		\label{fig:hotspot with mkl}
+	\end{subfigure}
+	\caption{Hot spot analysis with Intel Vtune Amplifier 2018}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{intel_analysis/no_mkl_topdown}
+	\caption{solution nmpc problem analysis}
+	\label{fig:no mkl top down}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{intel_analysis/with_mkl_top_down}
+	\caption{solution nmpc problem analysis}
+	\label{fig:with mkl top down}
+\end{figure}
+
+
+%\csvstyle{myTableStyle}{tabular=|c|c|}
+
+\begin{center}
+	\begin{tabular}{| l | c |}
+		\hline
+		Function&CPU Time: Total \\
+		\hline
+		casadi\_interface\_f\_df & 44.30\%\\
+		lbfgs\_get\_direction & 43.80\% \\
+		proximal\_gradient\_descent\_forward\_backward\_envelop & 37.00\%\\
+		buffer\_evaluate\_new\_location & 32.40\%\\
+		inner\_product & 26.20\%\\
+		libm\_sse2\_sincos & 18.60\%\\
+		vector\_add\_ntimes & 13.00\%\\
+		proximal\_gradient\_descent\_get\_direction & 11.90\%\\
+		\hline
+	\end{tabular}
+	\captionof{table}{Table Title}
+\end{center}
+
+\begin{center}
+	\begin{tabular}{| l | c |}
+		\hline
+		Function&CPU Time: Total \\
+		\hline
+		casadi\_interface\_f\_df&55.30\% \\
+		proximal\_gradient\_descent\_forward\_backward\_envelop&49.70\% \\
+		buffer\_evaluate\_new\_location&43.50\% \\
+		lbfgs\_get\_direction&38.50\% \\
+		vector\_add\_ntimes&35.90\% \\
+		proximal\_gradient\_descent\_get\_direction&11.80\% \\
+		libm\_sse2\_sincos&11.80\% \\
+		inner\_product&8.80\% \\
+		\hline
+	\end{tabular}
+	\captionof{table}{Table Title}
+\end{center}
+\section{Valgrind callgrind}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1\textwidth]{callgrid/graph}
+	\caption{callgrid}
+	\label{fig:callgrid}
+\end{figure}

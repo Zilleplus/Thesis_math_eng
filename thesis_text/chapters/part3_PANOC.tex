@@ -1,6 +1,6 @@
 \chapter{PANOC algorithm}
 	This section is based on \cite{LorenzoStella2017} and \cite{AjaySathya2017}, the big difference is that this text is focused implementation. And so the formula's often look slightly different. The FBE part is based on \cite{Themelis}.
-	\subsection{Introduction}
+	\section{Introducing panoc}
 		The PANOC algorithm is an accelerated version of the proximal gradient descent. The direction  $x-\bar{x}$ calculated with the proximal gradient descent  is combined with a second direction, who will hopefully accelerate the convergence of the algorithm.
 		
 		\begin{equation}
@@ -11,7 +11,7 @@
 		
 		Furthermore it has a super linear convergence rate. Which is much faster then the sub-linear convergence of a typical gradient descent algorithm when it gets close to the solution. On top of that, the quasi-newton method will not require extra function evaluations. Which are the major contributors to the costs of the algorithm.
 		
-	\subsection{Quasi newton method}
+	\section{Quasi newton method}
 		\subsubsection{Problem definition}
 			The iteration of equation~\ref{eq:prox grad method} can indirectly be used to solve the optimization problem.  By using the residue defined in equation~\ref{eq:residue prox grad method} a fixed point can be found. 
 			
@@ -20,7 +20,7 @@
 			\label{eq:residue prox grad method}
 			\end{equation}
 			
-			The solution of equation~\ref{eq:residue prox grad method} can be found trough the Newton iteration of equation~\ref{eq:newton iteration residual}. Where $H_k$ satisfies the inverse secant condition of equation~\ref{eq:newton iteration residual inverse secant}. As the implementation is aimed at embedded software a good option to solve this would be LBFGS.
+			The solution of equation~\ref{eq:residue prox grad method} can be found trough the Newton iteration of equation~\ref{eq:newton iteration residual}. Where $H_k$ satisfies the inverse secant condition of equation~\ref{eq:newton iteration residual inverse secant}. As the implementation is aimed at embedded software a good option to solve this would be L-BFGS. More on this in the chapter on L-BFGS.
 			
 			\begin{equation}
 			x^{k+1} = x^k -H_kR_{\gamma}(x^k)
@@ -31,7 +31,7 @@
 			\label{eq:newton iteration residual inverse secant}
 			\end{equation}
 		
-	\subsection{Forward backward envelop}	
+	\section{Forward backward envelop}	
 		Newton iterations only converge quickly when they are close to the solution. In order to get better global behavior a proper global strategy is required. The optimization problem is changed from $\varphi(x) = f(x) + g(x)$ to equation~\ref{eq:FBE definition using Moreau envelope}. This problem is smoother while it still has the same optimal solution.(proof see \cite{LorenzoStella2017} and \cite{Themelis}) The same $\gamma$ as with the proximal gradient should be used, notice how the FBE contains the line-search condition use in the proximal gradient. (more on the FBE in \cite{Themelis})
 		
 		The Moreau envelope is de define as \ref{eq:Moreau envelope}, this smooths the function, and has a close relationship with the proximal operator as illustrated earlier. Using simple algebra equation~\ref{eq:FBE definition using Moreau envelope} can be transformed into equation~\ref{eq:FBE definition using quadratic approximation}.(proof in Appendix) The solution $y$ of the infimum defined in equation~\ref{eq:FBE definition using quadratic approximation} is $\bar{x}$. Considering the close relationship between the Moreau envelope and the proximal operator (see more in \cite{Themelis}) this is to be expected.
@@ -92,7 +92,7 @@
 %			\caption{FBE example copied over from \cite{AjaySathya2017}, red is?? blue is ?? TODO expain this figure}
 %		\end{figure}
 	
-	\subsection{Line-search with FBE}
+	\section{Line-search with FBE}
 	In \cite{LorenzoStella2017} the line-search condition is specified as equation ~\ref{eq:line-search with FBE}. The line-search parameter determines $x^{k+1}$ by choosing the convex combination of the step from the proximal gradient and the LBGFS as defined in equation~\ref{eq:linea-search tau definition}. It is also specifies in \cite{LorenzoStella2017} that $\sigma \in (0, \gamma \frac{1-\gamma\cdot L}{2})$. As stated before it is assumed that $L=\frac{1-\beta}{\gamma}$, some simple algebra will lead to the condition $\sigma \in (0,\frac{\beta \gamma}{2})$.
 	
 	 Equation~\ref{eq:practical line-search with FBE} is the practical implementation of equation~\ref{eq:line-search with FBE}. A new constant $\alpha \in (0,1)$ is introduced, an possible value for $\alpha$ would be 0.5 ($\alpha=0.5$ is the choice used by the Matlab implementation of PANOC in ForBes).
