@@ -17,7 +17,7 @@
 			\label{eq:indicator function}
 		\end{equation}
 		
-	The proximal mapping can be seen as a more generalized form of projection. The Appendix contains an other important example, the indicator box function. Which is an simple way to put constraints on the input.
+		The proximal mapping can be seen as a generalization of a projection. The Appendix contains an other important example, the indicator box function. Which is an simple way to put constraints on the input.
 	
 	\subsection{Gradient projected method}
 		
@@ -43,7 +43,7 @@
 			\label{eq:projected grad descent}
 		\end{equation}
 		
-		If $g(x)$ is an indicator function then  equation~\ref{eq:projected grad descent} can be written as 
+		If $g(x)$ is an indicator function then  equation~\ref{eq:projected grad descent} can be written as equation~\ref{eq:projected grad descent}, known as the proximal gradient method.
 		
 		\begin{equation}
 				x^k = \prox_{g}[ x^{k-1} - \nabla f(x^{k-1})]
@@ -57,8 +57,7 @@
 			\label{eq:prox grad problem}
 			\end{equation}
 		
-		Inspired by the projected gradient method the proximal gradient method is define in equation~\ref{eq:prox grad method}. The $\gamma$ variable is the step size, in order to have a convergence of O(1/k) $\gamma \in(0,1/L)$. If if $\gamma \in (1/L,2/L)$ the algorithm will still converge but then its no longer a majorization-minimization
-		method. (more on this see \cite{NealParikh})
+		Inspired by the projected gradient method the proximal gradient method is define in equation~\ref{eq:prox grad method}. The $\gamma$ variable is the step size, in order to have a convergence of O(1/k) $\gamma \in(0,1/L)$. If if $\gamma \in (1/L,2/L)$ the algorithm will still converge but then its no longer a majorization-minimization method. (more on this see \cite{NealParikh})
 		
 		\begin{equation}
 			x^k = \prox_{g}\big( x^{(k-1)}- \gamma \nabla f(x^{(k-1)})\big)
@@ -66,7 +65,7 @@
 		\end{equation}	
 	
 	\subsection{Proximal minimization algorithm}
-		 \cite{QianYang} contains a shot proof that illustrates the proximal operator itself as a fixed point minimization algorithm. Or simply put take $f(x)=0$.  A property of the conjugated function is used to derive the gradient, see appendix for the theorem.
+		 \cite{QianYang} contains a short proof that illustrates the proximal operator itself as a fixed point minimization algorithm. A property of the conjugated function is used to derive the gradient, see appendix for the theorem.
 		 \begin{proof}
 		 	the iteration $x^{k+1}=\prox_g(x^k)$ will minimize the smoothed version of function f(x) 
 		 	\begin{align*}
@@ -101,7 +100,7 @@
 			\label{eq:definition lipschitz value}
 			\end{equation}
 			
-			In practice it is always possible to find the actual Lipschitz value. So the Lipschitz value will be estimated locally at the starting point $x_0$ of the algorithm as defined in equation~\ref{eq:definition lipschitz value in starting position}. With $\delta=max[\delta_l,10^{-6} \cdot x_0]$ where $\delta_l$ is a small number chosen by the controller designer.
+			In practice it is not always possible to find the actual Lipschitz value. So the Lipschitz value will be estimated locally at the starting point $x_0$ of the algorithm as defined in equation~\ref{eq:definition lipschitz value in starting position}. With $\delta=max[\delta_l,10^{-6} \cdot x_0]$ where $\delta_l$ is a small number chosen by the controller designer.
 			% in code the safet value is DELTA_LIPSCHITZ_SAFETY_VALUE and set to 10^-6
 			
 			\begin{equation}
@@ -114,7 +113,7 @@
 			The Lipschitz value can be derived from $\gamma$ if needed. This also means that as the algorithm progresses and $\gamma$ improves, so does the estimation of the Lipschitz value. 
 		
 		\subsubsection{Estimating gamma}	
-			From \cite{LorenzoStella2017} we know that $\gamma<\frac{1}{L}$ in order to have convergence to a local minimum. As gamma needs to be smaller than $\frac{1}{L}$ an safety value is introduced. This idea was copied over from the kul-forbes/ForBES library by Lorenzo Stella and Panos Patrinos, which uses a $\beta$ of 0.05. And leads to equation~\ref{eq:starting value gamma}.
+			From \cite{LorenzoStella2017} we know that $\gamma<\frac{1}{L}$ in order to guarantee convergence to a local minimum. As gamma needs to be smaller than $\frac{1}{L}$ an safety value is introduced. This idea was copied over from the kul-forbes/ForBES library by Lorenzo Stella and Panos Patrinos, which uses a $\beta$ of 0.05. And leads to equation~\ref{eq:starting value gamma}.
 			\begin{equation}
 			\gamma = \frac{1-\beta}{L}
 			\label{eq:starting value gamma}

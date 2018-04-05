@@ -31,6 +31,8 @@
 \graphicspath{{./figs/}}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{amssymb}
+\usepackage{listings}
 
 \usepackage{amsmath,amsthm,amssymb}
 \DeclareMathOperator{\project}{project}
@@ -39,6 +41,7 @@
 \DeclareMathOperator*{\minimize}{minimize}
 \DeclareMathOperator*{\argmin}{arg\,min}
 
+\newcommand{\Lagr}{\mathcal{L}} % this uses the amssym package
 
 %\includeonly{chap-n}
 \begin{document}
@@ -74,6 +77,7 @@
 \include{./chapters/part5}
 \include{./chapters/part6}
 \include{./chapters/part7}
+\include{./chapters/part8_extra_accel_LA}
 %\include{./extra/conclusion}
 
 % If you have appendices:

@@ -1,15 +1,15 @@
 \chapter{PANOC algorithm}
-	This section is based on \cite{LorenzoStella2017} and \cite{AjaySathya2017}, the big difference is that this text is focused implementation. And so the formula's often look slightly different. The FBE part is based on \cite{Themelis}.
+	This section is based on \cite{LorenzoStella2017} and \cite{AjaySathya2017}, the difference is that this text is focused implementation. And so the formula's often look slightly different. The Forward backward envelop part is based on \cite{Themelis}, which contains a slightly different algorithm that also uses the Forward backward envelop.
 	\section{Introducing panoc}
-		The PANOC algorithm is an accelerated version of the proximal gradient descent. The direction  $x-\bar{x}$ calculated with the proximal gradient descent  is combined with a second direction, who will hopefully accelerate the convergence of the algorithm.
+		The PANOC algorithm is an accelerated version of the proximal gradient descent. The direction  $x-\bar{x}$ is a combination of the proximal gradient algorithm and second direction that makes use of curvature information. This second direction will hopefully accelerate the convergence of the algorithm.
 		
 		\begin{equation}
-		x_{k+1} = x_k - (1-\tau_k)\cdot (x-\bar{x}) + \tau_k d_k
+		x_{k+1} = x_k + (1-\tau_k)\cdot (x-\bar{x}) + \tau_k d_k
 		\end{equation}
 		
 		The new term $\tau_kd_k$ should accelerate the convergence if $\tau_k\neq0$. The step $d_k$ is calculated using a quasi-newton algorithm. As a quasi-newton algorithm uses curvature information of the cost function, it uses information not available to a gradient descent based method. 
 		
-		Furthermore it has a super linear convergence rate. Which is much faster then the sub-linear convergence of a typical gradient descent algorithm when it gets close to the solution. On top of that, the quasi-newton method will not require extra function evaluations. Which are the major contributors to the costs of the algorithm.
+		Furthermore it has a super linear convergence rate when it gets close to the solution. Which is much faster then the sub-linear convergence of a gradient descent algorithm . On top of that, the quasi-newton method will not require extra function evaluations. Which are the major contributors to the costs of the algorithm.
 		
 	\section{Quasi newton method}
 		\subsubsection{Problem definition}
@@ -36,7 +36,7 @@
 		
 		The Moreau envelope is de define as \ref{eq:Moreau envelope}, this smooths the function, and has a close relationship with the proximal operator as illustrated earlier. Using simple algebra equation~\ref{eq:FBE definition using Moreau envelope} can be transformed into equation~\ref{eq:FBE definition using quadratic approximation}.(proof in Appendix) The solution $y$ of the infimum defined in equation~\ref{eq:FBE definition using quadratic approximation} is $\bar{x}$. Considering the close relationship between the Moreau envelope and the proximal operator (see more in \cite{Themelis}) this is to be expected.
 		
-		An alternative way to look at it is nicely illustrated in \cite{AjaySathya2017}, where the problem can be seen as minimizing a quadratic approximation in point x.  Remember that $L = \frac{1}{\gamma}$, and L is the Lipschitz constant of the gradient.
+		An alternative way to look the FBE is illustrated in \cite{AjaySathya2017}, where the problem can be seen as minimizing a quadratic approximation  $f(x) +  \nabla f(x)^T(y-x) + g(y) + \frac{1}{2 \gamma} ||x-y||^2  $ towards y in point x.  Remember that $L = \frac{1}{\gamma}$, and L is the Lipschitz constant of the gradient.
 		
 		\begin{equation}
 			g^{\gamma} = \underset{y}{\inf} \big \{f(y)+\frac{1}{2 \cdot \gamma}||x-y||^2 \big \}
@@ -93,9 +93,9 @@
 %		\end{figure}
 	
 	\section{Line-search with FBE}
-	In \cite{LorenzoStella2017} the line-search condition is specified as equation ~\ref{eq:line-search with FBE}. The line-search parameter determines $x^{k+1}$ by choosing the convex combination of the step from the proximal gradient and the LBGFS as defined in equation~\ref{eq:linea-search tau definition}. It is also specifies in \cite{LorenzoStella2017} that $\sigma \in (0, \gamma \frac{1-\gamma\cdot L}{2})$. As stated before it is assumed that $L=\frac{1-\beta}{\gamma}$, some simple algebra will lead to the condition $\sigma \in (0,\frac{\beta \gamma}{2})$.
+	In \cite{LorenzoStella2017} the line-search condition is specified as equation ~\ref{eq:line-search with FBE}. The line-search parameter $\tau$ determines $x^{k+1}$ by choosing the convex combination of the step from the proximal gradient and the L-BGFS as defined in equation~\ref{eq:linea-search tau definition}.  \cite{LorenzoStella2017} specifies that $\sigma \in (0, \gamma \frac{1-\gamma\cdot L}{2})$. As stated before it is assumed that $L=\frac{1-\beta}{\gamma}$, some simple algebra will lead to the condition $\sigma \in (0,\frac{\beta \gamma}{2})$.
 	
-	 Equation~\ref{eq:practical line-search with FBE} is the practical implementation of equation~\ref{eq:line-search with FBE}. A new constant $\alpha \in (0,1)$ is introduced, an possible value for $\alpha$ would be 0.5 ($\alpha=0.5$ is the choice used by the Matlab implementation of PANOC in ForBes).
+	 Equation~\ref{eq:practical line-search with FBE} is the practical implementation of equation~\ref{eq:line-search with FBE}. A new constant $\alpha \in (0,1)$ is introduced, an possible value for $\alpha$ would be 0.5 ($\alpha=0.5$ is the choice used by the Matlab implementation of PANOC in ForBes known as zerofpr2).
 	
 	\begin{equation}
 		x^{k+1} = u_k - (1-\tau_k)\cdot (x-\bar{x}) + \tau \cdot dir_{LBFGS}

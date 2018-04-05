@@ -1,5 +1,5 @@
 \chapter{Simulation}
-This chapter discusses some simulation results, using a simple mathematical model to create a controller. First the mathematical model is discussed, after that the simulation results are discussed and compared with the internal Matlab sold.
+This chapter discusses some simulation results, using a simple mathematical model to create a controller. First the mathematical model is discussed, after that the simulation results are discussed and compared with the internal Matlab solvers.
 
 \section{Trailer model}
 The trailer model is illustrated in figure~\ref{fig:trailer model}, the left rectangle is the trailer and the right rectangle is the driver. The driver pulls the trailer forward. The driver is connect to the trailer via a single arm as illustrated in figure~\ref{fig:trailer model}. The control system can only change the speed in the Y and X axis. The goal of the control system is to get the trailer at a certain position and at a certain angle. Figure shows the trailer in a neutral position, so under an angle of 0 degrees.
@@ -11,7 +11,7 @@ The trailer model is illustrated in figure~\ref{fig:trailer model}, the left rec
 	\label{fig:trailer model}
 \end{figure}
 
-The mathematical model of the trailer is represented in equation~\ref{eq:trailer model} $u_x$ and $u_y$ are the inputs of the system and represent the speed in the Y and X direction. The angle is represented by $\theta$ , the distance between the driver and the trailer is represented by L. The position of the trailer is represented by $p_x$ and $p_y$.
+The mathematical model of the trailer is represented in equation~\ref{eq:trailer model}, $u_x$ and $u_y$ are the inputs of the system and represent the speed in the Y and X direction. The angle is represented by $\theta$ , the distance between the driver and the trailer is represented by L. The position of the trailer is represented by $p_x$ and $p_y$.
 
 \begin{equation}
 	\begin{cases}
