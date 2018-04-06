@@ -109,12 +109,12 @@ print(f)
 
 
 \section{Nmpc-codegen implementation}
-Nmpc-codegen exists out of a high-level language such as Python or Matlab that generates header files and source files. The higher-level language can call the build system (Cmake/make) to compile the generate code. In order to simulate the generated controller. At the end of the development cycle the Python/Matlab code can generate the controller without a build system. So that the code can easily be integrated into an existing project.
+Nmpc-codegen exists out of a high-level language such as Python or Matlab that generates header files and source files. In order to test the controller, the higher-level language can call the build system (Cmake/make) to compile the generate code. And then simulate the controller to see the response. At the end of the development cycle the Python/Matlab code can generate a clean controller without this build system.
 
 \subsection{Python and Matlab}
 Figure~\ref{fig:nmpc_codegen_packages} Illustrates the architecture of the nmpc-codegen library. There are five sub packages tools, models, example models, controller and Cfunctions.  The two classes in the sub package models, represent the mathematical model of the system. The user must construct an object of one of these classes, that contains the function equation of the system.
 
-The Cfunctions sub package contains proximal functions that represent constraints on the inputs. The user manual contains a table of all available constraints to the user. The tools sub package contains two classes. The bootstrapper can generate the static code, and the simulator that allows the user to call the generated C code from Python or Matlab.
+The Cfunctions sub package contains proximal functions that represent constraints on the inputs. The user manual contains a table of all available constraints to the user. The tools sub package contains two classes. The bootstrapper that can generate the static code, and the simulator that allows the user to call the generated C code from Python or Matlab.
 
 The controller sub package contains the Nmpc\_panoc class, an object of this class represents the actual controller. In order to construct an object of the Nmpc\_panoc class the user must provide a model object, a proximal function object and one or two stage costs object.
 
@@ -127,24 +127,44 @@ Finally the user can also add obstacles, these will be added a soft constraints 
 	\end{figure}
 
 \subsection{C}
-The C code is written in a layered architecture, the lowest layer contains the buffer, the cost function and the lipschitz estimator. The second layer contains the proximal gradient descent algorithm and the L-BFGS algorithm. The highest layer contains only the panoc algorithm.
+The C code is written in a layered architecture, the lowest layer contains the buffer, the cost function and the lipschitz estimator. The second layer contains the proximal gradient algorithm and the L-BFGS algorithm. The highest layer contains the panoc algorithm.
 
-Each of these entities has its own source file. The NMPC entity initializes the cost function with the current state of each iteration, and calls panoc. The end-user does not need to know how panoc or any of the underlying layers work. The NMPC entity takes care of everything, the user will simply call NMPC with the current state, a reference state, a reference input and output array to place the optimal inputs.
+The NMPC entity initializes the cost function with the current state of each iteration, and calls panoc repeatably till convergence. The end-user does not need to know how panoc or any of the underlying layers work. The NMPC entity takes care of everything, the user will simply call NMPC with the current state, a reference state, a reference input and output array to place the optimal inputs.
+
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.5\textwidth]{visio_software_arch}
 		\caption{Software architecture}
 		\label{fig:visio software arch}
 	\end{figure}
+
 \subsection{Build system}
-The build system must be compatible with Windows, Linux and Mac X os. This is why there was opted to use Cmake. As it can generate build systems for all three operating systems, using the available compilers. The structure of the build system is illustrated in figure~\ref{fig:build system}. Python or Matlab first calls Cmake to generate the Make files. After the make files are generated the Python or Matlab code calls the makefile to compile the controller code into a shared library.
+The build system must be compatible with Windows, Linux and Mac X os. Cmake is able to generate build systems for all three opening systems, and is the obvious choice as is used by many other open-source projects. The structure of the build system is illustrated in figure~\ref{fig:build system}. Python or Matlab first calls Cmake to generate the Make files. After the make files are generated the Python or Matlab code calls the makefile to compile the controller code into a shared library.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.5\textwidth]{build_system}
 	\caption{Build system}
 	\label{fig:build system}
 \end{figure}
-In order to easily simulate the controller from Python, the Python code must be able to call into a compile library. This is accomplished using the Ctypes library, which allows Python script to directly call C functions.(If the dynamic library has the necessary properties)
+In order to easily simulate the controller from Python, the Python code must be able to call the functions inside the compile library. This is accomplished using the Ctypes library, Which allows Python scripts to directly call C functions.(If the dynamic library has the necessary properties)
 
 Matlab can also call directly into a dynamic library, this is accomplished through the callib function in Matlab. The same compiled shared library can be used for either Matlab or Python.
 
+\subsection{How to use it with an embedded system}
+After enough simulations have been executed, and the control parameters are found. It is advised to remove the generated code. Called the bootstrapper with the simulation tools disabled, and generate the code again. This time no build tools will be inside the code, and the user cannot simulate this controller from Python or Matlab.
+
+The include folder contains the header file for the controller, as the only header file relevant to the user. Which contains a initialize function, a function to set the weight of the obstacles, a function to get the optimal input given the current state and a destroy function. The initialize function shall be called at the startup of the controller. And to destroy function should be called when stopping the controller.
+
+\begin{lstlisting}[caption={Header file of the controller},label={lst:Header file of the controller}]
+int nmpc_init(void);
+int nmpc_cleanup(void);
+int npmc_solve( const real_t* current_state,
+	const real_t* state_reference,
+	const real_t* input_reference,
+	real_t* optimal_inputs);
+int nmpc_get_last_full_solution(real_t* output);
+
+real_t nmpc_get_weight_obstacles(int index_obstacle);
+int nmpc_set_weight_obstacles(int index_obstacle,real_t weight);
+int nmpc_set_buffer_solution(real_t value, int index); 
+\end{lstlisting}

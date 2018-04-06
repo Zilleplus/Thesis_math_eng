@@ -25,13 +25,13 @@ The mathematical model of the trailer is represented in equation~\ref{eq:trailer
 \section{A simple trailer example}
 A simple way of measuring the performance of the library is to compared it to the alternatives. In the following simulation the nmpc-codegen library will be compared to, ForBes zerofrp2 the Matlab implementation of the panoc algorithm. And to the internal Matlab function fmincon using either of the tree algorithms interior point,SQP and active set.
 
-The simulation will contain four circular obstacles and the trailer will move from the lower left corner to the upper right corner. Each of the algorithms will calculate the optimum path up to the tolerance of $10^{-3}$. Input for one step is then applied to the system equation, the next state is obtained. The same nmpc problem is done solved using now the new state as current state  and the previous solution as initial point.
+The simulation will contain four circular obstacles and the trailer will move from the lower left corner to the upper right corner. Each of the algorithms will calculate the optimum path up to the tolerance of $10^{-3}$. The input for one step is then applied to the system equation, and the next state is obtained. The same nmpc problem is solved using the new state as current state  and the new input is applied again.
 
 The state of the trailer will is represented by arrows, the starting point of the arrow is the position of the trailer. The angle of the arrow represents the positional angle of the trailer. The amplitude of the arrow has no meaning.
 
 Figure~\ref{fig:solution path trailer example} contains the results of the simulation. The panoc algorithm calculated the lowest located path while all three of the fmincon algorithms opted for the upper located path. Both of these paths are valid solutions. It is immediately clear from figure~\ref{fig:timings trailer example} that the nmpc-codegen library is significantly faster. The other four algorithm's are about the same for the first 30 steps, after about 30 steps the ForBes zerofpr2 algorithm is faster then either of the tree fmincon algorithms.
 
-The nmpc-codegen library uses a cautious lbfgs update which improves the performance of the lbfgs. This is clear from figure~\ref{fig:iterations trailer example} where not the time to convergence but iterations to convergence are illustrated. The nmpc-codegen clearly needs less iterations than theForbes zerofpr2. Of the simulation progresses less and less iterations are needed to calculate optimal solution. And the lbfgs doesn't influence the convergence as much, so the two algorithms have about the same amount iterations the convergence.
+The nmpc-codegen library uses a cautious lbfgs update which improves the performance of the lbfgs. This is clear from figure~\ref{fig:iterations trailer example} where not the time to convergence but iterations till convergence are illustrated. The nmpc-codegen clearly needs less iterations than theForbes zerofpr2. As the simulation progresses, less and less iterations are needed to calculate optimal solution. And the lbfgs doesn't influence the convergence as much, so the two algorithms have about the same amount iterations till convergence.
 \begin{figure}[H]
 	\centering
 	\begin{subfigure}[b]{0.45\textwidth}
@@ -59,4 +59,4 @@ The nmpc-codegen library uses a cautious lbfgs update which improves the perform
 
 \section{Conclusion}
 
-The simulations  clearly indicate that a great speed up his gained by implementing the panoc algorithm in C. As the algorithm doesn't require a lot of memory it can be run efficiently on small embedded devices. The control engineer can design and test the performance of the algorithm in either Matlab or Python without writing a single line of C code.
+The simulations clearly indicate that a great speed up his gained by implementing the panoc algorithm in C. As the algorithm doesn't require a lot of memory it can be run efficiently on small embedded devices. The control engineer can design and test the performance of the algorithm in either Matlab or Python.
