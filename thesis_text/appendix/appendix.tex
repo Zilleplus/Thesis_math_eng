@@ -1,0 +1,95 @@
+\section{Function Definitions}
+	\subsection{box function}
+		1 dimension:
+		\begin{equation}
+			box_{1D}(u) =
+			\begin{aligned}
+			 & 1 && u \in [-U_b:U_b]\\
+			 & 0 && otherwise
+			\end{aligned}
+			\label{eq:box function 1 dimension}
+		\end{equation}
+		N dimensions:
+		\begin{equation}
+		box(u) = min\left[ \sum_{k=1}^ N box_{1D}(u) \right]
+		\label{eq:box function N dimensions}
+		\end{equation}
+	\subsection{Indicator Box function}
+		\begin{equation}
+			I[box]=
+			\begin{aligned}
+			& 0 && u \in [-U_b:U_b]\\
+			& \inf && otherwise
+			\end{aligned}
+		\end{equation}
+		
+		\begin{equation}
+		prox[I[box]]=
+		\begin{aligned}
+		& u && u \in [-U_b:U_b]\\
+		& -U_b && u \in [-\inf:-U_b]\\
+		& -U_b && u \in [U_b:\inf]\\
+		\end{aligned}
+		\end{equation}
+\section{functions}
+
+	\subsection{Conjugate of strongly convex function}
+		Following lemma's are useful from 
+		\begin{equation}
+			f^*(x)= \underset{u \in dom(f)}{<y,x>-f(y)}
+		\end{equation}
+		
+		If $\nabla f^*$ is lipschitz and obeys equation~\ref{eq:appendix f lip}, then $f^*$ is well defined and differentiable. (assume dom(f) is convex and closed)
+		\begin{equation}
+			\nabla f^*(x) = y^* = \argmax <y,x> - f(y)
+		\end{equation}
+		
+		\begin{equation}
+			|| \nabla f^*(x) - \nabla f^*(y) ||_2 \leq \mu^{-1} ||x-y||_2
+			\label{eq:appendix f lip}
+		\end{equation}
+\clearpage
+\section{Proof FBE alternate equation}
+
+\begin{proof}
+	$\varphi_{\gamma} =   f(x) + \underset{y}{\inf} \Big\{ \nabla f(x)^T(y-x) + g(y) + \frac{1}{2 \gamma} ||x-y||^2  \Big\} $
+	\begin{align*}
+	g^{\gamma} 	&=  \underset{y}{\inf} \big \{f(y)+\frac{1}{2 \cdot \gamma}||x-y||^2 \big \} \\
+	\varphi_{\gamma} 
+	&= f(x) - \frac{\gamma}{2}||\nabla f(x)||^2 + g^{\gamma} \big(x-\gamma \nabla f(x) \big) \\
+	&= f(x) - \frac{\gamma}{2}||\nabla f(x)||^2 + g^{\gamma} \big(\bar{x} \big)\\
+	g^{\gamma} (\bar{x})
+	&=\underset{y}{\inf} \Big\{g(y)+\frac{1}{2 \gamma}||\bar{x}-y||^2 \Big\}	\\
+	\frac{1}{2 \gamma}||\bar{x}-y||^2
+	&=\frac{1}{2 \gamma} \Big [ (\bar{x}-y)^T(\bar{x}-y) \Big]\\
+	&=\frac{1}{2 \gamma} \Big [ x^Tx - 2 x^Ty + y^Ty \Big]\\
+	\bar{x}^T\bar{x}
+	&=[x- \gamma \nabla f(x)]^T[x- \gamma \nabla f(x)] \\
+	&= x^Tx -2x^T\nabla f(x) \gamma + \gamma^2 \nabla f(x)^T\nabla f(x)-2x^Ty \\
+	&=-2(x-\gamma f\nabla(x))^Ty\\
+	&=-2x^Ty + 2\gamma \nabla f(x)^Ty \\
+	\frac{1}{2 \gamma}||\bar{x}-y||^2 
+	& =\frac{1}{2 \gamma}[x^Tx-2x^T\nabla f(x) \gamma + \gamma^2 \nabla f(x)^T\nabla f(x) -2x^Ty + 2\gamma \nabla f(x)^Ty +y^Ty] \\
+	& = \frac{1}{2 \gamma}[-2x^T\nabla f(x) \gamma  + 2\gamma \nabla f(x)^Ty + \gamma^2 \nabla f(x)^T\nabla f(x) +x^Tx -2x^Ty +y^Ty]\\
+	&= \frac{1}{2 \gamma}[ 2\gamma \nabla f(x)^T(y-x) + \gamma^2||\nabla f(x)||^2 + (x-y)^T(x-y)]\\
+	&= \frac{1}{2 \gamma}[ 2\gamma \nabla f(x)^T(y-x) + \gamma^2||\nabla f(x)||^2 + ||x-y||^2] \\
+	&=  \nabla f(x)^T(y-x) +\frac{\gamma}{2}||\nabla f(x)||^2 + \frac{1}{2 \gamma} ||x-y||^2 \\
+	g^{\gamma} (\bar{x})
+	&=\underset{y}{\inf} \Big\{g(y)+ \nabla f(x)^T(y-x) +\frac{\gamma}{2}||\nabla f(x)||^2 + \frac{1}{2 \gamma} ||x-y||^2  \Big\} \\
+	&= \frac{\gamma}{2}||\nabla f(x)||^2 + \underset{y}{\inf} \Big\{g(y)+ \nabla f(x)^T(y-x) + \frac{1}{2 \gamma} ||x-y||^2  \Big\} \\
+	\varphi_{\gamma} 
+	&= f(x) - \frac{\gamma}{2}||\nabla f(x)||^2 + g^{\gamma} \big(\bar{x} \big)\\
+	&= f(x) - \frac{\gamma}{2}||\nabla f(x)||^2 +  \frac{\gamma}{2}||\nabla f(x)||^2 + \underset{y}{\inf} \Big\{g(y)+ \nabla f(x)^T(y-x) + \frac{1}{2 \gamma} ||x-y||^2  \Big\}\\
+	&=   f(x) + \underset{y}{\inf} \Big\{ \nabla f(x)^T(y-x) + g(y) + \frac{1}{2 \gamma} ||x-y||^2  \Big\} 
+	\end{align*}
+	\label{prf:}
+\end{proof}
+
+
+
+$$  $$
+$$  $$
+
+
+
+$$ $$

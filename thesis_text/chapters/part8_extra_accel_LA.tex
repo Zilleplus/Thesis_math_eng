@@ -1,18 +1,77 @@
-\chapter{The accelerated Lagrangian}
+\chapter{The Augmented Lagrangian}
+Until now there are two ways to add constraints to the control problem: use a proximal function or add a soft constraint to the cost function. It is up to the user to determine the weights of the soft constraints. The weights that are too high, will result in a badly conditioned problem. Putting the weights too low will result more violations of the soft constraints.
 
-	\cite{Wright}
+\section{Definition of the augmented Lagrangian}
+	One way to reduce the ill conditioning of the problem when increasing the weights of the soft constraints, is the usage of the augmented Lagrangian as described in Chapter 17 of \cite{Wright}. Furthermore current research done by Ben Hermans at the KuLeuven suggests a way to update the weights or also called the penalty parameters.
+	
+	\begin{equation}
+		\begin{aligned}
+			& \underset{x}{\text{argmin}}
+			& & f_0(x) \\
+			& \text{subject to}
+			& & g(x)=0
+		\end{aligned}
+		\label{eq:opti problem lagrangian}
+	\end{equation}
+	
+	The problem described in equation~\ref{eq:opti problem lagrangian} can be solved by minimizing equation~\ref{eq:lagrangian quadratic model}  for x with a fixed $\mu_k$, and then solving again for x with $mu_{k+1}>\mu_k $. As mentioned before increasing $\mu$ will worsen the condition of the problem. 
+	
+	\begin{equation}
+		Q(x,\mu) \overset{def}{=} f(x) + \mu \sum_{i \in \epsilon} c_i^2(x)
+		\label{eq:lagrangian quadratic model}
+	\end{equation}
+	
+	By adding Lagrangian multipliers equation~\ref{eq:augmented lagrangian definition} is obtained.However the feasibility condition $c_i(x)=0$ will not be met in the first iterations. As with each time the problem solved, the condition of equation~\ref{eq:perturbed feasibility conditions} is met. As $c_i(x)$ goes to zero and $\mu_k$ goes to infinity the condition of equation~\ref{eq:perturbed feasibility conditions} will get closer to that of the feasibility condition.
 	
 	\begin{equation}
 		\Lagr_A(x,\lambda;\mu) \overset{def}{=} f(x) - \sum_{i \in \epsilon}\lambda_ic_i(x) + \mu \sum_{i \in \epsilon}c_i^2(x)
+		\label{eq:augmented lagrangian definition}
+	\end{equation}
+			
+	\begin{equation}
+		c_i(x_k) = -\lambda_i/\mu_i
+		\label{eq:perturbed feasibility conditions}
+	\end{equation}
+	
+
+\section{Optimality conditions}
+	The value of the Lagrangian multiplier can be determined from equation~\ref{eq:gradient augmented lagrangian definition}. The Lagrangian multipliers are determined trough the optimality condition. Which can be obtained by taking the derivative of the Lagrangian towards x, and putting it to zero.($\nabla_x \Lagr_A(x_k,\lambda_k;\mu_k) = 0$) The gradient will only be zero, if the optimality conditions displayed in equation~\ref{eq:optimality codition augmented lagrangian definition} are met.
+	\begin{equation}
+		\lambda_{k+1}^{i} = \lambda_{k}^{i} - 2\mu_k c_i(x_k)
+		\label{eq:optimality codition augmented lagrangian definition}
 	\end{equation}
 
-	\section{Optimality conditions}
-		\begin{equation}
-			\nabla_x \Lagr_A(x_k,\lambda_k;\mu_k) = \nabla f(x_k) - \sum_{i \in \epsilon} [\lambda_i^k - 2\mu_k c_i(x_k)] \nabla c_i(x_k)
-		\end{equation}
-		
-		\begin{equation}
-			\bar{\lambda_i} = \lambda_i - 2\mu_k c_i(x_k)
-		\end{equation}
+	\begin{equation}
+		\nabla_x \Lagr_A(x_k,\lambda_k;\mu_k) = \nabla f(x_k) - \sum_{i \in \epsilon} [\lambda_i^k - 2\mu_k c_i(x_k)] \nabla c_i(x_k)
+		\label{eq:gradient augmented lagrangian definition}
+	\end{equation}	
+	
+	%\begin{equation}
+	%	c_i(x) \approx \frac{1}{\mu_k}(\lambda_{k+1} - \lambda_k)
+	%\end{equation}
+	
+	
+\section{Algorithm}
+	The proposed algorithm by cite.. Is algorithm~\ref{}, where $0<\beta<1$. Ben Hermans proposes to take $\mu_{k+1}=\mu_k*2$ if $c_i(x)$is below a certain predefined tolerance. 
+	
+	\begin{algorithm}
+		\caption{panoc nmpc with augmented lagrangian}
+		\label{alg:panoc with augmented lagrangian}
+		\begin{algorithmic}[1]
+			\Procedure {SOLVE\_MPC}{state}
+			\State $\mu_0=0$
+			\State $\lambda_0=0$
+			\While{residual < mpc\_residual }
+			\State (residu,input\_horizon) = nmpc\_solve(residual\_solver,state,input\_horizon,$\mu_k$,$\lambda_k$)
+			\State $\lambda_{k+1}^{i} = \lambda_{k}^{i} - 2\mu_k c_i(x_k)$
+			\State update penality parameter $\mu_{k+1}>\mu_k$
+			\State residual\_solver =  residual\_solver$\cdot \beta$
+			\EndWhile
+			\EndProcedure
+		\end{algorithmic}
+	\end{algorithm}
+
+
+	
 		
 		
