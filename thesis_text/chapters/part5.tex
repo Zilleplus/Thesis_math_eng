@@ -3,7 +3,7 @@ This chapter describes the software library that was written for this thesis. Fi
 \section{Overview library}
 The nmpc-codegen library contains a framework to construct a Python script that generates a MPC controller. This controller uses the panoc algorithm to solve the optimization problem.
 
-Figure~\ref{fig:nmpc-codegen scheme} illustrates how this is accomplished. On the left side is the Python or Matlab script that the user will construct. It contains the mathematical model nd the control parameters of the process that needs to be controlled.The output of the Python script is displayed on the right side in figure~\ref{nmpc-codegen scheme}. The output contains some static code, which is mostly associated with the panoc algorithm. And some dynamic code which is generated in Python and will differ from problem to problem. Finally sometimes the output will also contain simulation tools, this optional feature allows the user to simulate the controller from within Python or Matlab.
+Figure~\ref{fig:nmpc-codegen scheme} illustrates how this is accomplished. On the left side is the Python or Matlab script that the user will construct. It contains the mathematical model nd the control parameters of the process that needs to be controlled.The output of the Python script is displayed on the right side in figure~\ref{fig:nmpc-codegen scheme}. The output contains some static code, which is mostly associated with the panoc algorithm. And some dynamic code which is generated in Python and will differ from problem to problem. Finally sometimes the output will also contain simulation tools, this optional feature allows the user to simulate the controller from within Python or Matlab.
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.5\textwidth]{nmpc_codegen_scheme}
@@ -102,10 +102,10 @@ print(f)
 			output[1][1] = @0; \\
 			\hline   
 		\end{tabular}
+		\caption{output casadi demo backward automatic differentiation}
 		\label{tbl:output casadi demo backward automatic differentiation}
 	\end{center}
 \end{table}
-
 
 
 \section{Nmpc-codegen implementation}

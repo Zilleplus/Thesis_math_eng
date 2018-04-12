@@ -25,7 +25,18 @@ The mathematical model of the trailer is represented in equation~\ref{eq:trailer
 \section{A simple trailer example}
 A simple way of measuring the performance of the library is to compared it to the alternatives. In the following simulation the nmpc-codegen library will be compared to, ForBes zerofrp2 the Matlab implementation of the panoc algorithm. And to the internal Matlab function fmincon using either of the tree algorithms interior point,SQP and active set.
 
-The simulation will contain four circular obstacles and the trailer will move from the lower left corner to the upper right corner. Each of the algorithms will calculate the optimum path up to the tolerance of $10^{-3}$. The input for one step is then applied to the system equation, and the next state is obtained. The same nmpc problem is solved using the new state as current state  and the new input is applied again.
+\subsection{General performance}
+Several NMPC problems can be constructed and solved with nmpc-codegen. Figure~\ref{fig:demos} illustrates the problems used to benchmark nmpc-codegen, they all use the simple trailer model but have different obstacles. The time till convergence is measured, the average time is displayed in table~\ref{tbl:mean time till convergence} in the appendix. While the maximum and minimum time is displayed in the appendix: table~\ref{tbl:min time till convergence} and table~\ref{tbl:max time till convergence}.
+
+The convergence time can be expresses relatively to the convergence time of the nmpc-codegen time as illustrated by equation~\ref{eq:definition relative time}. These results are displayed in table~\ref{tbl:mean relative time till convergence}. From table~\ref{tbl:mean relative time till convergence} it's clear that nmpc-codegen dominates by a significant margin.
+
+\begin{equation}
+	t_{relative} = \frac{t_{algorithm}}{t_{nmpc-codegen}}
+	\label{eq:definition relative time}
+\end{equation}
+
+\subsection{In-dept analysis of performance}
+The in-dept simulation contains four circular obstacles, the trailer will move from the lower left corner to the upper right corner. Each of the algorithms will calculate the optimal path up to the tolerance of $10^{-3}$. The input for one step is then applied to the system equation, and the next state is obtained. The same nmpc problem is solved using the new state as current state  and the new input is applied again.
 
 The state of the trailer will is represented by arrows, the starting point of the arrow is the position of the trailer. The angle of the arrow represents the positional angle of the trailer. The amplitude of the arrow has no meaning.
 

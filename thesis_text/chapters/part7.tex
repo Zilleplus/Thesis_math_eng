@@ -121,7 +121,7 @@ The rest of the time is mostly spent calculating the gradient and cost function.
 \section{Valgrind callgrind}
 The Intel profiler combined with the Visual Studio shell is incredibly easy to use and very productive. However it is a proprietary piece of software, and a rather expensive one. The Intel profiler uses the Intel compiler, which often times gives better results with numerical computations then using the GNU compiler. So it is worth while to investigate the results with the GNU compiler.
 
-One way of profiling with the GNU compiler is using valgrind with the option callgrind as illustrated in listing~\ref{}. Figure~\ref{fig:callgrid} displays the results of callgrind in a drawing. The relative execution time of the gradient is only 53\% instead of 61\% with the Intel compiler. It confirms the results obtained with the Intel profiler, as the inner products and vector additions are even more dominant here.
+One way of profiling with the GNU compiler is using valgrind with the option callgrind as illustrated in listing~\ref{tbl:Caller Callee analysis}. Figure~\ref{fig:callgrid} displays the results of callgrind in a drawing. The relative execution time of the gradient is only 53\% instead of 61\% with the Intel compiler. It confirms the results obtained with the Intel profiler, as the inner products and vector additions are even more dominant here.
 
 \begin{figure}[H]
 	\centering
