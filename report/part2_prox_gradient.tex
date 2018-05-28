@@ -1,0 +1,170 @@
+\section{Proximal gradient method}
+	\subsection{Proximal mapping}
+		The proximal operator is defined as $\prox_g(x)= \underset{u}{\argmin}(g(u) + \frac{1}{2}||u-x||^2_2)$. 
+		
+		\begin{itemize}
+			\item if $h(x)=0$ then $\prox_h(x)=x$ 
+			\item if $h(x)=I_c(x)$ where $I_c$ is define in Equation~\ref{eq:indicator function}, the proximity operator on an indicator function is the orthogonal projection on the set.
+		\end{itemize}
+		
+		The indicator function: is defined in equation ~\ref{eq:indicator function}.
+		\begin{equation}
+			I_c = 
+			\begin{cases}
+			0 & x \in C  \\
+			\infty & x \notin C
+			\end{cases}
+			\label{eq:indicator function}
+		\end{equation}
+		
+	The proximal mapping can be seen as a more generalized form of projection. The Appendix contains an other important example, the indicator box function. Which is an simple way to put constraints on the input.
+	
+	\subsection{Gradient projected method}
+		
+		\begin{equation}
+			\begin{aligned}
+			& \underset{x}{\text{argmin}}
+			& & f_0(x) \\
+			& \text{subject to}
+			& & g(x)=0
+			\end{aligned}
+			\label{eq:prox grad opti problem}
+		\end{equation}
+		
+		The classical gradient decent method cannot be used to solve the problem of equation~\ref{eq:prox grad opti problem}. As this problem has a condition that must be met by the algorithms solution. The gradient decent iterations are defined in equation~\ref{eq:grad descent} . If in each iteration the solution is projected on the space spanned by $g(x)=0$ the iterations become equation~\ref{eq:projected grad descent}. This algorithm is called the gradient projection method.
+		
+		\begin{equation}
+			x^k = x^{k-1} - \nabla f(x^{k-1})
+			\label{eq:grad descent}
+		\end{equation}
+		
+		\begin{equation}
+			x^k = \project_{g(x)=0}[ x^{k-1} - \nabla f(x^{k-1})]
+			\label{eq:projected grad descent}
+		\end{equation}
+		
+		If $g(x)$ is an indicator function then  equation~\ref{eq:projected grad descent} can be written as 
+		
+		\begin{equation}
+				x^k = \prox_{g}[ x^{k-1} - \nabla f(x^{k-1})]
+			\label{eq:proximal grad descent}
+		\end{equation}
+	
+	\subsection{The proximal gradient method}
+		Equation~\ref{eq:prox grad problem} can be solved with the proximal gradient method (sometimes called forward backward splitting - FBS) . Where the proximal operator on $g(x)$ is analytically defined. 
+			\begin{equation}
+			\underset{x}{\argmin} = f(x) + g(x)
+			\label{eq:prox grad problem}
+			\end{equation}
+		
+		Inspired by the projected gradient method the proximal gradient method is define in equation~\ref{eq:prox grad method}. The $\gamma$ variable is the step size, in order to have a convergence of O(1/k) $\gamma \in(0,1/L)$. If if $\gamma \in (1/L,2/L)$ the algorithm will still converge but then its no longer a majorization-minimization
+		method. (more on this see \cite{NealParikh})
+		
+		\begin{equation}
+			x^k = \prox_{g}\big( x^{(k-1)}- \gamma \nabla f(x^{(k-1)})\big)
+			\label{eq:prox grad method}
+		\end{equation}	
+	
+	\subsection{Proximal minimization algorithm}
+		 \cite{QianYang} contains a shot proof that illustrates the proximal operator itself as a fixed point minimization algorithm. Or simply put take $f(x)=0$.  A property of the conjugated function is used to derive the gradient, see appendix for the theorem.
+		 \begin{proof}
+		 	the iteration $x^{k+1}=\prox_g(x^k)$ will minimize the smoothed version of function f(x) 
+		 	\begin{align*}
+		 	f_{\mu}
+		 	&= \underset{y}{\inf}\Big\{ |y| +\frac{1}{2 \mu}(x-y)^2 \Big\} \\
+		 	&=   \frac{1}{2 \mu}||x||^2 + \frac{1}{2\mu} 
+		 	\underset{y}{\inf}\Big\{
+		 	2 \mu f(y) - 2x^T y + ||y||^2
+		 	\Big\} \\
+		 	&=  \frac{1}{2 \mu}||x||^2 + \frac{1}{\mu} 
+		 	\underset{y}{\sup}\Big\{
+		 	x^T y  - \mu f(y) - \frac{1}{2} ||y||^2 \Big \} \\
+		 	&= \frac{1}{2\mu }||x||^2 \frac{1}{\mu } \Big( \mu f + \frac{1}{2}||\cdot||^2 \Big)^* (x) \\
+		 	\nabla  f_{\mu} 
+		 	&= \frac{x}{\mu} - \frac{1}{\mu} \underset{y}{\argmax} 
+		 	\Big \{ x^Ty - \mu f(y) - \frac{1}{2}||y||^2 \Big \}\\
+		 	& = \frac{1}{\mu}(x - \prox_{\mu f}(x)) \\
+		 	\prox_{\mu f}(x)
+		 	& = x- \mu \nabla f_{\mu}(x)
+		 	\end{align*}
+		 	\label{prf:proximal minimiztion alg proof}
+		 \end{proof}
+
+		 This means thats the iteration $x^{k+1}=\prox_g(x^k)$ will minimize the smoothed version of function g(x). 
+
+\section{Proximal gradient method with line search}
+	\subsection{Starting value gamma }
+		\subsubsection{Estimating Lipschitz value}
+			The Lipschitz of $\nabla f(x)$ value is a non negative number that complies with equation~\ref{eq:definition lipschitz value}.
+			\begin{equation}
+			L = \underset{x \neq y}{\sup} \frac{|\nabla f(y)-\nabla f(x)|}{|y-x|}
+			\label{eq:definition lipschitz value}
+			\end{equation}
+			
+			In practice it is always possible to find the actual Lipschitz value. So the Lipschitz value will be estimated locally at the starting point $x_0$ of the algorithm as defined in equation~\ref{eq:definition lipschitz value in starting position}. With $\delta=max[\delta_l,10^{-6} \cdot x_0]$ where $\delta_l$ is a small number chosen by the controller designer.
+			% in code the safet value is DELTA_LIPSCHITZ_SAFETY_VALUE and set to 10^-6
+			
+			\begin{equation}
+			L = \underset{}{\sup} \frac{|\nabla f(x+\delta)-\nabla f(x)|}{|\delta|}
+			\label{eq:definition lipschitz value in starting position}
+			\end{equation}
+			
+			The Lipschitz value is not explicitly saved but is used to estimate $\gamma$. $\gamma$ is then used in the backtracking of the proximal gradient descent and saved in between iterations. 
+			
+			The Lipschitz value can be derived from $\gamma$ if needed. This also means that as the algorithm progresses and $\gamma$ improves, so does the estimation of the Lipschitz value. 
+		
+		\subsubsection{Estimating gamma}	
+			From \cite{LorenzoStella2017} we know that $\gamma<\frac{1}{L}$ in order to have convergence to a local minimum. As gamma needs to be smaller than $\frac{1}{L}$ an safety value is introduced. This idea was copied over from the kul-forbes/ForBES library by Lorenzo Stella and Panos Patrinos, which uses a $\beta$ of 0.05. And leads to equation~\ref{eq:starting value gamma}.
+			\begin{equation}
+			\gamma = \frac{1-\beta}{L}
+			\label{eq:starting value gamma}
+			\end{equation}		
+	
+	\subsection{Backtracking gamma}
+		\subsubsection{Backtracking algorithm}
+			Line-search is based on "Armijo's sufficient decrease condition" written down as equation~\ref{eq:Armijo's sufficient decrease condition}. The safety parameter $\theta$ multiplied with the step size $t_k$ is $\gamma=\theta \cdot t_k$. 
+			
+			\begin{equation}
+			f(x_k + t_kp_k) \leq f(x_k) + \theta t_k \nabla f(x_k)^Tp_k
+			\label{eq:Armijo's sufficient decrease condition}
+			\end{equation}
+			
+			Line-search more specific backtracking will reduce the value of $\gamma$ until the condition of equation~\ref{eq:Armijo's sufficient decrease condition} fails.
+			
+		\subsubsection{Backtracking in proximal gradient descent used in FBS}
+			The  "Armijo's sufficient decrease condition" is adjusted to equation~\ref{eq:Armijo's sufficient decrease condition prox grad PANOC} Which is an quadratic bound, $-p_k=x-\bar{x}$ and an additional term $\frac{1-\beta}{2 \gamma}||x-\bar{x}||^2$ is added.
+			
+			\begin{equation}
+			f({\bar{x}}) \leq f(x) - \nabla f(x)^T[x-\bar{x}] + \frac{1}{2 \gamma}||x-\bar{x}||^2
+			\label{eq:Armijo's sufficient decrease condition prox grad PANOC}
+			\end{equation}
+			
+			This all leads to algorithm~\ref{alg:backtracking on gamma} the proximal gradient method. Equation~\ref{eq:Armijo's sufficient decrease condition prox grad PANOC} can be seen as a quadratic model, as the Lipschitz value of the gradient is equal to $L=\frac{1}{\gamma}$.
+			
+			\begin{algorithm}
+				\caption{backtracking $\gamma$}
+				\label{alg:backtracking on gamma}
+				\begin{algorithmic}[1]
+					\Procedure {lineasearch\_gamma}{x,$\gamma$}
+					\State $\bar{x} = \prox_{g}\big( x- \gamma \nabla f(x)\big)$
+					\While{$f({\bar{x}}) > f(x) - \nabla f(x)^T[x-\bar{x}] + \frac{1}{2 \gamma}||x-\bar{x}||^2$}
+					\State $\gamma = \frac{\gamma}{2}$
+					\State $\bar{x} = \prox_{g}\big( x- \gamma \nabla f(x)\big)$
+					\EndWhile
+					\State \Return $\gamma$
+					\EndProcedure
+				\end{algorithmic}
+			\end{algorithm}
+	\subsection{Final algorthm}
+		The final algorithm~\ref{alg:proximal gradient PANOC with backtracking} delivers the upward direction. $x_{k+1}=x_k - direction$.
+		\begin{algorithm}
+			\caption{proximal gradient PANOC with backtracking}
+			\label{alg:proximal gradient PANOC with backtracking}
+			\begin{algorithmic}[1]
+				\Procedure{get\_proximal\_gradient\_step}{x,$\gamma$}
+				\State $\gamma$=LINESEARCH\_GAMMA($\gamma$)
+				\State $\bar{x} = \prox_{g}\big( x- \gamma \nabla f(x)\big)$
+				\State \Return direction=$[x-\bar{x}]$, $\gamma$
+				\EndProcedure
+			\end{algorithmic}
+		\end{algorithm}
