@@ -1,6 +1,6 @@
 \chapter{Control Systems}
-\section{Optimal control}
-	The optimal control problem goes back more than 300 years. From Galileo and Newton to Johann Bernoulli and Euler with the brachistochrone problem. The optimal control problem can be simplified to finding the proper inputs so that the system behaves in a certain way, or put differently, find the control law.
+\section{Optimal control problem}
+	The optimal control problem goes back more than 300 years. From Galileo and Newton to Johann Bernoulli and Euler with the Brachistochrone problem. The optimal control problem can be simplified to finding the proper inputs so that the system behaves in a certain way, or put differently, find the control law.
 	
 	A typical optimal control problem exists out of a set of differential equations that describes the behavior of the system. And a cost function that describes the cost of the specific trajectory integrated on the differential equations. The most optimal solution to the optimal control problem will have the lowest cost possible.
 	
@@ -24,11 +24,11 @@
 	\end{equation}
 
 \section{MPC}
-	Model predictive control is an advanced process control method that continuously solves a  optimal control problem. At a constant rate the state is measured, a optimal control problem is define and solved. The  optimal input is applied to the system, and the cycle repeats itself.
+	Model predictive control is an advanced process control method that continuously solves a  optimal control problem. At a constant rate the state is measured, a optimal control problem is define and solved. The  optimal input is then applied to the system, and the cycle repeats itself.
 	
-	A continuous physical system can be defined as $\dot{x}=F_c(x,u)$, where x is the current state and u is the current input. However when using computer systems its often required to have a discrete system. By using a discrete integrator the system can be written as $x^{k+1}=F_d(x^{k},u^{k})$. 
+	A continuous physical system can be defined as $\dot{x}=F_c(x,u)$, where x is the current state and u is the current input. However when using computer systems it's often required to have a discrete system. By using a discrete integrator the system can be written as $x^{k+1}=F_d(x^{k},u^{k})$. 
 	
-	Figure~\ref{fig:MPC diagram} is a diagram from \cite{Wikipedia} that illustrates MPC. The reference trajectory is the behavior we want, the predicted control input is the control input that was calculated and in the simulations lead to the predicted output.
+	Figure~\ref{fig:MPC diagram} is a diagram from \cite{Wikipedia} that illustrates MPC. The reference trajectory is the behavior we want, the predicted control input is the control input that was calculated and in the simulations leading to the predicted trajectory.
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.7\textwidth]{MPC_scheme}
@@ -52,7 +52,7 @@
 				\label{eq:PANOC form}
 			\end{equation}
 		\subsubsection{Direct Single shoot}
-			If the horizon is N then the problem is solved for the inputs $u=[u_0,u_1,... u_{N-1}]$ where each $u_k$ is a vector of all the inputs of the system. This means that the vector u is of size Horizon $\cdot$ dimension\_input .
+			If the predict horizon is N then the problem is solved for the inputs $u=[u_0,u_1,... u_{N-1}]$ where each $u_k$ is a vector of all the inputs of the system. This means that the size of the vector u is the predict Horizon multiplied with the dimension of the input .
 			
 			The cost for each step in the horizon is defined as \ref{eq:single shot iteration cost}, this is called the stage cost.
 			\begin{equation}
@@ -64,7 +64,7 @@
 				\label{eq:single shot iteration cost}
 			\end{equation}
 			
-			The terminal cost is a special case of the stage cost as it is the last stage cost in the horizon. So if the Horizon=N the terminal cost can defined as equation~\ref{eq:single shot terminal cost}.
+			The terminal cost is a special case of the stage cost as it is the last stage cost in the horizon. So if the Horizon is defined as N, the terminal cost can defined as equation~\ref{eq:single shot terminal cost}.
 			
 			\begin{equation}
 				\begin{aligned}
@@ -76,6 +76,7 @@
 			\end{equation}
 			
 			$f(x_0,u)$ can then be defined as in equation~\ref{eq:single shot definition}, the sum of the stage costs and the terminal cost.
+			
 			\begin{equation}
 				f(x_0,u) = \sum_{k=1}^{N-1} l_k(x_0,u) + l_N
 				\label{eq:single shot definition}
@@ -90,14 +91,14 @@
 				\label{eq:}
 			\end{equation}
 			
-			The continuity conditions are displayed in equation~\ref{eq:continuety condition multiple shot} and were not necessary in single shot as there are no state estimates like $\bar{x}$. If when starting the algorithm the initial state estimates are relatively close to the solution, a significant speed increase can be accomplished. As information was incorporate into the algorithm.
+			The continuity conditions are displayed in equation~\ref{eq:continuety condition multiple shot} and were not necessary in single shot as there are no state estimates like $\bar{x}$. If the initial state estimates are relatively close to the solution, a significant speed increase can be accomplished. As more information was incorporate into the problem.
 			
 			\begin{equation}
 				\bar{x_i} - x_{i+1} = 0
 				\label{eq:continuety condition multiple shot}
 			\end{equation}
 			
-			The direct multiple shoot definition looks like equation~\ref{eq:multiple shot cost} and has an extra equality condition compared to the single shoot. This equality condition will be added as a soft constraints to the cost function. This is displayed in equation~\ref{eq:multiple shot cost with soft constraint} and will be used in the practical implementation.
+			The direct multiple shoot definition is formally defined in equation~\ref{eq:multiple shot cost} and has an extra equality condition compared to the single shoot. This equality condition will be added as a soft constraints to the cost function, so it can be solved with panoc. This is displayed in equation~\ref{eq:multiple shot cost with soft constraint} and will be used in the practical implementation.
 			
 			\begin{equation}
 				\begin{aligned}
@@ -119,7 +120,7 @@
 		\subsection{Obstacle avoidance}
 			The obstacle avoidance is based on the soft constraint definition described in \cite{AjaySathya2017}. It can be described as a set or an constraint.
 			\subsubsection{As set}
-				An obstacle can be defined as an open set, as illustrated by equation~\ref{eq:obstacle as open set}. It is defined by the intersection of a set of nonlinear inequalities.
+				 obstacle can be defined as an open set, as illustrated by equation~\ref{eq:obstacle as open set}. It is defined by the intersection of a set of nonlinear inequalities.
 				\begin{equation}
 					O = {z \in \Re^d : h^i(z)>0,\ i \in N}
 					\label{eq:obstacle as open set}
@@ -160,8 +161,10 @@
 				The obstacle avoidance is added as a soft constraint to the cost function. As demonstrated in equation~\ref{eq:derivative obstacle as equality}, this definition is two times differentiable and so this does not break the condition that the cost functions needs a gradient to be solved with the PANOC algorithm.
 			
 		\subsection{Input constraints}
-			An other important aspect of a MPC problem are input constraints. In practice inputs have to comply with the physical properties of the devices. Absurdly high or low input values might in theory lead to a fast solution, but are not feasible in practice.
+			An other important aspect of a MPC problem are the input constraints. In practice inputs have to comply with the physical properties of the devices. Absurdly high or low input values might in theory lead to a fast solution, but are not feasible in practice.
 			
 			A major advantage of the PANOC algorithm is that it can take non linear or non convex constraints. As longs as the proximal operation is analytically defined on the constraint it is feasible. 
 			
-			A simple example is the indicator box function, which allows to set a maximum and minimum value on the inputs. (The indicator box function is defined in the appendix) The indicator box function as input constraint can demand that every feasible solution lies within the bounds of the user defined box.
+			A simple example is the indicator box function, which allows to set a maximum and minimum value on the inputs. (The indicator box function is defined in the appendix) Setting the indicator box function to zero as input constraint, demands that every feasible solution lies within the bounds of the user defined box.
+			
+\section{Properties of MPC solvers}

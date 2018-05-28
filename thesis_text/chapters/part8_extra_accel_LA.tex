@@ -1,5 +1,7 @@
 \chapter{The Augmented Lagrangian}
-Until now there are two ways to add constraints to the control problem: use a proximal function or add a soft constraint to the cost function. It is up to the user to determine the weights of the soft constraints. The weights that are too high, will result in a badly conditioned problem. Putting the weights too low will result more violations of the soft constraints.
+Until now there were only two ways to add constraints to the control problem: 1. use a proximal function or 2. add a soft constraint to the cost function. It is up to the user to determine the weights of the soft constraints. The weights that are too high, will result in a badly conditioned problem. Putting the weights too low will result more violations of the soft constraints.
+
+In order to avoid confusion in this chapter solving the model predictive control problem with soft constraints by adding it to the cost function with a fixed weight. Will be called the direct method. A alternative method will be introduced and referred to as the augmented Lagrangian methods.
 
 \section{Definition of the augmented Lagrangian}
 	One way to reduce the ill conditioning of the problem when increasing the weights of the soft constraints, is the usage of the augmented Lagrangian as described in Chapter 17 of \cite{Wright}. Furthermore current research done by Ben Hermans at the KuLeuven suggests a way to update the weights or also called the penalty parameters.
@@ -52,7 +54,7 @@ Until now there are two ways to add constraints to the control problem: use a pr
 	
 	
 \section{Algorithm}
-	The proposed algorithm by cite.. Is algorithm~\ref{alg:panoc with augmented lagrangian}, where $0<\beta<1$. Ben Hermans proposes to take $\mu_{k+1}=\mu_k*2$ if $c_i(x)$is below a certain predefined tolerance. 
+	The proposed algorithm by cite.. Is algorithm~\ref{alg:panoc with augmented lagrangian}, where $0<\beta<1$. Ben Hermans proposes to take $\mu_{k+1}=\mu_k*2$ if $c_i(x)$is above a certain predefined tolerance. The idea is, that if a constraint is still badly violated its weight clearly needs to be increased. So when it's solved in the next iteration, it won't be violated this badly.
 	
 	\begin{algorithm}
 		\caption{panoc nmpc with augmented lagrangian}
@@ -71,7 +73,56 @@ Until now there are two ways to add constraints to the control problem: use a pr
 		\end{algorithmic}
 	\end{algorithm}
 
+\section{Simulation}
+In order to illustrate the advantage of the augmented Lagrangian towards a simple soft constraint on the cost function. A simple simulation is set up with two obstacles, and using the trailer model. The trainer has to move from the circle towards the star, while avoiding the two circles. The two obstacles, are always added as a soft constraint on to the cost function. The path taken by the trailer is illustrated in figure~\ref{fig:LA path}.
 
-	
-		
-		
+In addition to the two obstacles a speed limit can be added to the problem. The speed limit can be expressed as a soft constraint on to the cost function. Or it can be added, using the augmented Lagrangian. The soft constraint is mathematically expressed in equation~\ref{eq:speed limit constraint} with M the maximum allowed speed..
+
+\begin{equation}
+max[(v_x^2+v_y^2+v_z^2)-M^2,0]^2
+\label{eq:speed limit constraint}
+\end{equation}
+
+Figure~\ref{fig:simulation with augmented Lagrangian} contains the simulation results of the same simulation solved without speed limit, with the speed limit as a soft constraint directly onto the cost function. And the simulation using the augmented Lagrangian to at the speed limit constraint.
+
+The optimal constraint violation value is set to 0.1 which means that the augmented Lagrangian algorithm will increase the weight of the speed limit constraint, until the violation is under 0.1 . 
+
+Figure~\ref{fig:LA iterations} contains the amount of iterations till convergence in each step of the simulation. Figure~\ref{} contains the time to convergence in each step of the simulation. Figure~\ref{fig:LA time} contains the speed of the trailer at each step in the simulation, the maximum speed is set to one. This means that the speed of the trailer in figure~\ref{fig:LA speed} should never go over one.
+
+From figure~\ref{fig:LA time} it is obvious that without the speed limit the convergence is faster than with either the soft constraint directly onto the cost function or with the augmented Lagrangian method. However the augmented Lagrangian method is significantly faster then using a soft constraint.
+
+If the weight of the soft constraint is lowered the direct method can be faster than the augmented Lagrangian method. However if the weight of the soft constraint is lowered, the soft constraint will will be significantly violated. And some sort of trade-off must be made, by the user before hand.
+
+The augmented Lagrangian method however is much easier to set up, as the weight of its constraints is automatically tuned. It also does not suffer as badly from high weight values on the constraints.
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width=1.2\textwidth]{LA/LA_sim_iterations}
+		\caption{iterations}
+		\label{fig:LA iterations}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width=1.2\textwidth]{LA/LA_sim_time}
+		\caption{convergence time in each step}
+		\label{fig:LA time}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width=1.2\textwidth]{LA/LA_sim_speed}
+		\caption{speed of the trailer in each step}
+		\label{fig:LA speed}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width=1.2\textwidth]{LA/path}
+		\caption{path taken by the trailer without speed limit}
+		\label{fig:LA path}
+	\end{subfigure}
+	\caption{Simulation with augmented Lagrangian}
+	\label{fig:simulation with augmented Lagrangian}
+\end{figure}

@@ -1,5 +1,5 @@
-\section{Function Definitions}
-	\subsection{box function}
+\chapter{Function Definitions}
+	\section{box function}
 		1 dimension:
 		\begin{equation}
 			box_{1D}(u) =
@@ -14,7 +14,7 @@
 		box(u) = min\left[ \sum_{k=1}^ N box_{1D}(u) \right]
 		\label{eq:box function N dimensions}
 		\end{equation}
-	\subsection{Indicator Box function}
+	\section{Indicator Box function}
 		\begin{equation}
 			I[box]=
 			\begin{aligned}
@@ -31,9 +31,9 @@
 		& -U_b && u \in [U_b:\inf]\\
 		\end{aligned}
 		\end{equation}
-\section{functions}
+\chapter{functions}
 
-	\subsection{Conjugate of strongly convex function}
+	\section{Conjugate of strongly convex function}
 		Following lemma's are useful from 
 		\begin{equation}
 			f^*(x)= \underset{u \in dom(f)}{<y,x>-f(y)}
@@ -49,7 +49,7 @@
 			\label{eq:appendix f lip}
 		\end{equation}
 \clearpage
-\section{Proof FBE alternate equation}
+\chapter{Proof FBE alternate equation}
 
 \begin{proof}
 	$\varphi_{\gamma} =   f(x) + \underset{y}{\inf} \Big\{ \nabla f(x)^T(y-x) + g(y) + \frac{1}{2 \gamma} ||x-y||^2  \Big\} $
@@ -60,15 +60,14 @@
 	&= f(x) - \frac{\gamma}{2}||\nabla f(x)||^2 + g^{\gamma} \big(\bar{x} \big)\\
 	g^{\gamma} (\bar{x})
 	&=\underset{y}{\inf} \Big\{g(y)+\frac{1}{2 \gamma}||\bar{x}-y||^2 \Big\}	\\
-	\frac{1}{2 \gamma}||\bar{x}-y||^2
-	&=\frac{1}{2 \gamma} \Big [ (\bar{x}-y)^T(\bar{x}-y) \Big]\\
-	&=\frac{1}{2 \gamma} \Big [ x^Tx - 2 x^Ty + y^Ty \Big]\\
 	\bar{x}^T\bar{x}
 	&=[x- \gamma \nabla f(x)]^T[x- \gamma \nabla f(x)] \\
 	&= x^Tx -2x^T\nabla f(x) \gamma + \gamma^2 \nabla f(x)^T\nabla f(x)-2x^Ty \\
 	&=-2(x-\gamma f\nabla(x))^Ty\\
 	&=-2x^Ty + 2\gamma \nabla f(x)^Ty \\
-	\frac{1}{2 \gamma}||\bar{x}-y||^2 
+	\frac{1}{2 \gamma}||\bar{x}-y||^2
+	&=\frac{1}{2 \gamma} \Big [ (\bar{x}-y)^T(\bar{x}-y) \Big]\\
+	&=\frac{1}{2 \gamma} \Big [ x^Tx - 2 x^Ty + y^Ty \Big]\\
 	& =\frac{1}{2 \gamma}[x^Tx-2x^T\nabla f(x) \gamma + \gamma^2 \nabla f(x)^T\nabla f(x) -2x^Ty + 2\gamma \nabla f(x)^Ty +y^Ty] \\
 	& = \frac{1}{2 \gamma}[-2x^T\nabla f(x) \gamma  + 2\gamma \nabla f(x)^Ty + \gamma^2 \nabla f(x)^T\nabla f(x) +x^Tx -2x^Ty +y^Ty]\\
 	&= \frac{1}{2 \gamma}[ 2\gamma \nabla f(x)^T(y-x) + \gamma^2||\nabla f(x)||^2 + (x-y)^T(x-y)]\\
@@ -82,112 +81,186 @@
 	&= f(x) - \frac{\gamma}{2}||\nabla f(x)||^2 +  \frac{\gamma}{2}||\nabla f(x)||^2 + \underset{y}{\inf} \Big\{g(y)+ \nabla f(x)^T(y-x) + \frac{1}{2 \gamma} ||x-y||^2  \Big\}\\
 	&=   f(x) + \underset{y}{\inf} \Big\{ \nabla f(x)^T(y-x) + g(y) + \frac{1}{2 \gamma} ||x-y||^2  \Big\} 
 	\end{align*}
-	\label{prf:}
+	\label{prf:FBE alterative expression}
 \end{proof}
 
-\section{Performance measurements}
+\chapter{Benchmarks with trailer model}
 \begin{figure}[H]
 	\centering
-	\begin{subfigure}[b]{0.45\textwidth}
+	\begin{subfigure}[b]{0.40\textwidth}
 		\centering
 		\includegraphics[width=1.2\textwidth]{demos/demo1}
 		\caption{demo 1}
 		\label{fig:demo 1}
 	\end{subfigure}
 	\hfill
-	\begin{subfigure}[b]{0.45\textwidth}
+	\begin{subfigure}[b]{0.40\textwidth}
 		\centering
 		\includegraphics[width=1.2\textwidth]{demos/demo2}
 		\caption{demo 2}
 		\label{fig:demo 2}
 	\end{subfigure}
-	\begin{subfigure}[b]{0.45\textwidth}
+	\begin{subfigure}[b]{0.40\textwidth}
 		\centering
 		\includegraphics[width=1.2\textwidth]{demos/demo3}
 		\caption{demo 3}
 		\label{fig:demo 3}
 	\end{subfigure}
 	\hfill
-	\begin{subfigure}[b]{0.45\textwidth}
+	\begin{subfigure}[b]{0.40\textwidth}
 		\centering
 		\includegraphics[width=1.2\textwidth]{demos/demo4}
 		\caption{demo 4}
 		\label{fig:demo 4}
 	\end{subfigure}
+	\caption{demos}
+	\label{fig:demos}
+\end{figure}
+\begin{figure}[H]
+	\centering
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\includegraphics[width=1.2\textwidth]{demos/demo5}
 		\caption{demo 5}
 		\label{fig:demo 5}
 	\end{subfigure}
-	\caption{demos}
-	\label{fig:demos}
 \end{figure}
 
-\begin{center}
-	\begin{table}[H]
-		\begin{tabular}{|l|c|c|c|c|}
-			\hline
-			&\textbf{demo5}&\textbf{demo1}&\textbf{demo2}&\textbf{demo3}\\\hline
-			\textbf{nmpc-codegen}&5.37e+00&0.00e+00&4.00e-01&8.00e-01\\\hline
-			\textbf{panoc Matab}&2.39e+02&1.11e+01&2.15e+01&3.74e+01\\\hline
-			\textbf{fmincon:interior-point}&5.87e+02&6.27e+01&9.16e+01&1.57e+02\\\hline
-			\textbf{fmincon:sqp}&1.56e+02&4.37e+01&5.83e+01&8.72e+01\\\hline
-			\textbf{fmincon:active-set}&3.89e+02&5.36e+01&7.94e+01&8.81e+01\\\hline
-			\textbf{OPTI:ipopt}&1.01e+03&6.54e+01&9.03e+01&2.40e+02\\\hline
-		\end{tabular}
-		\caption{mean time till convergence in miliseconds}
-		\label{tbl:mean time till convergence}
-	\end{table}
-\end{center}
+\section{Simulations without state noise}
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|l|c|c|c|c|}
+		\hline
+		&\textbf{demo5}&\textbf{demo2}&\textbf{demo3}\\\hline
+		\textbf{nmpc-codegen}&9.00e-01&1.00e-01&4.10e-01\\\hline
+		\textbf{panoc Matab}&2.99e+01&4.20e+00&5.56e+00\\\hline
+		\textbf{panoc draft}&5.73e+00&1.29e+00&2.00e+00\\\hline
+		\textbf{fmincon:interior-point}&8.62e+01&2.31e+01&2.03e+01\\\hline
+		\textbf{fmincon:sqp}&2.18e+01&1.15e+01&9.29e+00\\\hline
+		\textbf{fmincon:active-set}&8.37e+01&2.36e+01&2.08e+01\\\hline
+		\textbf{OPTI:ipopt}&3.79e+01&7.08e+00&8.21e+00\\\hline
+	\end{tabular}
+	\caption{mean time till convergence in miliseconds}
+	\label{tbl:mean time till convergence}
+\end{table}
 
-\begin{center}
-	\begin{table}[H]
-		\begin{tabular}{|l|c|c|c|c|}
-			\hline
-			&\textbf{demo5}&\textbf{demo2}&\textbf{demo3}\\\hline
-			\textbf{nmpc-codegen}&100&100&100\\\hline
-			\textbf{panoc Matab}&4610&11658&3708\\\hline
-			\textbf{fmincon:interior-point}&11001&34452&10635\\\hline
-			\textbf{fmincon:sqp}&2478&18401&4784\\\hline
-			\textbf{fmincon:active-set}&7917&28817&5809\\\hline
-			\textbf{OPTI:ipopt}&18330&29572&14618\\\hline
-		\end{tabular}
-		\caption{mean relative time till convergence in miliseconds}
-		\label{tbl:mean relative time till convergence}
-	\end{table}
-\end{center}
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|l|c|c|c|c|}
+		\hline
+		&\textbf{demo5}&\textbf{demo2}&\textbf{demo3}\\\hline
+		\textbf{nmpc-codegen}&100&100&100\\\hline
+		\textbf{panoc Matab}&3323&4202&1357\\\hline
+		\textbf{panoc draft}&637&1289&489\\\hline
+		\textbf{fmincon:interior-point}&9579&23107&4943\\\hline
+		\textbf{fmincon:sqp}&2422&11469&2265\\\hline
+		\textbf{fmincon:active-set}&9303&23578&5084\\\hline
+		\textbf{OPTI:ipopt}&4213&7083&2003\\\hline
+	\end{tabular}
+	\caption{mean relative time till convergence in miliseconds}
+	\label{tbl:mean relative time till convergence}
+\end{table}
 
-\begin{center}
-	\begin{table}[H]
-		\begin{tabular}{|l|c|c|c|c|}
-			\hline
-			&\textbf{demo5}&\textbf{demo1}&\textbf{demo2}&\textbf{demo3}\\\hline
-			\textbf{nmpc-codegen}&2.40e+01&0.00e+00&1.40e+01&1.40e+01\\\hline
-			\textbf{panoc Matab}&2.51e+03&7.08e+01&3.44e+02&8.28e+02\\\hline
-			\textbf{fmincon:interior-point}&1.13e+04&2.71e+02&3.88e+02&6.22e+02\\\hline
-			\textbf{fmincon:sqp}&3.90e+02&9.18e+01&2.36e+02&5.89e+02\\\hline
-			\textbf{fmincon:active-set}&2.85e+03&1.22e+02&7.39e+02&6.44e+02\\\hline
-			\textbf{OPTI:ipopt}&3.17e+03&2.30e+02&8.24e+02&1.36e+03\\\hline
-		\end{tabular}
-		\caption{max time till convergence in miliseconds}
-		\label{tbl:max time till convergence}
-	\end{table}
-\end{center}
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|l|c|c|c|c|}
+		\hline
+		&\textbf{demo5}&\textbf{demo2}&\textbf{demo3}\\\hline
+		\textbf{nmpc-codegen}&2.20e+01&8.00e+00&4.00e+01\\\hline
+		\textbf{panoc Matab}&7.95e+02&1.25e+02&3.06e+02\\\hline
+		\textbf{panoc draft}&1.12e+02&3.66e+01&1.30e+02\\\hline
+		\textbf{fmincon:interior-point}&1.55e+03&2.29e+02&2.95e+02\\\hline
+		\textbf{fmincon:sqp}&1.01e+02&8.83e+01&1.10e+02\\\hline
+		\textbf{fmincon:active-set}&7.83e+02&2.70e+02&2.45e+02\\\hline
+		\textbf{OPTI:ipopt}&2.73e+02&4.65e+01&7.65e+01\\\hline
+	\end{tabular}
+	\caption{max time till convergence in miliseconds}
+	\label{tbl:max time till convergence}
+\end{table}
 
-\begin{center}
-	\begin{table}[H]
-		\begin{tabular}{|l|	c|c|c|c|}
-			\hline
-			&\textbf{demo5}&\textbf{demo1}&\textbf{demo2}&\textbf{demo3}\\\hline
-			\textbf{nmpc-codegen}&0.00e+00&0.00e+00&0.00e+00&0.00e+00\\\hline
-			\textbf{panoc Matab}&1.44e+01&7.86e+00&7.64e+00&1.18e+01\\\hline
-			\textbf{fmincon:interior-point}&1.02e+02&3.87e+01&3.82e+01&3.66e+01\\\hline
-			\textbf{fmincon:sqp}&5.13e+01&3.40e+01&3.41e+01&3.78e+01\\\hline
-			\textbf{fmincon:active-set}&7.60e+01&4.31e+01&4.50e+01&5.35e+01\\\hline
-			\textbf{OPTI:ipopt}&1.23e+02&5.01e+01&5.05e+01&5.86e+01\\\hline
-		\end{tabular}
-		\caption{min time till convergence in miliseconds}
-		\label{tbl:min time till convergence}
-	\end{table}
-\end{center}
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|l|	c|c|c|c|}
+		\hline
+		&\textbf{demo5}&\textbf{demo2}&\textbf{demo3}\\\hline
+		\textbf{nmpc-codegen}&0.00e+00&0.00e+00&0.00e+00\\\hline
+		\textbf{panoc Matab}&2.11e+00&2.03e+00&2.01e+00\\\hline
+		\textbf{panoc draft}&5.16e-01&5.26e-01&5.16e-01\\\hline
+		\textbf{fmincon:interior-point}&8.95e+00&8.35e+00&7.57e+00\\\hline
+		\textbf{fmincon:sqp}&6.37e+00&6.58e+00&6.02e+00\\\hline
+		\textbf{fmincon:active-set}&1.82e+01&1.63e+01&1.57e+01\\\hline
+		\textbf{OPTI:ipopt}&5.03e+00&4.45e+00&4.37e+00\\\hline
+	\end{tabular}
+	\caption{min time till convergence in miliseconds}
+	\label{tbl:min time till convergence}
+\end{table}
+
+
+\section{Simulations with state noise}
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|l|c|c|c|c|}
+		\hline
+		&\textbf{demo5}&\textbf{demo2}&\textbf{demo3}\\\hline
+		\textbf{nmpc-codegen}&5.82e+00&4.20e-01&2.20e-01\\\hline
+		\textbf{panoc Matab}&8.69e+01&1.19e+01&9.64e+00\\\hline
+		\textbf{panoc draft}&2.77e+01&4.54e+00&3.24e+00\\\hline
+		\textbf{fmincon:interior-point}&3.17e+02&1.01e+02&8.15e+01\\\hline
+		\textbf{fmincon:sqp}&9.07e+01&4.77e+01&3.93e+01\\\hline
+		\textbf{fmincon:active-set}&2.29e+02&7.50e+01&6.46e+01\\\hline
+		\textbf{OPTI:ipopt}&9.52e+01&1.41e+01&1.09e+01\\\hline
+	\end{tabular}
+	\caption{mean time till convergence in miliseconds}
+	\label{tbl:mean time till convergence with noise}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|l|c|c|c|c|}
+		\hline
+		&\textbf{demo5}&\textbf{demo2}&\textbf{demo3}\\\hline
+		\textbf{nmpc-codegen}&100&100&100\\\hline
+		\textbf{panoc Matab}&1494&2839&4383\\\hline
+		\textbf{panoc draft}&476&1080&1472\\\hline
+		\textbf{fmincon:interior-point}&5453&24054&37058\\\hline
+		\textbf{fmincon:sqp}&1560&11360&17870\\\hline
+		\textbf{fmincon:active-set}&3937&17860&29378\\\hline
+		\textbf{OPTI:ipopt}&1637&3362&4952\\\hline
+	\end{tabular}
+	\caption{mean relative time till convergence in miliseconds}
+	\label{tbl:mean relative time till convergence with noise}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|l|c|c|c|c|}
+		\hline
+		&\textbf{demo5}&\textbf{demo2}&\textbf{demo3}\\\hline
+		\textbf{nmpc-codegen}&1.06e+02&1.30e+01&1.80e+01\\\hline
+		\textbf{panoc Matab}&9.82e+02&2.23e+02&3.87e+01\\\hline
+		\textbf{panoc draft}&2.38e+02&7.07e+01&1.83e+01\\\hline
+		\textbf{fmincon:interior-point}&2.45e+03&4.68e+02&3.40e+02\\\hline
+		\textbf{fmincon:sqp}&4.22e+02&3.25e+02&4.18e+02\\\hline
+		\textbf{fmincon:active-set}&1.13e+03&4.86e+02&5.69e+02\\\hline
+		\textbf{OPTI:ipopt}&4.78e+02&9.21e+01&3.67e+01\\\hline
+	\end{tabular}
+	\caption{max time till convergence in miliseconds}
+	\label{tbl:max time till convergence with noise}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|l|	c|c|c|c|}
+		\hline
+		&\textbf{demo5}&\textbf{demo2}&\textbf{demo3}\\\hline
+		\textbf{nmpc-codegen}&0.00e+00&0.00e+00&0.00e+00\\\hline
+		\textbf{panoc Matab}&4.62e+00&3.55e+00&3.18e+00\\\hline
+		\textbf{panoc draft}&1.80e+00&1.26e+00&1.22e+00\\\hline
+		\textbf{fmincon:interior-point}&4.85e+01&1.33e+01&1.05e+01\\\hline
+		\textbf{fmincon:sqp}&1.44e+01&8.63e+00&9.95e+00\\\hline
+		\textbf{fmincon:active-set}&3.48e+01&2.04e+01&1.72e+01\\\hline
+		\textbf{OPTI:ipopt}&1.68e+01&4.67e+00&5.38e+00\\\hline
+	\end{tabular}
+	\caption{min time till convergence in miliseconds}
+	\label{tbl:min time till convergence with noise}
+\end{table}

@@ -1,6 +1,10 @@
 \chapter{Simulation}
 This chapter discusses some simulation results, using a simple mathematical model to create a controller. First the mathematical model is discussed, after that the simulation results are discussed and compared with the internal Matlab solvers.
 
+\section{Model complexity}
+The trailer model has a very low computational complexity, which makes it cheap to simulate with. The quad copter model, is a very complex model, that requires lots of computations for each simulation step. In this chapter it will become clear that PANOC is a very good with simple models, but a significantly slower with complex models compared to a interior point method.
+
+
 \section{Trailer model}
 The trailer model is illustrated in figure~\ref{fig:trailer model}, the left rectangle is the trailer and the right rectangle is the driver. The driver pulls the trailer forward. The driver is connect to the trailer via a single arm as illustrated in figure~\ref{fig:trailer model}. The control system can only change the speed in the Y and X axis. The goal of the control system is to get the trailer at a certain position and at a certain angle. Figure shows the trailer in a neutral position, so under an angle of 0 degrees.
 
@@ -68,6 +72,146 @@ The nmpc-codegen library uses a cautious lbfgs update which improves the perform
 	\caption{Schematic representation of the software}
 \end{figure}
 
+\section{Quadcopter model}
+%TODO: reference source model !!!!!!!!!!!!!!!!!!
+The invention of electronic control systems has proven to be especially useful when controlling quadcopters. Because of their complex behavior they are hard to control manually by a pilot. However quadcopters are popular among unmanned aerial vehicles but they are controlled by a fast digital/analog controller.
+
+\subsection{Mathematical model}
+The behavior of a quad copter is described by a set of nonlinear equations as illustrated in equation~\ref{eq:mathematical model quadcopter}.
+
+\begin{table}[]
+	\centering
+	\caption{constants used in quadcopter model}
+	\label{btl:quadcopter model constants}
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		Parameter                               & Symbol   & Value             & Unit           \\ \hline
+		Mass of the quadcopter                  & m        & 0.5               & kg             \\
+		Radius of the quadcopter                & L        & 0.25              & m              \\
+		Propeller lift coefficient              & k        & $3 \cdot 10^{-6}$ & $Ns^2$        \\
+		Propeller drag coefficient              & b        & $1 \cdot 10^{-7}$ & N m $s^2$      \\
+		Acceleration of gravity                 & g        & 9.81              & m/$s^2$        \\
+		Air friction coefficient                & $k_d$    & 0.25              & kg/s           \\
+		Quadcopter inertia about the $x^b$-axis & $I_{xx}$ & $5 \cdot 10^{-3}$ & kg $m^2$       \\
+		Quadcopter inertia about the $y^b$-axis & $I_{yy}$ & $5 \cdot 10^{-3}$ & kg $m^2$       \\
+		Quadcopter inertia about the $z^b$-axis & $I_{zz}$ & $1 \cdot 10^{-2}$ & kg $m^2$       \\ 
+		Motor constant                          & $c_m$    & $1 \cdot 10^{4}$  & $v^{-2}s^{-2}$ \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{equation}
+	\begin{aligned}
+		\dot{x} &= v_x \\
+		\dot{y} &= v_y \\
+		\dot{z} &= v_z \\
+		\dot{v_x} &= -\frac{k_d}{m}v_x + \frac{k \cdot c_m}{m}\Big(sin(\gamma)sin(\phi)+cos(\gamma)cos(\phi)sin(\theta)\Big)\Big(u_1 + u_2 + u_3 + u_4\Big) \\
+		\dot{v_y} &= -\frac{k_d}{m}v_y + \frac{k \cdot c_m}{m}\Big(cos(\phi)sin(\gamma)sin(\theta)-cos(\gamma)sin(\phi)\Big)\Big(u_1 + u_2 + u_3 + u_4\Big) \\
+		\dot{v_z} &= -\frac{k_d}{m}v_y -g + \frac{k \cdot c_m}{m}\Big(cos(\theta)cos(\phi)\Big)\Big(u_1 + u_2 + u_3 + u_4\Big) \\
+		\dot{\phi} &= \omega_x + \omega_y\Big( sin(\phi)tan(\theta) \Big) + \omega_z \Big( cos(\phi) tan(\theta) \Big) \\
+		\dot{\theta} &= \omega_y cos(\phi) - \omega_z sin(\phi) \\
+		\dot{\gamma} &= \frac{sin(\phi)}{cos(\theta)}\omega_y + \frac{cos(\phi)}{cost(\theta)} \omega_z \\
+		\dot{\omega_x} &= \frac{Lkc_m}{I_{xx}}\Big( u_1 - u_3 \Big) - \Big( \frac{I_{yy}-I_{zz}}{I_{xx}} \Big) \omega_y \omega_z\\
+		\dot{\omega_y} &= \frac{Lkc_m}{I_{yy}}\Big( u_2 - u_4 \Big) - \Big( \frac{I_{zz}-I_{xx}}{I_{yy}} \Big) \omega_x \omega_z\\
+		\dot{\omega_z} &= \frac{bc_m}{I_{zz}}\Big( u_1 - u_2 + u_3 - u_4 \Big) - \Big( \frac{I_{xx}-I_{yy}}{I_{zz}} \Big) \omega_x \omega_y\\
+	\end{aligned}
+	\label{eq:mathematical model quadcopter}
+\end{equation}
+
+\subsection{Simulation results}
+Figure~\ref{fig:Simulation results with quadcopter} contains a simple simulation with the quad copter model, the path is displayed in figure~\ref{fig:solution path trailer quad}. The two sphere shaped obstacles, and the quad copter is moving from the star symbol to the circle. The time to convergence of each step of the simulation, is displayed in figure~\ref{fig:timings trailer quad}.
+
+As mentioned at the start of this chapter, the quad copter model computational expensive model. This means that the computational cost of solving a system, is more in line with the computational cost of simulating one step of the system. 
+
+A interior point method, must solve a system at each step of the algorithm. The interior method used from ipopt solves the system directly with a computational cost of about $\mathcal{O}(n^3)$ . While PANOC only has to cope additional cost of about $\mathcal{O}(Ln)$ with L as the buffer size.  because the L-BFGS algorithm only uses inner products and vector additions.
+
+This means that the difference between PANOC and ipopt is rather small with the quad copter model. Which is clearly visible, in figure~\ref{fig:timings trailer quad}, where the ipopt line is very near the ipopt line.
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width=1.2\textwidth]{compare_libs/path_quad}
+		\caption{path}
+		\label{fig:solution path trailer quad}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width=1.2\textwidth]{compare_libs/timings_quad}
+		\caption{timings}
+		\label{fig:timings trailer quad}
+	\end{subfigure}
+	\caption{Simulation results with quadcopter}
+	\label{fig:Simulation results with quadcopter}
+\end{figure}
+
+\section{Influence of noise}
+Until now all simulations were executed without any kind of noise. However in reality there is always some kind of state noise. So is essential to study how PANOC handles state noise.
+
+The white noise has a maximum amplitude of 0.1 on the x state and the y state. It has a amplitude of 0.05 on the angle $\theta$. The double noise simply doubles the maximum amplitude of the noise. This way the influence of the size of the noise can be studied.
+
+Figure~\ref{fig:Noise simulations with the trailer model} contains the simulation results using PANOC or ipopt as solver. Going from no state noise to a bit of state noise makes a significant difference when solving with PANOC. The interior point method from ipopt, thus take longer to converge when noise is added. However it is less proportional towards the noise, as the interior point method here uses a direct method to solve the system.
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width=1.2\textwidth]{compare_libs/trailer_without_noise}
+		\caption{without noise}
+		\label{fig:timings trailer without noise}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width=1.2\textwidth]{compare_libs/trailer_with_noise}
+		\caption{with noise}
+		\label{fig:timings trailer with noise}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width=1.2\textwidth]{compare_libs/trailer_with_double_noise}
+		\caption{with double noise}
+		\label{fig:timings trailer with double noise}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width=1.2\textwidth]{compare_libs/trailer_with_double_noise}
+		\caption{path without noise}
+		\label{fig:path noise simulations}
+	\end{subfigure}
+	\caption{Noise simulations with the trailer model}
+	\label{fig:Noise simulations with the trailer model}
+\end{figure}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|l|c|c|c|c|}
+		\hline
+		&\textbf{no noise}&\textbf{with noise}&\textbf{double noise}\\\hline
+		\textbf{nmpc-codegen}&3 ms&12 ms&10 ms \\\hline
+		\textbf{draft panoc}&8 ms&18 ms&22 ms \\\hline
+		\textbf{OPTI:ipopt}&45 ms&51 ms&80 ms \\\hline
+	\end{tabular}
+	\caption{average till convergence in miliseconds}
+	\label{tbl:average till convergence noise}
+\end{table}
+
+% only do simulations with trailer model, quadcopter models goes nuts
+% 2 figures , one with noise and one without use draft PANOC with ipopt
+%TODO add simulation with noise
+
+\section{Problem with local minimum}
+One problem with the approach discussed in this chapter, it's visible in the third demo. The results of the third demo are illustrated in figure~\ref{fig:demo: local minimum problem}, the trailer drives through the obstacle which is obviously impossible in reality. In reality the trailer will simply crash into the obstacle, and get stuck. Of course it is possible to increase the weight on the obstacle, this will make the problem harder. As the condition will get worse, and the solution will be about the same. The trainer will get stuck against the obstacle.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{demos/demo3}
+	\caption{Local minimum problem}
+	\label{fig:demo: local minimum problem}
+\end{figure}
+
 \section{Conclusion}
 
 The simulations clearly indicate that a great speed up his gained by implementing the panoc algorithm in C. As the algorithm doesn't require a lot of memory it can be run efficiently on small embedded devices. The control engineer can design and test the performance of the algorithm in either Matlab or Python.
+
