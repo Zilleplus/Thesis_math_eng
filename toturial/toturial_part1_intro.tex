@@ -1,0 +1,26 @@
+\section{Introduction}
+The main goal of the nmpc-codegen library is to generate non-linear model predictive controllers. The user must provide the nonlinear model of the system and defined the stage and terminal cost. The system equations can either be continuous or discrete. If the system equations are continuous, a discretization scheme will be selected.
+
+The system equations are defined in python Casadi syntax. The Casadi functions are similar to the Matlab functions. A short summary of the available functions, will be provided at the end of this document.
+
+The nonlinear non-convex optimization problem is solved using the PANOC algorithm. This algorithm is guaranteed to converge to a critical point, but not necessarily an global optimum. There are still some parameters that need manual tuning, more on this in the section on the nmpc-controller optional features.
+
+The nmpc-codegen library will generate the controller in C89 code. As the library is aimed at embedded developers. However it is possible to test the controller directly from python.
+
+\subsection{Installation}
+The nmpc-codegen library most important dependency is Casadi.The rest of the dependencies are fulfilled if the dependencies of casadi are fulfilled.
+
+Clone the nmpc-codegen repository from github, and add the src\_python folder to the Python path.
+
+\subsection{Quick Start}
+The nmpc-codegen library is separated into five parts, Cfunctions containing the constraints, controller containing the obstacles and the controller code. Models containing the two different kinds of models. And finally tools containing the two optional features the simulator and the bootstrapper. The five different parts are discussed in the section below, each in its own chapter.
+
+The Python code used in this document can be found in the repo under the name toturial\_nmpc\_codegen.py .
+
+The final library has the interface display in Listing~\ref{lst:interface library}. An initialization and cleanup function and a solve function.
+
+\begin{lstlisting}[caption={interface library},captionpos=b,label={lst:interface library}]
+int nmpc_init();
+int nmpc_cleanup();
+int npmc_solve(const real_t* current_state,real_t* optimal_inputs);
+\end{lstlisting}

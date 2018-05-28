@@ -1,0 +1,207 @@
+\section{Model}
+\subsection{Setup a model}
+
+The model contains the relationship between the current state and the next state of the system. The user can provide a discrete model of the system that calculates the next state using the current state. The model also contains the constraints on the input. 
+
+These constraints need to have a special mathematical property of having the proximal operator analytically defined. The available constraints are displayed in table~\ref{tab:constraints}, it is possible to add your own constraints more on this later.
+
+\begin{center}
+	\begin{tabular}{ |c|c| } 
+		\hline
+		Math function & Python function \\ 
+		\hline
+		I[box(x)] & IndicatorBoxFunction(array\_with\_lower\_bounds,array\_with\_upper\_bounds) \\ 
+		\hline
+	\end{tabular}
+	\label{tab:constraints}
+\end{center}
+
+The discrete system equations should be in the form $f(x,u)$  where X is the current states and u are the current inputs. This is demonstrated in listing~\ref{lst:discrete model}.
+
+\begin{lstlisting}[caption={Discrete model},captionpos=b,label={lst:discrete model}]
+import nmpccodegen.models as models
+import nmpccodegen.Cfunctions as cfunctions
+
+step_size = 0.05
+horizon = 300
+integrator = "RK" # select a Runga-Kutta  integrator
+
+constraint_input = cfunctions.IndicatorBoxFunction([-1, -1], [1, 1])  
+model = models.Model(system_equations,
+	constraint_input, step_size, number_of_states, \
+	number_of_inputs, coordinates_indices)
+\end{lstlisting}
+
+In case the system is defined by continuous function, the model can be defined by the class Model\_continious as demonstrated in the listing~\ref{lst:continious model}. The construct has an additional parameter to identified integration scheme, select one of the integrators from table~\ref{tab:integrators}.
+
+\begin{center}
+	\begin{tabular}{ll}
+		\hline
+		key        & full name integrator \\
+		\hline
+		BS5        & Bogacki-Shampine RK5(4)8    \\
+		BuRK65     & Butcher's RK65              \\
+		CMR6       & Calvo 6(5)                  \\
+		DP5        & Dormand-Prince RK5(4)7      \\
+		FE         & Forward Euler               \\
+		Fehlberg45 & Fehlberg RK5(4)6            \\
+		Heun33     & Heun RK 33                  \\
+		Lambert65  & Lambert                     \\
+		MTE22      & Minimal Truncation Error 22 \\
+		Merson43   & Merson RK4(3)               \\
+		Mid22      & Midpoint Runge-Kutta        \\
+		NSSP32     & non-SSPRK 32                \\
+		NSSP33     & non-SSPRK 33                \\
+		PD8        & Prince-Dormand 8(7)         \\
+		RK44       & Classical RK4               \\
+		SSP104     & SSPRK(10,4)                 \\
+		SSP22      & SSPRK 22                    \\
+		SSP22star  & SSPRK22star                 \\
+		SSP33      & SSPRK 33                    \\
+		SSP53      & SSP 53                      \\
+		SSP54      & SSP 54                      \\
+		SSP63      & SSP 63                      \\
+		SSP75      & SSP 75                      \\
+		SSP85      & SSP 85                      \\
+		SSP95      & SSP 95                      \\
+		\hline
+	\end{tabular}
+	\captionof{table}{available integrators}
+	\label{tab:integrators}	
+\end{center}
+
+\begin{lstlisting}[caption={Continue model},captionpos=b,label={lst:continious model}]
+import nmpccodegen.models as models
+
+step_size = 0.05
+horizon = 300
+integrator = "RK" # select a Runga-Kutta  integrator
+
+constraint_input = indbox.IndicatorBoxFunction([-1, -1], [1, 1])  
+model = models.Model_continious(system_equations,
+	constraint_input, step_size, number_of_states, \
+	number_of_inputs, coordinates_indices, integrator)
+\end{lstlisting}
+
+\subsection{Defining your own constraints}
+\subsubsection{Basics}
+It is possible to define your own constraint functions. Listing~\ref{lst:c code implementation proximal functions} illustrates how Cfunctions should actually look. Listing~\ref{lst:c function interface} illustrates how the Python side should look. Every constraint must be a proximal function object. A proximal function of object also contains a function that is the proximal result.
+
+\begin{lstlisting}[caption={c code implementation proximal functions},captionpos=b,label={lst:c code implementation proximal functions}]
+void casadi_interface_proxg(const real_t* input,real_t* output){
+/* ... add your function in here */
+}
+real_t casadi_interface_g(const real_t* input){
+/* ... add your function in here */
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={c function interface},captionpos=b,label={lst:c function interface}]
+class Cfunction:
+def __init__(self):
+raise NotImplementedError
+
+# save the implementation in c to "location"
+def generate_c_code(self,location):
+raise NotImplementedError
+\end{lstlisting}
+
+\begin{lstlisting}[caption={c proximal function interface},captionpos=b,label={lst:c proximal function interface}]
+class ProximalFunction(Cfunction):
+def __init__(self,prox):
+self._prox=prox
+
+@property
+def prox(self):
+return self._prox
+\end{lstlisting}
+
+\subsubsection{Source file operations library}
+Obviously the user is free to use its own libraries to generate the C code. However a small set of functions in the form of class is available to the user, which can make things easier.
+
+The class Source\_file\_generator is available under the Cfunctions sub package. Table contains all the functions available to the user. The constructor of the Source\_file\_generator class specifies if it is either a function or proximal of a function. It is important to make the distinction between the two, because the prototype of the function is different. 
+
+In the following two subsections the indicator box function will be implemented. The mathematical definition of the indicator box function can be found in the appendix. A constraint with an indicator box function allows a certain area of inputs. The proximal function of the me get a box function, simply gives the closest valid input.
+
+\begin{table}
+	\begin{center}
+		\begin{tabular}{| l | l | }
+			\hline
+			function & purpose \\ 
+			\hline
+			open() & open source file \\
+			close() & close source file \\
+			start\_for(iterator\_name,length,indent) & Start a for loop \\
+			close\_for(indent) & Close the for loop \\
+			write\_line(line,indent) & Write one line of code\\
+			write\_define(name,value,indent) & Define a preprocessor constant\\
+			write\_comment\_line(self,line,indent) & Write one line of comment\\
+			set\_output(output\_index,value,indent) & Set the value of output array\\
+			\hline
+		\end{tabular}
+	\end{center}
+	\label{tbl:function Source_file_generator}
+	\caption{Table of the available functions in the Source\_file\_generator Loss}
+\end{table}
+
+\subsubsection{Example: Index box function}
+First an object is constructed with a certain location and a function type. In this case the function type equal to "g" which means that it's an normal function. The proximal function of this function will be of the type "proxg". Before we can write to the source file we must open a stream, at the end this stream must also be closed.
+
+What follows next is the actual implementation of the function. Followed by the closing of the file stream.
+
+\begin{lstlisting}[caption={example generate g function},captionpos=b,label={lst:example generate g function}]
+source_file = Source_file_generator(location,"g")
+source_file.open()
+source_file.start_for("i","MPC_HORIZON",indent=1)
+
+for dimension in range(0,self._dimension):
+	source_file.write_line("if(input["+str(dimension)+"]<"\
+		+str(self._lower_limits[dimension])\
+		+" || input["+str(dimension)+"]>"\
+		+str(self._upper_limits[dimension])+ "){"\
+		,indent=1)
+	source_file.write_line("return LARGE;", indent=2)
+	source_file.write_line("}",indent=1)
+
+source_file.write_line("input+="+str(self._dimension)+ ";",2)
+source_file.close_for(indent=1)
+
+source_file.write_line("return 0;", indent=1)
+source_file.close()
+\end{lstlisting}
+
+\subsubsection{Example: Proximal index box function}
+In the previous subsection the indicator box function was implemented. In this subsection the proximal of this function will be implemented. This is why the type of the function is now "proxg" and not "g".
+
+\begin{lstlisting}[caption={example generate proxg function},captionpos=b,label={lst:example generate proxg function}]
+source_file = Source_file_generator(location,"proxg")
+source_file.open()
+source_file.start_for("i","MPC_HORIZON",indent=1)
+
+for dimension in range(0,self._dimension):
+	source_file.write_line("if(input["\
+		+str(dimension)\
+		+"]<"+str(self._lower_limits[dimension])\
+		+"){",indent=2)
+		
+	source_file.set_output(dimension,str(self._lower_limits[dimension])\
+		,3)
+	source_file.write_line("}else if(input[" \
+		+ str(dimension) \
+		+ "]>" \
+		+ str(self._upper_limits[dimension]) \
+		+ "){",\
+		indent=2)
+	source_file.set_output(dimension, \
+		str(self._upper_limits[dimension]), 3)
+	source_file.write_line("}else{", 2)
+	source_file.set_output(dimension, "input[" \
+		+ str(dimension) \
+		+ "]", 3)
+	source_file.write_line("}", 2)
+
+source_file.write_line("input+="+str(self._dimension)+ ";",2)
+source_file.write_line("output+="+str(self._dimension)+ ";",2)
+source_file.close_for(indent=1)
+source_file.close()
+\end{lstlisting}

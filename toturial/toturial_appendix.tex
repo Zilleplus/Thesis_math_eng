@@ -1,0 +1,34 @@
+\section{Function Definitions}
+	\subsection{box function}
+		1 dimension:
+		\begin{equation}
+			box_{1D}(u) =
+			\begin{aligned}
+			 & 1 && u \in [-U_b:U_b]\\
+			 & 0 && otherwise
+			\end{aligned}
+			\label{eq:box function 1 dimension}
+		\end{equation}
+		N dimensions:
+		\begin{equation}
+		box(u) = min\left[ \sum_{k=1}^ N box_{1D}(u) \right]
+		\label{eq:box function N dimensions}
+		\end{equation}
+	\subsection{Indicator Box function}
+		\begin{equation}
+			I[box]=
+			\begin{aligned}
+			& 0 && u \in [-U_b:U_b]\\
+			& \inf && otherwise
+			\end{aligned}
+		\end{equation}
+		
+		\begin{equation}
+		prox[I[box]]=
+		\begin{aligned}
+		& u && u \in [-U_b:U_b]\\
+		& -U_b && u \in [-\inf:-U_b]\\
+		& -U_b && u \in [U_b:\inf]\\
+		\end{aligned}
+		\end{equation}
+\section{Short summary of Casadi functions}

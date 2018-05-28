@@ -1,0 +1,74 @@
+\section{Controller}
+First the absolute minimum amount of arguments to create a controller will be discussed. In the following section the optional features will be discussed.
+\subsection{Absolute minimum controller}
+In order to create an mpc-controller the stage cost must be defined. The different available stage costs are displayed in table~\ref{tab:stage costs}. The left side of the table contains the mathematical function and the right side contains the corresponding python function. 
+
+Listing~\ref{lst:minimum controller} contains a simple example of a minimal controller. In this case the stage costs needs a reference state. The arrays are always numpy arrays. Finally the controller location (more on this in the chapter on bootstrapper) the model and the stage cost are passed on to the control.
+
+The actual code will only be generated when the generate\_code() function is called. This allows the user, to define additional options.
+
+\begin{center}
+	\begin{tabular}{ |c|c| } 
+		\hline
+		Math function & Python function \\ 
+		\hline
+		$\int[x^TQx+u^TRu]$ & Stage\_cost\_QR(model, Q, R) \\ 
+		\hline
+		$\int[(x-x_{ref})^TQ(x-x_{ref})+u^TRu]$ & Stage\_cost\_QR(model, Q, R, reference\_state) \\ 
+		\hline
+	\end{tabular}
+	\label{tab:stage costs}
+\end{center}
+
+\begin{lstlisting}[caption={simple controller},captionpos=b,label={lst:minimum controller}]
+import nmpccodegen.controller as controller
+
+Q = np.diag([1., 100., 1.])
+R = np.eye(model.number_of_inputs, model.number_of_inputs) * 1.
+
+reference_state = np.array([2, 0.5, 0])
+stage_cost = controller.Stage_cost_QR_reference(model, Q, R, reference_state)
+
+trailer_controller = npc.Nmpc_panoc(trailer_controller_location,\
+	model, stage_cost)
+\end{lstlisting}
+
+\subsection{Optional features}
+The optional features are displayed in table~\ref{tab:controller features}, and demonstrated in listing~\ref{lst:optional features}.
+
+\begin{lstlisting}[caption={Optional features},captionpos=b,label={lst:optional features}]
+import nmpccodegen.controller as controller
+
+reference_state = np.array([2, 0.5, 0])
+stage_cost = controller.Stage_cost_QR_reference(model, \
+	Q, R, reference_state)
+
+trailer_controller = npc.Nmpc_panoc(trailer_controller_location,\
+	model, stage_cost)
+trailer_controller.horizon = horizon
+trailer_controller.integrator_casadi = True
+trailer_controller.panoc_max_steps = 100
+trailer_controller.add_obstacle(obstacle, obstacle_weight)
+\end{lstlisting}
+
+\begin{center}
+	\begin{tabular}{ |c|c|c| } 
+		\hline
+		attribute & default value & possible values \\ 
+		\hline
+		data\_type & "double precision" & [double precision, single precision]\\ 
+		\hline
+		number\_of\_steps & 10 & integer\\ 
+		\hline
+		lbgfs\_buffer\_size &  10 & integer\\ 
+		\hline
+		panoc\_max\_steps &  10 & integer\\ 
+		\hline
+		shooting\_mode & "single shot" & [single shot, multiple shot] \\ 
+		\hline
+		integrator\_casadi &  False & Boolean=[True,False]\\ 
+		\hline
+	\end{tabular}
+	\captionof{table}{Features of the controller} \label{tab:controller features} 
+\end{center}
+
