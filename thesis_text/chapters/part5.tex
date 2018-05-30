@@ -1,9 +1,9 @@
 \chapter{Nmpc-codegen}
 This chapter describes the software library that was written for this thesis. First an overview of the workflow and the functionality of the library is given. Followed by a in-depth description of the implementation.
 \section{Overview library}
-The nmpc-codegen library contains a framework to construct a Python script that generates a MPC controller. This controller uses the panoc algorithm to solve the optimization problem.
+The nmpc-codegen library contains a framework to construct a Python or Matlab script that generates a MPC controller. This controller uses the PANOC algorithm to solve its NLP problem.
 
-Figure~\ref{fig:nmpc-codegen scheme} illustrates how this is accomplished. On the left side is the Python or Matlab script that the user will construct. It contains the mathematical model nd the control parameters of the process that needs to be controlled.The output of the Python script is displayed on the right side in figure~\ref{fig:nmpc-codegen scheme}. The output contains some static code, which is mostly associated with the panoc algorithm. And some dynamic code which is generated in Python and will differ from problem to problem. Finally sometimes the output will also contain simulation tools, this optional feature allows the user to simulate the controller from within Python or Matlab.
+Figure~\eqref{fig:nmpc-codegen scheme} illustrates the different parts of a typical script . On the left side is the Python or Matlab script that the user will construct. It contains the mathematical model nd the control parameters of the process that needs to be controlled.The output of the Python script is displayed on the right side in figure~\ref{fig:nmpc-codegen scheme}. The output contains some static code, which is mostly associated with the PANOC algorithm. And some dynamic code which is generated in Python or Matlab and will differ from depending on the problem. Sometimes the output will also contain simulation tools. These simulation tools exsist of a Python and Matlab interface and a build system to compile it. It allows the user to simulate the controller from within Python or Matlab.
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.5\textwidth]{nmpc_codegen_scheme}
@@ -12,16 +12,16 @@ Figure~\ref{fig:nmpc-codegen scheme} illustrates how this is accomplished. On th
 	\end{figure}
 
 \section{Casadi}
-The panoc algorithm is a derivative driven algorithm, this means that the gradient of the cost function must be available to the algorithm. This gradient is generated using backward automatic differentiation.
+The PANOC algorithm is a derivative driven algorithm, this means that the gradient of the cost function must be available to the algorithm. This gradient is generated using backward automatic differentiation.
 
 \subsection{Algorithmic differentiation (AD)}
-There exists a number of ways to determine the derivative of a function. The most obvious way is using symbolic differentiation. This method has been used over more than 200 years to calculate the gradient by hand. But in order to use symbolic differentiation, the algorithm needs one mathematical defined function. Which might be hard to get.
+There exists a number of ways to determine the derivative of a function. The most obvious way is using symbolic differentiation. This method has been used over more than 200 years to calculate the gradient by hand. But in order to use symbolic differentiation, the algorithm needs one mathematical defined function. Which might be hard to realize in practice.
 
 Another way of calculating derivatives, is through numerical differentiation also known as the method of finite differences. Although this method is very simple to implement, the accuracy is not always sufficient. And the method is rather slow if there are lots of partial derivatives.
 
 An second alternative way to calculate the derivatives is through automatic differentiation. This method has two variants forward automatic differentiation and backward automatic differentiation.
 
-The simplest of the two is forward differentiation, the only requirement to use this algorithm is that the entire function must be expressed in elementary operations. This is something computers are naturally good at. Equation~\ref{eq:example used with automatic differentiation} illustrates a simple example of such function. Two intermediate valuables are used to express the elementary operations.
+The entire function must be expressed in elementary operations in order to use automatic differentiation. This is something computers are naturally good at. \eqref{eq:example used with automatic differentiation} Illustrates a simple example of such function. Two intermediate valuables are used to express the elementary operations.
 \begin{equation}
 	\begin{aligned}
 		& y = a \cdot b + cos(b) \\
@@ -31,7 +31,7 @@ The simplest of the two is forward differentiation, the only requirement to use 
 	\end{aligned}
 	\label{eq:example used with automatic differentiation}
 \end{equation}
-Forward automatic differentiation gets its name from the fact that the chain rule is applied from input to output. It derives from the lowest variables to the highest viable. As illustrated by equation~\ref{eq:math definition forward automatic differentation}. Equation~\ref{eq:example forward automatic differentiation} contains a worked out example of this algorithm. The first line of equation~\ref{eq:example forward automatic differentiation} contains the theoretical answer. The  following two lines contain the derivatives of the intermediate variables towards the b variable. Finally the to the derivatives are summed up and deserved it towards b is found.
+Forward automatic differentiation gets its name from the fact that the chain rule is applied from input to output. It derives from the lowest variables to the highest viable. As illustrated by \eqref{eq:math definition forward automatic differentation}. \eqref{eq:example forward automatic differentiation} contains a worked out example of this algorithm. The first line of \eqref{eq:example forward automatic differentiation} contains the theoretical answer. The  following two lines contain the derivatives of the intermediate variables towards the b variable. Finally the to the derivatives are summed up and deserved it towards b is found.
 
 The problem with forward automatic differentiation is that for each variable all the intermediate derivatives needs to be calculated. This is where the idea for backward automatic differentiation came from. As it allows to generate the derivative to all inputs variables in one big sweep. Although it's more expensive to calculate one single derivative, it is cheaper to calculate all the derivatives.
 
@@ -50,7 +50,7 @@ The problem with forward automatic differentiation is that for each variable all
 	\label{eq:example forward automatic differentiation}
 \end{equation}
 
-Backward automatic differentiation is the opposite of forward automatic differentiation as it works down from the output towards the input. As illustrated by equation~\ref{eq:math definition backward automatic differentation}. An example is worked out in equation~\ref{eq:example backward automatic differentiation}. Even if there are hundreds of intermediate variables it only required one line to find a component of the gradient. This is the main reason why packages like casadi use backward automatic differential, instead of forward.
+Backward automatic differentiation is the opposite of forward automatic differentiation as it works down from the output towards the input. As illustrated by \eqref{eq:math definition backward automatic differentation}. An example is worked out in \eqref{eq:example backward automatic differentiation}. Even if there are hundreds of intermediate variables it only required one line to find a component of the gradient. This is the main reason why packages like casadi use backward automatic differential, instead of forward.
 
 \begin{equation}
 	\frac{\partial x_i}{\partial b} = \frac{\partial x_i}{\partial x_k}\frac{\partial x_k}{\partial x_j}\frac{\partial x_j}{\partial b}
@@ -116,7 +116,7 @@ Figure~\ref{fig:nmpc_codegen_packages} Illustrates the architecture of the nmpc-
 
 The Cfunctions sub package contains proximal functions that represent constraints on the inputs. The user manual contains a table of all available constraints to the user. The tools sub package contains two classes. The bootstrapper that can generate the static code, and the simulator that allows the user to call the generated C code from Python or Matlab.
 
-The controller sub package contains the Nmpc\_panoc class, an object of this class represents the actual controller. In order to construct an object of the Nmpc\_panoc class the user must provide a model object, a proximal function object and one or two stage costs object.
+The controller sub package contains the Nmpc\_PANOC class, an object of this class represents the actual controller. In order to construct an object of the Nmpc\_PANOC class the user must provide a model object, a proximal function object and one or two stage costs object.
 
 Finally the user can also add obstacles, these will be added a soft constraints into the cost function. The obstacles can be found in the sub package obstacles from the sub package controller.
 	\begin{figure}[H]
@@ -127,9 +127,9 @@ Finally the user can also add obstacles, these will be added a soft constraints 
 	\end{figure}
 
 \subsection{C}
-The C code is written in a layered architecture, the lowest layer contains the buffer, the cost function and the lipschitz estimator. The second layer contains the proximal gradient algorithm and the L-BFGS algorithm. The highest layer contains the panoc algorithm.
+The C code is written in a layered architecture, the lowest layer contains the buffer, the cost function and the lipschitz estimator. The second layer contains the proximal gradient algorithm and the L-BFGS algorithm. The highest layer contains the PANOC algorithm.
 
-The NMPC entity initializes the cost function with the current state of each iteration, and calls panoc repeatably till convergence. The end-user does not need to know how panoc or any of the underlying layers work. The NMPC entity takes care of everything, the user will simply call NMPC with the current state, a reference state, a reference input and output array to place the optimal inputs.
+The NMPC entity initializes the cost function with the current state of each iteration, and calls PANOC repeatably till convergence. The end-user does not need to know how PANOC or any of the underlying layers work. The NMPC entity takes care of everything, the user will simply call NMPC with the current state, a reference state, a reference input and output array to place the optimal inputs.
 
 	\begin{figure}[H]
 		\centering

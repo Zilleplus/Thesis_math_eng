@@ -1,10 +1,10 @@
 \chapter{Control Systems}
 \section{Optimal control problem}
-	The optimal control problem goes back more than 300 years. From Galileo and Newton to Johann Bernoulli and Euler with the Brachistochrone problem. The optimal control problem can be simplified to finding the proper inputs so that the system behaves in a certain way, or put differently, find the control law.
+	The optimal control problem goes back more than 300 years. From Galileo and Newton to Johann Bernoulli and Euler with the Brachistochrone problem. The goal in optimal control is to find the appropriate inputs or control law. So that the dynamic system behaves optimally, according to some criterion. 
 	
-	A typical optimal control problem exists out of a set of differential equations that describes the behavior of the system. And a cost function that describes the cost of the specific trajectory integrated on the differential equations. The most optimal solution to the optimal control problem will have the lowest cost possible.
+	The main ingredients involved in the definition of an optimal are: a set of differential equations that describes the behavior of the system. A cost function that describes the cost of the specific trajectory integrated on the differential equations. The optimal solution will have the lowest cost possible.
 	
-	Optimal control problems can be mathematically defined as the cost function equation~\ref{eq:optimal control definition}(With boundary conditions equation~\ref{eq:optimal control definition state equations boundary conditions})  and the behavior of the system equation~\ref{eq:optimal control definition state equations}. In addition constraints can be placed on the state and inputs, as shown by equation~\ref{eq:optimal control definition state equations path constraints}. 
+	Optimal control problems can be mathematically defined as the cost function \eqref{eq:optimal control definition}(With boundary conditions \eqref{eq:optimal control definition state equations boundary conditions})  and the behavior of the system \eqref{eq:optimal control definition state equations}. In addition constraints can be placed on the state and inputs, as shown by \eqref{eq:optimal control definition state equations path constraints}. 
 	
 	\begin{equation}
 		J = S[x(t_0),t_0,x(T),T] + \int_{t_0}^{T} L[x(t),u(t),t]
@@ -24,11 +24,11 @@
 	\end{equation}
 
 \section{MPC}
-	Model predictive control is an advanced process control method that continuously solves a  optimal control problem. At a constant rate the state is measured, a optimal control problem is define and solved. The  optimal input is then applied to the system, and the cycle repeats itself.
+	Model predictive control is an advanced control method that continuously solves a  optimal control problem in real-time. At a constant rate the state is measured, an optimal control problem is defined and solved. The  optimal input is then applied to the system, and the cycle repeats itself.
 	
-	A continuous physical system can be defined as $\dot{x}=F_c(x,u)$, where x is the current state and u is the current input. However when using computer systems it's often required to have a discrete system. By using a discrete integrator the system can be written as $x^{k+1}=F_d(x^{k},u^{k})$. 
+	A continuous-time physical system can be defined as $\dot{x}=F_c(x,u)$, where $x$ is the current state and $u$ is the current input. However when using computer systems it's often required to have a discrete-time system. By using a discrete integrator the continuous-time system can be transformed in a discrete-time system, that is defined as: $x^{k+1}=F_d(x^{k},u^{k})$. 
 	
-	Figure~\ref{fig:MPC diagram} is a diagram from \cite{Wikipedia} that illustrates MPC. The reference trajectory is the behavior we want, the predicted control input is the control input that was calculated and in the simulations leading to the predicted trajectory.
+	\eqref{fig:MPC diagram} Is a diagram from Wikipedia \cite{Wikipedia} that illustrates MPC. The reference trajectory is the wanted behavior, the predicted control input is the input that is obtained from the controller that leads to the predicted trajectory.
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.7\textwidth]{MPC_scheme}
@@ -39,9 +39,9 @@
 	\subsection{System}
 		
 	\subsection{Problem definition}
-	The problem definition is bases on the definition from \cite{Diehl2005}.
+	The problem definition is based on \cite{Diehl2005}.
 		\subsubsection{Problem form}
-			The goal is to define the problem as equation~\ref{eq:PANOC MPC form}, and then solve it for u given $x_0$, the current state of the system. Sometimes $x_0$ will be assumed to be part of the function f, just like the reference state and input. Which leads to the simplified equation, equation~\ref{eq:PANOC form} .
+			The optimal control problem can be written as the non linear programming (NLP) problem  \eqref{eq:PANOC MPC form}, and then solve it for u given $x_0$, the current state of the system. Sometimes $x_0$ will be assumed to be part of the function f, just like the reference state and reference input. Which leads to the simplified equation, \eqref{eq:PANOC form} .
 			\begin{equation}
 				\underset{u}{\minimize} \  f(x_0,u) + g(u)
 				\label{eq:PANOC MPC form}
@@ -52,9 +52,9 @@
 				\label{eq:PANOC form}
 			\end{equation}
 		\subsubsection{Direct Single shoot}
-			If the predict horizon is N then the problem is solved for the inputs $u=[u_0,u_1,... u_{N-1}]$ where each $u_k$ is a vector of all the inputs of the system. This means that the size of the vector u is the predict Horizon multiplied with the dimension of the input .
+			The direct single shoot definition with a predict horizon of N. Can be written as a NLP that is solved for $u=[u_0,u_1,... u_{N-1}]$. Each of the $u_k$ vectors is the inputs of the system at a particular time in the predict horizon. This means that the size of the vector u is the predict horizon multiplied with the dimension of the input .
 			
-			The cost for each step in the horizon is defined as \ref{eq:single shot iteration cost}, this is called the stage cost.
+			The cost on each step in the horizon is defined as \eqref{eq:single shot iteration cost}, this is called the stage cost.
 			\begin{equation}
 				\begin{aligned}
 				& l_k(x_0,u) = &&  x_k^T Q x_k  +  u_k^T R u_k \\
@@ -64,7 +64,7 @@
 				\label{eq:single shot iteration cost}
 			\end{equation}
 			
-			The terminal cost is a special case of the stage cost as it is the last stage cost in the horizon. So if the Horizon is defined as N, the terminal cost can defined as equation~\ref{eq:single shot terminal cost}.
+			The terminal cost is a special case of the stage cost, it is the last stage cost in the predict horizon. So if the Horizon is N, the terminal cost can be defined as \eqref{eq:single shot terminal cost}.
 			
 			\begin{equation}
 				\begin{aligned}
@@ -75,30 +75,32 @@
 				\label{eq:single shot terminal cost}
 			\end{equation}
 			
-			$f(x_0,u)$ can then be defined as in equation~\ref{eq:single shot definition}, the sum of the stage costs and the terminal cost.
+			The cost function $f(x_0,u)$ becomes \eqref{eq:single shot definition}, the sum of the stage costs and the terminal cost.
 			
 			\begin{equation}
 				f(x_0,u) = \sum_{k=1}^{N-1} l_k(x_0,u) + l_N
 				\label{eq:single shot definition}
 			\end{equation}
 			
-			As a side note, an other term can be added to equation~\ref{eq:single shot definition} to represent the obstacle avoidance. More on this later on in this chapter in the subsection on obstacles.
+			An other term can be added to \eqref{eq:single shot definition} to represent the obstacle avoidance. More on this later in the subsection on obstacles.
 		\subsection{Direct Multiple shoot}
-			The multiple shoot needs more information than just an initial state. It requires an initial estimate of all of the intermediate states. The state estimates will be referred to as $x_i$ and the states derived from the estimate and its corresponding input will be referred to as $\bar{x_i}$. As before the goal of the optimization algorithm is to find the optimal inputs $u_i$, so that the cost function is as low as possible. And additionally  $\bar{x_i} - x_{i+1} = 0$, called the continuity conditions.
+			The multiple shoot uses more initial information than just an initial inputs of the predict horizon. It requires an initial estimate of all of the intermediate states. The state estimates will be referred to as $x_i$ and the states derived from the estimate and its corresponding input will be referred to as $\bar{x_i}$. 
+			
+			Just as with the Single Shot, the goal is to find the optimal inputs $u_i$. However now there are additional continuity conditions: $\bar{x_i} - x_{i+1} = 0$.
 			
 			\begin{equation}
 				\bar{x_i} = F(x_i,u_i)
 				\label{eq:}
 			\end{equation}
 			
-			The continuity conditions are displayed in equation~\ref{eq:continuety condition multiple shot} and were not necessary in single shot as there are no state estimates like $\bar{x}$. If the initial state estimates are relatively close to the solution, a significant speed increase can be accomplished. As more information was incorporate into the problem.
+			The continuity conditions are displayed in \eqref{eq:continuety condition multiple shot} and were not necessary in single shot, as there are no state estimates like $\bar{x}$. If the initial state estimates are relatively close to the solution, a significant speed increase can be accomplished. As more information can be incorporate into the problem.
 			
 			\begin{equation}
 				\bar{x_i} - x_{i+1} = 0
 				\label{eq:continuety condition multiple shot}
 			\end{equation}
 			
-			The direct multiple shoot definition is formally defined in equation~\ref{eq:multiple shot cost} and has an extra equality condition compared to the single shoot. This equality condition will be added as a soft constraints to the cost function, so it can be solved with panoc. This is displayed in equation~\ref{eq:multiple shot cost with soft constraint} and will be used in the practical implementation.
+			The direct multiple shoot definition is formally defined as \eqref{eq:multiple shot cost}, and has an extra equality condition compared to the single shoot. The continuity conditions can be added as a soft constraints to the cost function. This is displayed in \eqref{eq:multiple shot cost with soft constraint} and will be used in the practical implementation.
 			
 			\begin{equation}
 				\begin{aligned}
@@ -120,7 +122,7 @@
 		\subsection{Obstacle avoidance}
 			The obstacle avoidance is based on the soft constraint definition described in \cite{AjaySathya2017}. It can be described as a set or an constraint.
 			\subsubsection{As set}
-				 obstacle can be defined as an open set, as illustrated by equation~\ref{eq:obstacle as open set}. It is defined by the intersection of a set of nonlinear inequalities.
+				 obstacle can be defined as an open set, as illustrated by \eqref{eq:obstacle as open set}. It is defined by the intersection of a set of nonlinear inequalities.
 				\begin{equation}
 					O = {z \in \Re^d : h^i(z)>0,\ i \in N}
 					\label{eq:obstacle as open set}
@@ -131,14 +133,14 @@
 					[z]_+ =  \max\{0,z\}
 				\end{equation}
 				
-				The statement $h(x)<0$ is equivalent to saying $[h(x)]_+=0$, so equation~\ref{eq:obstacle as open set} is equivalent to setting equation~\ref{eq:obstacle as equality} to zero.
+				The statement $h(x)<0$ is equivalent to saying $[h(x)]_+=0$, so \eqref{eq:obstacle as open set} is equivalent to setting \eqref{eq:obstacle as equality} to zero.
 				
 				\begin{equation}
 					\Phi_0(z) =  \frac{1}{2} \prod_{i=1}^m \Big( [h^i(z)]_+ \Big)^2
 					\label{eq:obstacle as equality}
 				\end{equation}
 				
-				The gradient of equation~\ref{eq:obstacle as equality} is define as equation~\ref{eq:obstacle as equality}
+				The gradient of \eqref{eq:obstacle as equality} is define as \eqref{eq:obstacle as equality}
 				
 				\begin{equation}
 					\nabla \Phi =
@@ -151,14 +153,14 @@
 				\end{equation}
 			
 			\subsubsection{Polyhedral obstacle}
-				A simple obstacle example of such an obstacle is a polyhedral as defined in equation~\ref{eq:polyhedral constraint}.
+				A simple obstacle example of such an obstacle is a polyhedral as defined in \eqref{eq:polyhedral constraint}.
 				\begin{equation}
 					\prod \Big([b_i - a_i^t z]_+ \Big)^2 = 0
 					\label{eq:polyhedral constraint}
 				\end{equation}
 			
 			\subsubsection{Obstacle as soft constraint}
-				The obstacle avoidance is added as a soft constraint to the cost function. As demonstrated in equation~\ref{eq:derivative obstacle as equality}, this definition is two times differentiable and so this does not break the condition that the cost functions needs a gradient to be solved with the PANOC algorithm.
+				The obstacle avoidance is added as a soft constraint to the cost function. As demonstrated in \eqref{eq:derivative obstacle as equality}, this definition is two times differentiable and so this does not break the condition that the cost functions needs a gradient to be solved with the PANOC algorithm.
 			
 		\subsection{Input constraints}
 			An other important aspect of a MPC problem are the input constraints. In practice inputs have to comply with the physical properties of the devices. Absurdly high or low input values might in theory lead to a fast solution, but are not feasible in practice.
@@ -166,5 +168,3 @@
 			A major advantage of the PANOC algorithm is that it can take non linear or non convex constraints. As longs as the proximal operation is analytically defined on the constraint it is feasible. 
 			
 			A simple example is the indicator box function, which allows to set a maximum and minimum value on the inputs. (The indicator box function is defined in the appendix) Setting the indicator box function to zero as input constraint, demands that every feasible solution lies within the bounds of the user defined box.
-			
-\section{Properties of MPC solvers}

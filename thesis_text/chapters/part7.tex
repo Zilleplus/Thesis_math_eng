@@ -1,4 +1,4 @@
-\chapter{Code analysis of panoc}
+\chapter{Code analysis of PANOC}
 The performance of the Matlab or Python code is not very relevant as it only generates source files, it's performance is not linked to the controller's performance. The generated C code on the other hand should have a good performance, as it determines the performance of the actual controller.
 
 It is important to measure where most of the execution time is spent inside the algorithm. As this will indicate where to optimize the code. One way to measure this is by using profilers, in this chapter the results of the GNU profiler and the Intel profiler will be studied.
@@ -52,14 +52,14 @@ Figure~\ref{fig:bottom-up analysis} provides a high-level view of the bottom-up 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{intel_analysis/bottum_up}
-	\caption{bottom-up analysis}
+	\caption{Bottom-up analysis}
 	\label{fig:bottom-up analysis}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{intel_analysis/bottum_up_detailed}
-	\caption{detailed bottom-up analysis}
+	\caption{Detailed bottom-up analysis}
 	\label{fig:detailed bottom-up analysis}
 \end{figure}
 
@@ -93,7 +93,7 @@ The rest of the time is mostly spent calculating the gradient and cost function.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{intel_analysis/no_mkl_topdown}
-	\caption{top down analysis}
+	\caption{Top down analysis}
 	\label{fig:no mkl top down}
 \end{figure}
 
@@ -126,7 +126,7 @@ One way of profiling with the GNU compiler is using valgrind with the option cal
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\textwidth]{callgrid/graph}
-	\caption{callgrid}
+	\caption{Callgrid drawing}
 	\label{fig:callgrid}
 \end{figure}
 

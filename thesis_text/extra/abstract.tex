@@ -1,11 +1,9 @@
 \begin{abstract}
-Modern process control makes use of model predictive control. When linear models are used, a set of linear equations must be solved. Which is easily accomplished with linear algebra. When nonlinear models are used, a set of nonlinear equations must be solved.
+Modern process control makes use of model predictive control. When linear models are used, a set of linear equations must be solved. Which is easily accomplished using linear algebra. When non linear models are used, a set of non linear equations must be solved, and linear algebra is not sufficient any more.
 
-A set of nonlinear equation is typically solved with iterative algorithms. The current available algorithms, are very expensive in memory and CPU usage. This is where the PANOC algorithm comes in, as it uses a very limited amount of memory, and uses significantly less computations. And has super linear convergence.
+A set of nonlinear equation is typically solved with iterative algorithms. The current available algorithms, are very expensive in memory and CPU usage. This is where the PANOC algorithm comes in, as it uses a very limited amount of memory, and uses significantly less computations. And still maintains super linear convergence.
 
-The goal of this thesis, is to construct a framework in Matlab and Python that generate a nonlinear model predictive control controller in ANSI C code using the PANOC algorithm. And makes use of CASADI to calculate the gradient using automatic backward differentiation.
+The goal of this thesis, is to construct a framework in Matlab and Python that generate a non linear model predictive control controller in C code using the PANOC algorithm. And makes use of CASADI to calculate the gradient using automatic backward differentiation.
 
 The library also provides an easy way to simulate the controller in Python or Matlab. This way the necessary parameters can be properly tuned.
-
-The source code is freely available on github.
 \end{abstract}

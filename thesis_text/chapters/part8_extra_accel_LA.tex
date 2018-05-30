@@ -16,14 +16,14 @@ In order to avoid confusion in this chapter solving the model predictive control
 		\label{eq:opti problem lagrangian}
 	\end{equation}
 	
-	The problem described in equation~\ref{eq:opti problem lagrangian} can be solved by minimizing equation~\ref{eq:lagrangian quadratic model}  for x with a fixed $\mu_k$, and then solving again for x with $mu_{k+1}>\mu_k $. As mentioned before increasing $\mu$ will worsen the condition of the problem. 
+	The problem described in \eqref{eq:opti problem lagrangian} can be solved by minimizing \eqref{eq:lagrangian quadratic model}  for x with a fixed $\mu_k$, and then solving again for x with $mu_{k+1}>\mu_k $. As mentioned before increasing $\mu$ will worsen the condition of the problem. 
 	
 	\begin{equation}
 		Q(x,\mu) \overset{def}{=} f(x) + \mu \sum_{i \in \epsilon} c_i^2(x)
 		\label{eq:lagrangian quadratic model}
 	\end{equation}
 	
-	By adding Lagrangian multipliers equation~\ref{eq:augmented lagrangian definition} is obtained.However the feasibility condition $c_i(x)=0$ will not be met in the first iterations. As with each time the problem solved, the condition of equation~\ref{eq:perturbed feasibility conditions} is met. As $c_i(x)$ goes to zero and $\mu_k$ goes to infinity the condition of equation~\ref{eq:perturbed feasibility conditions} will get closer to that of the feasibility condition.
+	By adding Lagrangian multipliers \eqref{eq:augmented lagrangian definition} is obtained.However the feasibility condition $c_i(x)=0$ will not be met in the first iterations. As with each time the problem solved, the condition of \eqref{eq:perturbed feasibility conditions} is met. As $c_i(x)$ goes to zero and $\mu_k$ goes to infinity the condition of \eqref{eq:perturbed feasibility conditions} will get closer to that of the feasibility condition.
 	
 	\begin{equation}
 		\Lagr_A(x,\lambda;\mu) \overset{def}{=} f(x) - \sum_{i \in \epsilon}\lambda_ic_i(x) + \mu \sum_{i \in \epsilon}c_i^2(x)
@@ -37,7 +37,7 @@ In order to avoid confusion in this chapter solving the model predictive control
 	
 
 \section{Optimality conditions}
-	The value of the Lagrangian multiplier can be determined from equation~\ref{eq:gradient augmented lagrangian definition}. The Lagrangian multipliers are determined trough the optimality condition. Which can be obtained by taking the derivative of the Lagrangian towards x, and putting it to zero.($\nabla_x \Lagr_A(x_k,\lambda_k;\mu_k) = 0$) The gradient will only be zero, if the optimality conditions displayed in equation~\ref{eq:optimality codition augmented lagrangian definition} are met.
+	The value of the Lagrangian multiplier can be determined from \eqref{eq:gradient augmented lagrangian definition}. The Lagrangian multipliers are determined trough the optimality condition. Which can be obtained by taking the derivative of the Lagrangian towards x, and putting it to zero.($\nabla_x \Lagr_A(x_k,\lambda_k;\mu_k) = 0$) The gradient will only be zero, if the optimality conditions displayed in \eqref{eq:optimality codition augmented lagrangian definition} are met.
 	\begin{equation}
 		\lambda_{k+1}^{i} = \lambda_{k}^{i} - 2\mu_k c_i(x_k)
 		\label{eq:optimality codition augmented lagrangian definition}
@@ -54,11 +54,11 @@ In order to avoid confusion in this chapter solving the model predictive control
 	
 	
 \section{Algorithm}
-	The proposed algorithm by cite.. Is algorithm~\ref{alg:panoc with augmented lagrangian}, where $0<\beta<1$. Ben Hermans proposes to take $\mu_{k+1}=\mu_k*2$ if $c_i(x)$is above a certain predefined tolerance. The idea is, that if a constraint is still badly violated its weight clearly needs to be increased. So when it's solved in the next iteration, it won't be violated this badly.
+	The proposed algorithm by cite.. Is algorithm~\ref{alg:PANOC with augmented lagrangian}, where $0<\beta<1$. Ben Hermans proposes to take $\mu_{k+1}=\mu_k*2$ if $c_i(x)$is above a certain predefined tolerance. The idea is, that if a constraint is still badly violated its weight clearly needs to be increased. So when it's solved in the next iteration, it won't be violated this badly.
 	
 	\begin{algorithm}
-		\caption{panoc nmpc with augmented lagrangian}
-		\label{alg:panoc with augmented lagrangian}
+		\caption{PANOC nmpc with augmented lagrangian}
+		\label{alg:PANOC with augmented lagrangian}
 		\begin{algorithmic}[1]
 			\Procedure {SOLVE\_MPC}{state}
 			\State $\mu_0=0$
@@ -76,7 +76,7 @@ In order to avoid confusion in this chapter solving the model predictive control
 \section{Simulation}
 In order to illustrate the advantage of the augmented Lagrangian towards a simple soft constraint on the cost function. A simple simulation is set up with two obstacles, and using the trailer model. The trainer has to move from the circle towards the star, while avoiding the two circles. The two obstacles, are always added as a soft constraint on to the cost function. The path taken by the trailer is illustrated in figure~\ref{fig:LA path}.
 
-In addition to the two obstacles a speed limit can be added to the problem. The speed limit can be expressed as a soft constraint on to the cost function. Or it can be added, using the augmented Lagrangian. The soft constraint is mathematically expressed in equation~\ref{eq:speed limit constraint} with M the maximum allowed speed..
+In addition to the two obstacles a speed limit can be added to the problem. The speed limit can be expressed as a soft constraint on to the cost function. Or it can be added, using the augmented Lagrangian. The soft constraint is mathematically expressed in \eqref{eq:speed limit constraint} with M the maximum allowed speed..
 
 \begin{equation}
 max[(v_x^2+v_y^2+v_z^2)-M^2,0]^2

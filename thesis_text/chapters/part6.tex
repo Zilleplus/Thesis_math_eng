@@ -11,11 +11,11 @@ The trailer model is illustrated in figure~\ref{fig:trailer model}, the left rec
 \begin{figure}
 	\centering
 	\includegraphics[width=0.5\textwidth]{trailer}
-	\caption{trailer}
+	\caption{Trailer model scheme}
 	\label{fig:trailer model}
 \end{figure}
 
-The mathematical model of the trailer is represented in equation~\ref{eq:trailer model}, $u_x$ and $u_y$ are the inputs of the system and represent the speed in the Y and X direction. The angle is represented by $\theta$ , the distance between the driver and the trailer is represented by L. The position of the trailer is represented by $p_x$ and $p_y$.
+The mathematical model of the trailer is represented in \eqref{eq:trailer model}, $u_x$ and $u_y$ are the inputs of the system and represent the speed in the Y and X direction. The angle is represented by $\theta$ , the distance between the driver and the trailer is represented by L. The position of the trailer is represented by $p_x$ and $p_y$.
 
 \begin{equation}
 	\begin{cases}
@@ -27,12 +27,12 @@ The mathematical model of the trailer is represented in equation~\ref{eq:trailer
 \end{equation}
 
 \section{A simple trailer example}
-A simple way of measuring the performance of the library is to compared it to the alternatives. In the following simulation the nmpc-codegen library will be compared to, ForBes zerofrp2 the Matlab implementation of the panoc algorithm. And to the internal Matlab function fmincon using either of the tree algorithms interior point,SQP and active set.
+A simple way of measuring the performance of the library is to compared it to the alternatives. In the following simulation the nmpc-codegen library will be compared to, ForBes zerofrp2 the Matlab implementation of the PANOC algorithm. And to the internal Matlab function fmincon using either of the tree algorithms interior point,SQP and active set.
 
 \subsection{General performance}
 Several NMPC problems can be constructed and solved with nmpc-codegen. Figure~\ref{fig:demos} illustrates the problems used to benchmark nmpc-codegen, they all use the simple trailer model but have different obstacles. The time till convergence is measured, the average time is displayed in table~\ref{tbl:mean time till convergence} in the appendix. While the maximum and minimum time is displayed in the appendix: table~\ref{tbl:min time till convergence} and table~\ref{tbl:max time till convergence}.
 
-The convergence time can be expresses relatively to the convergence time of the nmpc-codegen time as illustrated by equation~\ref{eq:definition relative time}. These results are displayed in table~\ref{tbl:mean relative time till convergence}. From table~\ref{tbl:mean relative time till convergence} it's clear that nmpc-codegen dominates by a significant margin.
+The convergence time can be expresses relatively to the convergence time of the nmpc-codegen time as illustrated by \eqref{eq:definition relative time}. These results are displayed in table~\ref{tbl:mean relative time till convergence}. From table~\ref{tbl:mean relative time till convergence} it's clear that nmpc-codegen dominates by a significant margin.
 
 \begin{equation}
 	t_{relative} = \frac{t_{algorithm}}{t_{nmpc-codegen}}
@@ -44,9 +44,9 @@ The in-dept simulation contains four circular obstacles, the trailer will move f
 
 The state of the trailer will is represented by arrows, the starting point of the arrow is the position of the trailer. The angle of the arrow represents the positional angle of the trailer. The amplitude of the arrow has no meaning.
 
-Figure~\ref{fig:solution path trailer example} contains the results of the simulation. The panoc algorithm calculated the lowest located path while all three of the fmincon algorithms opted for the upper located path. Both of these paths are valid solutions. It is immediately clear from figure~\ref{fig:timings trailer example} that the nmpc-codegen library is significantly faster. The other four algorithm's are about the same for the first 30 steps, after about 30 steps the ForBes zerofpr2 algorithm is faster then either of the tree fmincon algorithms.
+Figure~\ref{fig:solution path trailer example} contains the results of the simulation. The PANOC algorithm calculated the lowest located path while all three of the fmincon algorithms opted for the upper located path. Both of these paths are valid solutions. It is immediately clear from figure~\ref{fig:timings trailer example} that the nmpc-codegen library is significantly faster. The other four algorithm's are about the same for the first 30 steps, after about 30 steps the ForBes zerofpr2 algorithm is faster then either of the tree fmincon algorithms.
 
-The nmpc-codegen library uses a cautious lbfgs update which improves the performance of the lbfgs. This is clear from figure~\ref{fig:iterations trailer example} where not the time to convergence but iterations till convergence are illustrated. The nmpc-codegen clearly needs less iterations than theForbes zerofpr2. As the simulation progresses, less and less iterations are needed to calculate optimal solution. And the lbfgs doesn't influence the convergence as much, so the two algorithms have about the same amount iterations till convergence.
+The nmpc-codegen library uses a cautious L-BFGS update which improves the performance of the L-BFGS. This is clear from figure~\ref{fig:iterations trailer example} where not the time to convergence but iterations till convergence are illustrated. The nmpc-codegen clearly needs less iterations than  Forbes zerofpr2. As the simulation progresses, less and less iterations are needed to calculate optimal solution. And the L-BFGS doesn't influence the convergence as much, so the two algorithms have about the same amount iterations till convergence.
 \begin{figure}[H]
 	\centering
 	\begin{subfigure}[b]{0.45\textwidth}
@@ -69,7 +69,7 @@ The nmpc-codegen library uses a cautious lbfgs update which improves the perform
 		\caption{timings}
 		\label{fig:timings trailer example}
 	\end{subfigure}
-	\caption{Schematic representation of the software}
+	\caption{Simulation result trailer model}
 \end{figure}
 
 \section{Quadcopter model}
@@ -77,7 +77,7 @@ The nmpc-codegen library uses a cautious lbfgs update which improves the perform
 The invention of electronic control systems has proven to be especially useful when controlling quadcopters. Because of their complex behavior they are hard to control manually by a pilot. However quadcopters are popular among unmanned aerial vehicles but they are controlled by a fast digital/analog controller.
 
 \subsection{Mathematical model}
-The behavior of a quad copter is described by a set of nonlinear equations as illustrated in equation~\ref{eq:mathematical model quadcopter}.
+The behavior of a quad copter is described by a set of nonlinear equations as illustrated in \eqref{eq:mathematical model quadcopter}.
 
 \begin{table}[]
 	\centering
@@ -176,7 +176,7 @@ Figure~\ref{fig:Noise simulations with the trailer model} contains the simulatio
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
-		\includegraphics[width=1.2\textwidth]{compare_libs/trailer_with_double_noise}
+		\includegraphics[width=1.2\textwidth]{compare_libs/path_without_noise}
 		\caption{path without noise}
 		\label{fig:path noise simulations}
 	\end{subfigure}
@@ -190,16 +190,12 @@ Figure~\ref{fig:Noise simulations with the trailer model} contains the simulatio
 		\hline
 		&\textbf{no noise}&\textbf{with noise}&\textbf{double noise}\\\hline
 		\textbf{nmpc-codegen}&3 ms&12 ms&10 ms \\\hline
-		\textbf{draft panoc}&8 ms&18 ms&22 ms \\\hline
+		\textbf{draft PANOC}&8 ms&18 ms&22 ms \\\hline
 		\textbf{OPTI:ipopt}&45 ms&51 ms&80 ms \\\hline
 	\end{tabular}
-	\caption{average till convergence in miliseconds}
+	\caption{average till convergence in milliseconds}
 	\label{tbl:average till convergence noise}
 \end{table}
-
-% only do simulations with trailer model, quadcopter models goes nuts
-% 2 figures , one with noise and one without use draft PANOC with ipopt
-%TODO add simulation with noise
 
 \section{Problem with local minimum}
 One problem with the approach discussed in this chapter, it's visible in the third demo. The results of the third demo are illustrated in figure~\ref{fig:demo: local minimum problem}, the trailer drives through the obstacle which is obviously impossible in reality. In reality the trailer will simply crash into the obstacle, and get stuck. Of course it is possible to increase the weight on the obstacle, this will make the problem harder. As the condition will get worse, and the solution will be about the same. The trainer will get stuck against the obstacle.
@@ -213,5 +209,4 @@ One problem with the approach discussed in this chapter, it's visible in the thi
 
 \section{Conclusion}
 
-The simulations clearly indicate that a great speed up his gained by implementing the panoc algorithm in C. As the algorithm doesn't require a lot of memory it can be run efficiently on small embedded devices. The control engineer can design and test the performance of the algorithm in either Matlab or Python.
-
+The simulations clearly indicate that a great speed up his gained by implementing the PANOC algorithm in C. As the algorithm doesn't require a lot of memory it can be run efficiently on small embedded devices. The control engineer can design and test the performance of the algorithm in either Matlab or Python.
