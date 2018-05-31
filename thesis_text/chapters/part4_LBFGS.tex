@@ -56,7 +56,7 @@
 			B_{k+1} = B_{k} + \frac{y_k y_k^T}{ y_k^T s_k} - \frac{B_k s_k s_k^T B_k^T}{s_k^TB_ks_k}
 			\label{eq:quasi newton method approx Hessian with past values}
 		\end{equation}
-	Calculating the inverse of the B matrix is an expensive operation. Solving a system of linear equations has a complexity of $\mathcal{O}(n)^3$ ). \eqref{eq:quasi newton method inverse hessian} Expresses the inverse of the Hessian in a function of the past values. In every iteration the L-BFGS step is calculated using \eqref{eq:quasi newton method}. The new location can now be used to update the inverse hessian using \eqref{eq:quasi newton method inverse hessian}.
+	Calculating the inverse of the B matrix is an expensive operation. Solving a system of linear equations has a computational complexity of $\mathcal{O}(n)^3$ . \eqref{eq:quasi newton method inverse hessian} Expresses the inverse of the Hessian in a function of the past values. In every iteration the L-BFGS step is calculated using \eqref{eq:quasi newton method}. The new location can now be used to update the inverse hessian using \eqref{eq:quasi newton method inverse hessian}.
 		\begin{equation}
 			V_k = I - \rho_ky_ks_k^T
 		\end{equation}
@@ -103,10 +103,10 @@
 		\label{eq:cautious update}
 	\end{equation}
 	
-	\cite{Dong-HuiLi1999} Suggests a cautious update based on the size of the gradient and $\frac{s_k^Ts_k}{s_k^Ts_k}$ as illustrated in \eqref{eq:cautious update}. The two parameters epsilon and alpha are both positive constants. The cautious update of \eqref{eq:cautious update} will be relevant when the algorithm is near fixed point. And the step size is so small the function values hardly change. The information in $s_k$ and $y_k$ is then dominated noise and cannot be trusted.
+	\cite{Dong-HuiLi1999} Suggests a cautious update based on the size of the gradient and $\frac{y_k^Ts_k}{s_k^Ts_k}$ as illustrated in \eqref{eq:cautious update}. The two parameters epsilon and alpha are both positive constants. The cautious update of \eqref{eq:cautious update} is relevant when the algorithm is near fixed point. And the step size is so small the function values hardly change. The information in $s_k$ and $y_k$ is then dominated by noise and cannot be trusted.
 	
 	\subsection{L-BFGS implementation}
-		When using  L-BFGS algorithm(algorithm~\ref{alg:LBFGS}) to solve \eqref{eq:LBFGS problem}. The direction is equal to the proximal gradient step if there is no initial hessian estimate yet. And current\_buffersize will increase every valid update from 1 to the limit specified by the controller designer.
+		When using  L-BFGS algorithm(algorithm~\ref{alg:LBFGS}) to solve \eqref{eq:LBFGS problem}. The direction is equal to the proximal gradient step if there is no initial hessian estimate. And the buffer size will increase with every valid update from 1 to the limit specified by the controller designer.
 		
 		\begin{equation}
 			R(x) = \frac{1}{\gamma}\left[ x - \prox_g( x - \nabla f(x)\gamma) \right] = 0

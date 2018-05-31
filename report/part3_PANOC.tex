@@ -13,14 +13,14 @@
 		
 	\subsection{Quasi newton method}
 		\subsubsection{Problem definition}
-			The iteration of equation~\ref{eq:prox grad method} can indirectly be used to solve the optimization problem.  By using the residue defined in equation~\ref{eq:residue prox grad method} a fixed point can be found. 
+			The iteration of \eqref{eq:prox grad method} can indirectly be used to solve the optimization problem.  By using the residue defined in \eqref{eq:residue prox grad method} a fixed point can be found. 
 			
 			\begin{equation}
 			R_{\gamma}(x)= \frac{1}{\gamma}\left[ x - \prox_g( x - \nabla f(x)\gamma) \right]
 			\label{eq:residue prox grad method}
 			\end{equation}
 			
-			The solution of equation~\ref{eq:residue prox grad method} can be found trough the Newton iteration of equation~\ref{eq:newton iteration residual}. Where $H_k$ satisfies the inverse secant condition of equation~\ref{eq:newton iteration residual inverse secant}. As the implementation is aimed at embedded software a good option to solve this would be LBFGS.
+			The solution of \eqref{eq:residue prox grad method} can be found trough the Newton iteration of \eqref{eq:newton iteration residual}. Where $H_k$ satisfies the inverse secant condition of \eqref{eq:newton iteration residual inverse secant}. As the implementation is aimed at embedded software a good option to solve this would be LBFGS.
 			
 			\begin{equation}
 			x^{k+1} = x^k -H_kR_{\gamma}(x^k)
@@ -31,7 +31,7 @@
 			\label{eq:newton iteration residual inverse secant}
 			\end{equation}
 		\subsubsection{LBFGS}
-			The variation of LBFGS used to solve equation~\ref{eq:LBFGS problem} is algorithm~\ref{alg:LBFGS}, the first iteration is not displayed.(the direction is equal to the gradient) And the current\ buffersize will increase every iteration from 1 to the limit specified by the controller designer.
+			The variation of LBFGS used to solve \eqref{eq:LBFGS problem} is algorithm~\ref{alg:LBFGS}, the first iteration is not displayed.(the direction is equal to the gradient) And the current\ buffersize will increase every iteration from 1 to the limit specified by the controller designer.
 			\begin{equation}
 				R(x) = \frac{1}{\gamma}\left[ x - \prox_g( x - \nabla f(x)\gamma) \right] = 0
 				\label{eq:LBFGS problem}
@@ -68,9 +68,9 @@
 			\end{algorithm}
 		
 	\subsection{Forward backward envelop}	
-		Newton iterations only converge quickly when they are close to the solution. In order to get better global behavior a proper global strategy is required. The optimization problem is changed from $\varphi(x) = f(x) + g(x)$ to equation~\ref{eq:FBE definition using Moreau envelope}. This problem is smoother while it still has the same optimal solution.(proof see \cite{LorenzoStella2017} and \cite{Themelis}) The same $\gamma$ as with the proximal gradient should be used, notice how the FBE contains the line-search condition use in the proximal gradient. (more on the FBE in \cite{Themelis})
+		Newton iterations only converge quickly when they are close to the solution. In order to get better global behavior a proper global strategy is required. The optimization problem is changed from $\varphi(x) = f(x) + g(x)$ to \eqref{eq:FBE definition using Moreau envelope}. This problem is smoother while it still has the same optimal solution.(proof see \cite{LorenzoStella2017} and \cite{Themelis}) The same $\gamma$ as with the proximal gradient should be used, notice how the FBE contains the line-search condition use in the proximal gradient. (more on the FBE in \cite{Themelis})
 		
-		The Moreau envelope is de define as \ref{eq:Moreau envelope}, this smooths the function, and has a close relationship with the proximal operator as illustrated earlier. Using simple algebra equation~\ref{eq:FBE definition using Moreau envelope} can be transformed into equation~\ref{eq:FBE definition using quadratic approximation}.(proof in Appendix) The solution $y$ of the infimum defined in equation~\ref{eq:FBE definition using quadratic approximation} is $\bar{x}$. Considering the close relationship between the Moreau envelope and the proximal operator (see more in \cite{Themelis}) this is to be expected.
+		The Moreau envelope is de define as \eqref{eq:Moreau envelope}, this smooths the function, and has a close relationship with the proximal operator as illustrated earlier. Using simple algebra \eqref{eq:FBE definition using Moreau envelope} can be transformed into \eqref{eq:FBE definition using quadratic approximation}.(proof in Appendix) The solution $y$ of the infimum defined in \eqref{eq:FBE definition using quadratic approximation} is $\bar{x}$. Considering the close relationship between the Moreau envelope and the proximal operator (see more in \cite{Themelis}) this is to be expected.
 		
 		An alternative way to look at it is nicely illustrated in \cite{AjaySathya2017}, where the problem can be seen as minimizing a quadratic approximation in point x.  Remember that $L = \frac{1}{\gamma}$, and L is the Lipschitz constant of the gradient.
 		
@@ -90,7 +90,7 @@
 		\end{equation}
 		
 		\begin{proof}
-			The solution to the infimum of equation~\ref{eq:FBE definition using quadratic approximation} is y=$\bar{x}= \prox_g(x-\gamma \nabla f(x))$
+			The solution to the infimum of \eqref{eq:FBE definition using quadratic approximation} is y=$\bar{x}= \prox_g(x-\gamma \nabla f(x))$
 			\begin{align*}
 			\prox_g(\bar{x}) 
 			&=\prox_g(x- \gamma \nabla f(x)) \\
@@ -106,7 +106,7 @@
 			\label{prf:prox is solution to FBE inf}
 		\end{proof}
 		
-		Equation~\ref{eq:practical implementation of FBE} is the practical implementation of the FBE. The parameter gamma is the line-search parameter used in the proximal gradient descent. The first 3 terms are the same as with the line-search on $\gamma$, the last term $g(\bar{x})$ is new and makes sure the solution complies with the constraint.
+		\eqref{eq:practical implementation of FBE} is the practical implementation of the FBE. The parameter gamma is the line-search parameter used in the proximal gradient descent. The first 3 terms are the same as with the line-search on $\gamma$, the last term $g(\bar{x})$ is new and makes sure the solution complies with the constraint.
 		
 %		\cite{AjaySathya2017} has an excellent example to illustrate this.(figure~\ref{fig:FBE illustration}).
 %		
@@ -129,9 +129,9 @@
 %		\end{figure}
 	
 	\subsection{Line-search with FBE}
-	In \cite{LorenzoStella2017} the line-search condition is specified as equation ~\ref{eq:line-search with FBE}. The line-search parameter determines $x^{k+1}$ by choosing the convex combination of the step from the proximal gradient and the LBGFS as defined in equation~\ref{eq:linea-search tau definition}. It is also specifies in \cite{LorenzoStella2017} that $\sigma \in (0, \gamma \frac{1-\gamma\cdot L}{2})$. As stated before it is assumed that $L=\frac{1-\beta}{\gamma}$, some simple algebra will lead to the condition $\sigma \in (0,\frac{\beta \gamma}{2})$.
+	In \cite{LorenzoStella2017} the line-search condition is specified as equation ~\eqref{eq:line-search with FBE}. The line-search parameter determines $x^{k+1}$ by choosing the convex combination of the step from the proximal gradient and the LBGFS as defined in \eqref{eq:linea-search tau definition}. It is also specifies in \cite{LorenzoStella2017} that $\sigma \in (0, \gamma \frac{1-\gamma\cdot L}{2})$. As stated before it is assumed that $L=\frac{1-\beta}{\gamma}$, some simple algebra will lead to the condition $\sigma \in (0,\frac{\beta \gamma}{2})$.
 	
-	 Equation~\ref{eq:practical line-search with FBE} is the practical implementation of equation~\ref{eq:line-search with FBE}. A new constant $\alpha \in (0,1)$ is introduced, an possible value for $\alpha$ would be 0.5 ($\alpha=0.5$ is the choice used by the Matlab implementation of PANOC in ForBes).
+	 \eqref{eq:practical line-search with FBE} is the practical implementation of \eqref{eq:line-search with FBE}. A new constant $\alpha \in (0,1)$ is introduced, an possible value for $\alpha$ would be 0.5 ($\alpha=0.5$ is the choice used by the Matlab implementation of PANOC in ForBes).
 	
 	\begin{equation}
 		x^{k+1} = u_k - (1-\tau_k)\cdot (x-\bar{x}) + \tau \cdot dir_{LBFGS}

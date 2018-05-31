@@ -36,10 +36,10 @@ sim.simulator_cleanup()
 \end{lstlisting}
 
 \subsection{Calling the interface directly}
-The Ctypes library is a simple way to call C  code from within Python code.If you used the bootstrapper  with the property Python\_interface\_enabled set as true that you must still call Cmake  using the command "Cmake .". A library with the extension ".so" or "dll" will be compiled. It isn't this library that we must call the function "simulation\_init()", "simulation\_cleanup()" and "simulate\_nmpc\_panoc.
+The Ctypes library is a simple way to call C  code from within Python code.If you used the bootstrapper  with the property Python\_interface\_enabled set as true that you must still call Cmake  using the command "Cmake .". A library with the extension ".so" or "dll" will be compiled. It isn't this library that we must call the function "simulation\_init()", "simulation\_cleanup()" and "simulate\_nmpc\_PANOC.
 
 \begin{lstlisting}[caption={ctype structure return by simulation},captionpos=b,label={lst:ctype structure return by simulation}]
-class Panoc_time(ctypes.Structure):
+class PANOC_time(ctypes.Structure):
 	_fields_ = [("hours", ctypes.c_int),\
 		("minutes", ctypes.c_int),\
 		("seconds", ctypes.c_int),\
@@ -62,9 +62,9 @@ optimal_input = array_optimal_input()
 
 nmpc_python_interface.simulation_init()
 
-nmpc_python_interface.simulate_nmpc_panoc.restype = 
-	ctypes.POINTER(Panoc_time)
-convergence_time = nmpc_python_interface.simulate_nmpc_panoc(\
+nmpc_python_interface.simulate_nmpc_PANOC.restype = 
+	ctypes.POINTER(PANOC_time)
+convergence_time = nmpc_python_interface.simulate_nmpc_PANOC(\
 	array_state(*current_state),\
 	optimal_input\
 	)

@@ -26,7 +26,7 @@
 \section{MPC}
 	Model predictive control is an advanced control method that continuously solves a  optimal control problem in real-time. At a constant rate the state is measured, an optimal control problem is defined and solved. The  optimal input is then applied to the system, and the cycle repeats itself.
 	
-	A continuous-time physical system can be defined as $\dot{x}=F_c(x,u)$, where $x$ is the current state and $u$ is the current input. However when using computer systems it's often required to have a discrete-time system. By using a discrete integrator the continuous-time system can be transformed in a discrete-time system, that is defined as: $x^{k+1}=F_d(x^{k},u^{k})$. 
+	A continuous-time physical system can be defined as $\dot{x}=F_c(x,u)$, where $x$ is the current state and $u$ is the current input. However when using computer systems it's often required to have a discrete-time system. A discrete integrator can transform a continuous-time system into a discrete-time system, that is defined as: $x^{k+1}=F_d(x^{k},u^{k})$. 
 	
 	\eqref{fig:MPC diagram} Is a diagram from Wikipedia \cite{Wikipedia} that illustrates MPC. The reference trajectory is the wanted behavior, the predicted control input is the input that is obtained from the controller that leads to the predicted trajectory.
 	\begin{figure}[h]
@@ -41,7 +41,7 @@
 	\subsection{Problem definition}
 	The problem definition is based on \cite{Diehl2005}.
 		\subsubsection{Problem form}
-			The optimal control problem can be written as the non linear programming (NLP) problem  \eqref{eq:PANOC MPC form}, and then solve it for u given $x_0$, the current state of the system. Sometimes $x_0$ will be assumed to be part of the function f, just like the reference state and reference input. Which leads to the simplified equation, \eqref{eq:PANOC form} .
+			The optimal control problem can be written as a non linear programming (NLP) problem  \eqref{eq:PANOC MPC form}. When solve the optimal inputs are obtained given a intial state $x_0$. Sometimes $x_0$ will be assumed to be part of the function f, just like the reference state and reference input. Which leads to the simplified equation, \eqref{eq:PANOC form} .
 			\begin{equation}
 				\underset{u}{\minimize} \  f(x_0,u) + g(u)
 				\label{eq:PANOC MPC form}
@@ -84,9 +84,9 @@
 			
 			An other term can be added to \eqref{eq:single shot definition} to represent the obstacle avoidance. More on this later in the subsection on obstacles.
 		\subsection{Direct Multiple shoot}
-			The multiple shoot uses more initial information than just an initial inputs of the predict horizon. It requires an initial estimate of all of the intermediate states. The state estimates will be referred to as $x_i$ and the states derived from the estimate and its corresponding input will be referred to as $\bar{x_i}$. 
+			The multiple shoot uses more initial information than just the initial inputs of the predict horizon. It requires an initial estimate of the intermediate states. These state estimates will be referred to as $x_i$ and the states derived from the estimate and its corresponding input will be referred to as $\bar{x_i}$. 
 			
-			Just as with the Single Shot, the goal is to find the optimal inputs $u_i$. However now there are additional continuity conditions: $\bar{x_i} - x_{i+1} = 0$.
+			Just as with the Single Shot, the goal is to find the optimal inputs $u_i$. However there are additional continuity conditions: $\bar{x_i} - x_{i+1} = 0$.
 			
 			\begin{equation}
 				\bar{x_i} = F(x_i,u_i)
@@ -124,7 +124,7 @@
 			\subsubsection{As set}
 				 obstacle can be defined as an open set, as illustrated by \eqref{eq:obstacle as open set}. It is defined by the intersection of a set of nonlinear inequalities.
 				\begin{equation}
-					O = {z \in \Re^d : h^i(z)>0,\ i \in N}
+					O = \{ z \in \Re^d : h^i(z)>0,\ i \in N \}
 					\label{eq:obstacle as open set}
 				\end{equation}
 				
@@ -133,7 +133,7 @@
 					[z]_+ =  \max\{0,z\}
 				\end{equation}
 				
-				The statement $h(x)<0$ is equivalent to saying $[h(x)]_+=0$, so \eqref{eq:obstacle as open set} is equivalent to setting \eqref{eq:obstacle as equality} to zero.
+				The statement $h(x)<0$ is equivalent to stating $[h(x)]_+=0$, so \eqref{eq:obstacle as open set} is equivalent to setting \eqref{eq:obstacle as equality} to zero.
 				
 				\begin{equation}
 					\Phi_0(z) =  \frac{1}{2} \prod_{i=1}^m \Big( [h^i(z)]_+ \Big)^2
@@ -145,7 +145,7 @@
 				\begin{equation}
 					\nabla \Phi =
 					\begin{cases}
-						\sum_{i=1}^{m} h^i(z)\prod_{j \ne i} \Big( [h^i(z)]_+ \Big)^2 \nabla h^i(z)
+						\sum_{i=1}^{m} h^i(z)\prod_{j \ne i} \Big( [h^j(z)]_+ \Big)^2 \nabla h^i(z)
 						& x \in O \\
 						0 & else
 					\end{cases}
@@ -160,11 +160,11 @@
 				\end{equation}
 			
 			\subsubsection{Obstacle as soft constraint}
-				The obstacle avoidance is added as a soft constraint to the cost function. As demonstrated in \eqref{eq:derivative obstacle as equality}, this definition is two times differentiable and so this does not break the condition that the cost functions needs a gradient to be solved with the PANOC algorithm.
+				The obstacle avoidance is added as a soft constraint into the cost function. As demonstrated in \eqref{eq:derivative obstacle as equality}, this definition is two times differentiable and so this does not break the condition that the cost functions needs to be twice differentiable.
 			
 		\subsection{Input constraints}
-			An other important aspect of a MPC problem are the input constraints. In practice inputs have to comply with the physical properties of the devices. Absurdly high or low input values might in theory lead to a fast solution, but are not feasible in practice.
+			An other important aspect of a MPC problem is the input constraint. In practice inputs have to comply with the physical properties of the devices. For instance absurdly high or low input values might in theory lead to a fast solution, but are not feasible in practice.
 			
-			A major advantage of the PANOC algorithm is that it can take non linear or non convex constraints. As longs as the proximal operation is analytically defined on the constraint it is feasible. 
+			A major advantage of the PANOC algorithm is that it can take non linear or non convex constraints. As longs as the proximal mapping is analytically defined it is feasible. 
 			
-			A simple example is the indicator box function, which allows to set a maximum and minimum value on the inputs. (The indicator box function is defined in the appendix) Setting the indicator box function to zero as input constraint, demands that every feasible solution lies within the bounds of the user defined box.
+			A simple example is the indicator box function, which allows to set a maximum and minimum value on the inputs. (The indicator box function is defined in the appendix) Using the  indicator box function input constraint, demands that every feasible solution lies within the bounds of the user defined box.

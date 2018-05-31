@@ -29,7 +29,7 @@ R = np.eye(model.number_of_inputs, model.number_of_inputs) * 1.
 reference_state = np.array([2, 0.5, 0])
 stage_cost = controller.Stage_cost_QR_reference(model, Q, R, reference_state)
 
-trailer_controller = npc.Nmpc_panoc(trailer_controller_location,\
+trailer_controller = npc.Nmpc_PANOC(trailer_controller_location,\
 	model, stage_cost)
 \end{lstlisting}
 
@@ -43,11 +43,11 @@ reference_state = np.array([2, 0.5, 0])
 stage_cost = controller.Stage_cost_QR_reference(model, \
 	Q, R, reference_state)
 
-trailer_controller = npc.Nmpc_panoc(trailer_controller_location,\
+trailer_controller = npc.Nmpc_PANOC(trailer_controller_location,\
 	model, stage_cost)
 trailer_controller.horizon = horizon
 trailer_controller.integrator_casadi = True
-trailer_controller.panoc_max_steps = 100
+trailer_controller.PANOC_max_steps = 100
 trailer_controller.add_obstacle(obstacle, obstacle_weight)
 \end{lstlisting}
 
@@ -62,7 +62,7 @@ trailer_controller.add_obstacle(obstacle, obstacle_weight)
 		\hline
 		lbgfs\_buffer\_size &  10 & integer\\ 
 		\hline
-		panoc\_max\_steps &  10 & integer\\ 
+		PANOC\_max\_steps &  10 & integer\\ 
 		\hline
 		shooting\_mode & "single shot" & [single shot, multiple shot] \\ 
 		\hline

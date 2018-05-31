@@ -1,10 +1,10 @@
 \chapter{Proximal gradient method}
-	\subsection{Proximal mapping}
-		The proximal operator is defined as $\prox_g(x)= \underset{u}{\argmin}(g(u) + \frac{1}{2 \gamma}||u-x||^2_2)$. 
+	\section{Proximal mapping}
+		The proximal operator is defined as $\prox_{\gamma g}(x)= \underset{u}{\argmin}(g(u) + \frac{1}{2 \gamma}||u-x||^2_2)$. 
 		
 		\begin{itemize}
-			\item if $h(x)=0$ then $\prox_h(x)=x$ 
-			\item if $h(x)=I_c(x)$ where $I_c$ is define in \eqref{eq:indicator function}, the proximity operator on an indicator function is the orthogonal projection on the set.
+			\item if $h(x)=0$ then $\prox_{\gamma h}(x)=x$ 
+			\item if $h(x)=I_c(x)$ where $I_c$ is define in \eqref{eq:indicator function}, the proximity mapping of the indicator function is the orthogonal projection on the set.
 		\end{itemize}
 		
 		The indicator function: is defined in equation ~\eqref{eq:indicator function}.
@@ -19,7 +19,7 @@
 		
 		The proximal mapping can be seen as a generalization of a projection. The Appendix contains an other important example, the indicator box function.
 	
-	\subsection{Gradient projected method}
+	\section{Gradient projected method}
 		
 		\begin{equation}
 			\begin{aligned}
@@ -31,7 +31,7 @@
 			\label{eq:prox grad opti problem}
 		\end{equation}
 		
-		The classical gradient decent method cannot be used to solve the problem of \eqref{eq:prox grad opti problem}. As this problem has a condition that must be met by the algorithms solution. If in each iteration the solution is projected on the space spanned by $g(x)=0$ the iteration \eqref{eq:grad descent} becomes \eqref{eq:projected grad descent}. This algorithm is called the gradient projection method.
+		The classical gradient decent method cannot be used to solve the problem of \eqref{eq:prox grad opti problem}. As this problem has a condition that must be met by the algorithms solution. If in each iteration the solution is projected on the space spanned by $g(x)=0$ the iteration of \eqref{eq:grad descent} becomes \eqref{eq:projected grad descent}. This algorithm is called the gradient projection method.
 		
 		\begin{equation}
 			x^k = x^{k-1} - \gamma \nabla f(x^{k-1})
@@ -50,8 +50,8 @@
 			\label{eq:proximal grad descent}
 		\end{equation}
 	
-	\subsection{The proximal gradient method}
-		\eqref{eq:prox grad problem} Can be solved with the proximal gradient method, sometimes called forward backward splitting - FBS . Where the proximal mapping of $g(x)$ is analytically defined. 
+	\section{The proximal gradient method}
+		\eqref{eq:prox grad problem} Can be solved with the proximal gradient method, sometimes called forward backward splitting (FBS) . If the proximal mapping of $g(x)$ is analytically defined. 
 			\begin{equation}
 			\underset{x}{\argmin} = f(x) + g(x)
 			\label{eq:prox grad problem}
@@ -64,10 +64,10 @@
 			\label{eq:prox grad method}
 		\end{equation}	
 	
-	\subsection{Proximal minimization algorithm}
+	\section{Proximal minimization algorithm}
 		 \cite{QianYang} Contains a short proof that illustrates the proximal mapping as a fixed point minimization algorithm. A property of the conjugated function is used to derive the gradient, see appendix for the theorem.
 		 \begin{proof}
-		 	the iteration $x^{k+1}=\prox_g(x^k)$ will minimize the smoothed version of function f(x) 
+		 	The iteration $x^{k+1}=\prox_g(x^k)$ will minimize the smoothed version of function f(x), a short version of this proof van be found in \cite{QianYang}. 
 		 	\begin{align*}
 		 	f_{\mu}
 		 	&= \underset{y}{\inf}\Big\{ |y| +\frac{1}{2 \mu}(x-y)^2 \Big\} \\
@@ -100,7 +100,7 @@
 			\label{eq:definition lipschitz value}
 			\end{equation}
 			
-			In practice it is not always possible to find the actual Lipschitz value. So the Lipschitz value is estimated ($L'$) locally at the starting location $x_0$ of the algorithm using \eqref{eq:estimated lipschitz value in starting position}. With $\delta=max[\delta_l,10^{-6} \cdot x_0]$ where $\delta_l$ is a small number chosen by the controller designer.
+			In practice it is not always possible to find the actual Lipschitz value. So the Lipschitz value is estimated ($L'$) locally at the starting location $x_0$ using \eqref{eq:estimated lipschitz value in starting position}. With $\delta=max[\delta_l,10^{-6} \cdot x_0]$ where $\delta_l$ is a small number chosen by the controller designer.
 			% in code the safety value is DELTA_LIPSCHITZ_SAFETY_VALUE and set to 10^-6
 			
 			\begin{equation}
@@ -108,35 +108,25 @@
 			\label{eq:estimated lipschitz value in starting position}
 			\end{equation}
 			
-			The Lipschitz value is not explicitly saved but is used to estimate the line-search parameter $\gamma$. The backtracking of the proximal gradient descent then further improves this estimate. As the algorithm progresses and $\gamma$ improves, so does the estimation of the Lipschitz value indirectly.
+			The Lipschitz value is not explicitly saved but is used to estimate the line-search parameter $\gamma$. The backtracking of the proximal gradient algorithm then further improves this estimate. As the algorithm progresses and $\gamma$ improves, so does the estimation of the Lipschitz value indirectly.
 		
 		\subsubsection{Estimating gamma}	
-			From \cite{LorenzoStella2017} it is known that $\gamma<\frac{1}{L}$ in order to guarantee convergence to a local minimum. As gamma needs to be smaller than $\frac{1}{L}$ a safety value is introduced. This idea was copied over from the kul-forbes/ForBES library by Lorenzo Stella and Panos Patrinos, which uses a $\beta$ of 0.05. And leads to \eqref{eq:starting value gamma}.
+			\cite{LorenzoStella2017} states that $\gamma<\frac{1}{L}$ guarantees convergence to a local minimum. As gamma needs to be smaller than $\frac{1}{L}$ a safety value is introduced. This idea was copied over from the kul-forbes/ForBES library by Lorenzo Stella and Panos Patrinos, which uses a $\beta$ of 0.05. And leads to \eqref{eq:starting value gamma}.
 			\begin{equation}
 			\gamma = \frac{1-\beta}{L}
 			\label{eq:starting value gamma}
 			\end{equation}		
 	
-	\subsection{Backtracking gamma}
-		\subsubsection{Backtracking algorithm}
-			Line-search is based on "Armijo's sufficient decrease condition" written down as \eqref{eq:Armijo's sufficient decrease condition}. The safety parameter $\theta$ multiplied with the step size $t_k$ is $\gamma=\theta \cdot t_k$. 
-			
-			\begin{equation}
-			f(x_k + t_kp_k) \leq f(x_k) + \theta t_k \nabla f(x_k)^Tp_k
-			\label{eq:Armijo's sufficient decrease condition}
-			\end{equation}
-			
-			Line-search more specific backtracking will reduce the value of $\gamma$ until the condition of \eqref{eq:Armijo's sufficient decrease condition} fails.
-			
+	\subsection{Backtracking gamma}			
 		\subsubsection{Backtracking in proximal gradient descent used in FBS}
-			The  "Armijo's sufficient decrease condition" is adjusted to \eqref{eq:Armijo's sufficient decrease condition prox grad PANOC} Which is an quadratic bound, $-p_k=x-\bar{x}$ and an additional term $\frac{1-\beta}{2 \gamma}||x-\bar{x}||^2$ is added.
+			The line-search makes use of the quadratic bound of \eqref{eq:Armijo's sufficient decrease condition prox grad PANOC} Which is an quadratic bound, by backtracking on $\gamma$ the optimal step size is retrieved.
 			
 			\begin{equation}
 			f({\bar{x}}) \leq f(x) - \nabla f(x)^T[x-\bar{x}] + \frac{1}{2 \gamma}||x-\bar{x}||^2
 			\label{eq:Armijo's sufficient decrease condition prox grad PANOC}
 			\end{equation}
 			
-			This all leads to algorithm~\ref{alg:backtracking on gamma} the proximal gradient method. \eqref{eq:Armijo's sufficient decrease condition prox grad PANOC} can be seen as a quadratic model, as the Lipschitz value of the gradient is equal to $L=\frac{1}{\gamma}$.
+			This leads to algorithm~\ref{alg:backtracking on gamma} the proximal gradient method. \eqref{eq:Armijo's sufficient decrease condition prox grad PANOC} can be seen as a quadratic model, as the Lipschitz value of the gradient is equal to $L=\frac{1}{\gamma}$.
 			
 			\begin{algorithm}
 				\caption{backtracking $\gamma$}
