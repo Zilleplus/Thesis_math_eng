@@ -92,7 +92,7 @@ The nmpc-codegen library and PANOC draft are using a cautious L-BFGS update whic
 The invention of electronic control systems has proven to be especially useful when controlling quadcopters. Because of their complex behavior they are hard to control manually by a pilot. However quadcopters are popular among unmanned aerial vehicles as they can be controlled by a fast digital/analog controller.
 
 \subsection{Mathematical model}
-The mathematical model of the quadcopter is obtained from \cite{Agudelo}. The behavior of a quad copter is described by a set of nonlinear equations as illustrated in \eqref{eq:mathematical model quadcopter}.
+The mathematical model of the quadcopter is obtained from \cite{Agudelo}. The behavior of a quad copter is described by a set of nonlinear equations as illustrated in \eqref{eq:mathematical model quadcopter}. The $x$, $y$ and $z$ states, are the coordinates towards the origin, also called the inertial frame. The $\gamma$, $\theta$ and $\phi$ states are the angles displayed in figure~\ref{fig:quadcopter model diagram}. And finally $\omega_x$,$\omega_x$ and $\omega_x$ are the angular velocities.
 
 \begin{table}[]
 	\centering
@@ -114,6 +114,13 @@ The mathematical model of the quadcopter is obtained from \cite{Agudelo}. The be
 		\hline
 	\end{tabular}
 \end{table}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\textwidth]{quadcopter}
+	\caption{Diagram of the quadcopter states from  \cite{Agudelo}}
+	\label{fig:quadcopter model diagram}
+\end{figure}
 
 \begin{equation}
 	\begin{aligned}
