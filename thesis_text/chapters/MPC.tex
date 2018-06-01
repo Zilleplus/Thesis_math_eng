@@ -2,31 +2,24 @@
 \section{Optimal control problem}
 	The optimal control problem goes back more than 300 years. From Galileo and Newton to Johann Bernoulli and Euler with the Brachistochrone problem. The goal in optimal control is to find the appropriate inputs or control law. So that the dynamic system behaves optimally, according to some criterion. 
 	
-	The main ingredients involved in the definition of an optimal are: a set of differential equations that describes the behavior of the system. A cost function that describes the cost of the specific trajectory integrated on the differential equations. The optimal solution will have the lowest cost possible.
+	The main ingredients involved in the definition of an optimal are: a set of differential equations that describes the behavior of the system. A cost function that describes the cost of the specific trajectory integrated on the differential equations. The optimal solution has the lowest cost possible.
 	
-	Optimal control problems can be mathematically defined as the cost function \eqref{eq:optimal control definition}(With boundary conditions \eqref{eq:optimal control definition state equations boundary conditions})  and the behavior of the system \eqref{eq:optimal control definition state equations}. In addition constraints can be placed on the state and inputs, as shown by \eqref{eq:optimal control definition state equations path constraints}. 
+	Optimal control problems can be mathematically defined as \eqref{eq:optimal control definition}. With boundary conditions $S[x(t_0),t_0,x(T),T]=0$ and the behavior of the system $ \dot{x}(t) = F(x(t),u(t),t)$. Addition constraints can be placed on the state and inputs, like $C[x(t),u(t),t]\le 0$. 
 	
 	\begin{equation}
-		J = S[x(t_0),t_0,x(T),T] + \int_{t_0}^{T} L[x(t),u(t),t]
+		\begin{aligned}
+			\min_u \ & S[x(t_0),t_0,x(T),T] + \int_{t_0}^{T} L[x(t),u(t),t] \\ 
+			\text{subject to: } & \dot{x}(t) = F(x(t),u(t),t) \\
+			& C[x(t),u(t),t]\le 0 \\
+			& S[x(t_0),t_0,x(T),T]=0
+		\end{aligned}
 		\label{eq:optimal control definition}
-	\end{equation}
-	\begin{equation}
-		\dot{x}(t) = F(x(t),u(t),t)
-		\label{eq:optimal control definition state equations}
-	\end{equation}
-	\begin{equation}
-		C[x(t),u(t),t]\le 0
-		\label{eq:optimal control definition state equations path constraints}
-	\end{equation}
-	\begin{equation}
-		S[x(t_0),t_0,x(T),T]=0
-		\label{eq:optimal control definition state equations boundary conditions}
 	\end{equation}
 
 \section{MPC}
-	Model predictive control is an advanced control method that continuously solves a  optimal control problem in real-time. At a constant rate the state is measured, an optimal control problem is defined and solved. The  optimal input is then applied to the system, and the cycle repeats itself.
+	Model predictive control is an advanced control method that continuously solves an  optimal control problem in real-time. At a constant rate the state is measured, an optimal control problem is defined and solved. The  optimal input is then applied to the system, and the cycle repeats itself.
 	
-	A continuous-time physical system can be defined as $\dot{x}=F_c(x,u)$, where $x$ is the current state and $u$ is the current input. However when using computer systems it's often required to have a discrete-time system. A discrete integrator can transform a continuous-time system into a discrete-time system, that is defined as: $x^{k+1}=F_d(x^{k},u^{k})$. 
+	A continuous-time physical system can be defined as $\dot{x}=F_c(x,u)$, where $x$ is the current state and $u$ is the current input. However when using computer systems it's often required to have a discrete-time system. A discrete integrator can transform a continuous-time system into a discrete-time system, defined as: $x^{k+1}=F_d(x^{k},u^{k})$. 
 	
 	\eqref{fig:MPC diagram} Is a diagram from Wikipedia \cite{Wikipedia} that illustrates MPC. The reference trajectory is the wanted behavior, the predicted control input is the input that is obtained from the controller that leads to the predicted trajectory.
 	\begin{figure}[h]
@@ -41,7 +34,7 @@
 	\subsection{Problem definition}
 	The problem definition is based on \cite{Diehl2005}.
 		\subsubsection{Problem form}
-			The optimal control problem can be written as a non linear programming (NLP) problem  \eqref{eq:PANOC MPC form}. When solve the optimal inputs are obtained given a intial state $x_0$. Sometimes $x_0$ will be assumed to be part of the function f, just like the reference state and reference input. Which leads to the simplified equation, \eqref{eq:PANOC form} .
+			The optimal control problem can be written as a non linear programming (NLP) problem  \eqref{eq:PANOC MPC form}. When solved the optimal inputs are obtained for a given initial state $x_0$. Sometimes $x_0$ will be assumed to be part of the function f, just like the reference state and reference input. Which leads to the simplified equation of \eqref{eq:PANOC form} .
 			\begin{equation}
 				\underset{u}{\minimize} \  f(x_0,u) + g(u)
 				\label{eq:PANOC MPC form}
@@ -52,7 +45,7 @@
 				\label{eq:PANOC form}
 			\end{equation}
 		\subsubsection{Direct Single shoot}
-			The direct single shoot definition with a predict horizon of N. Can be written as a NLP that is solved for $u=[u_0,u_1,... u_{N-1}]$. Each of the $u_k$ vectors is the inputs of the system at a particular time in the predict horizon. This means that the size of the vector u is the predict horizon multiplied with the dimension of the input .
+			The direct single shoot definition with a predict horizon of N. Can be written as a NLP that is solved for $u=[u_0,u_1,... u_{N-1}]$. Each of the $u_k$ vectors is the inputs of the system at a particular time in the predict horizon. This means that the size of the vector $u$ is the predict horizon multiplied with the dimension of the input .
 			
 			The cost on each step in the horizon is defined as \eqref{eq:single shot iteration cost}, this is called the stage cost.
 			\begin{equation}
@@ -93,7 +86,7 @@
 				\label{eq:}
 			\end{equation}
 			
-			The continuity conditions are displayed in \eqref{eq:continuety condition multiple shot} and were not necessary in single shot, as there are no state estimates like $\bar{x}$. If the initial state estimates are relatively close to the solution, a significant speed increase can be accomplished. As more information can be incorporate into the problem.
+			The continuity conditions are displayed in \eqref{eq:continuety condition multiple shot} and were not necessary with the single shot definition, as there are no state estimates like $\bar{x}$. If the initial state estimates are relatively close to the solution, a significant speed increase can be accomplished. As more information can be incorporate into the problem.
 			
 			\begin{equation}
 				\bar{x_i} - x_{i+1} = 0
@@ -120,9 +113,9 @@
 			\end{equation}
 			
 		\subsection{Obstacle avoidance}
-			The obstacle avoidance is based on the soft constraint definition described in \cite{AjaySathya2017}. It can be described as a set or an constraint.
+			The obstacle avoidance is based on the soft constraint definition described in \cite{AjaySathya2017}. It can be described as either a set or a constraint.
 			\subsubsection{As set}
-				 obstacle can be defined as an open set, as illustrated by \eqref{eq:obstacle as open set}. It is defined by the intersection of a set of nonlinear inequalities.
+				 The obstacle can be defined as an open set, as illustrated by \eqref{eq:obstacle as open set}. It is determined by the intersection of a set of nonlinear inequalities.
 				\begin{equation}
 					O = \{ z \in \Re^d : h^i(z)>0,\ i \in N \}
 					\label{eq:obstacle as open set}

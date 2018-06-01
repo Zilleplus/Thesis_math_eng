@@ -8,6 +8,9 @@ The trailer model has a low computational cost, which makes simulations cheap. T
 In this chapters the following solves will be used to compare nmpc-codegen with:
 ipopt from the OPTI Toolbox in Matlab, fmincon the internal solvers of Matlab and PANOC draft. PANOC draft uses the same solver as nmpc-codengen, it is also implemented by Willem Melis. PANOC draft has the same software architecture as ipopt with OPTI toolbox. A solver implemented in C callable from Matlab trough a mex file.
 
+\section{Notes on time measurements}
+All the time measurements in this chapter are measured to an accuracy of 1 ms. When the time is less then 1ms it will be assumed zero. The time plots that have a logarithmic scale will not be able to display zero, and so no data-points will be visualized when they are zero.
+
 \section{Trailer model}
 The trailer model is illustrated in figure~\ref{fig:trailer model}, the left rectangle is the trailer and the right rectangle is the driver. The driver pulls the trailer forward. The driver is connected to the trailer via a single arm as illustrated in figure~\ref{fig:trailer model}. The control system can only change the speed in the Y and X axis. The goal of the control system is to get the trailer at a certain position, at a certain angle. Figure~\ref{fig:trailer model} illustrates the trailer in a neutral position, which means under an angle of 0 degrees.
 

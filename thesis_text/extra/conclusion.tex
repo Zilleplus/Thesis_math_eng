@@ -1,13 +1,20 @@
 \chapter{Conclusion}
 %\label{cha:conclusion}
-The final chapter contains the overall conclusion. It also contains
-suggestions for future work and industrial applications.
+%The final chapter contains the overall conclusion. It also contains
+%suggestions for future work and industrial applications.
 
-The nmpc-codegen library is implemented in Matlab and Python, simple model predictive control problems works very well. As illustrated in the text. It requires absolutely no knowledge of how the solver works. But only requires control theory knowledge to generate the controller. The generate controller, has a very simple interface that requires nearly no control theory knowledge. So that the user of the generated library, does necessarily have to be a control engineer but could be an embedded software engineer.
+\section{Nmpc-codegen library}
+The nmpc-codegen library is implemented in Matlab and Python, which makes it quiet straight forward to design and test a controller. It requires absolutely no knowledge of how the solver works. But only requires control theory knowledge to generate the controller.
 
-However as the obstacles get more complex, the problem becomes more complex. And the direct single shot approach results in solutions that are not viable. The algorithm gets stuck on a local minimum, which might be in an nonviable solution.
+The generated controller, has a very simple interface that requires nearly no control theory knowledge. So that the user of the generated C library, does necessarily has to be a control engineer but could be an embedded software engineer. Who has no idea how a MPC controller works.
 
-The last chapter tries to partially solve this by using a Lagrangian. This is ongoing research by Ben Hermans. Its implementation is rather limited as it is ongoing research.
+However as the problem becomes more complex. The algorithm can get stuck on a local minimum, which might be in an nonviable solution. Or it might violate the constraint by a to large margin. This can partially be avoided by properly tuning the weights of the constraints. 
+
+However this weight tuning is rather hard, as increasing the weights worsens the condition of the problem. So the controller designer often ends up with an impossible choice. The last chapter tries to partially solve this by using a Lagrangian. And succeeds for some constraints, it's easier to tune and improves the performance of the controller. 
+
+\section{Future work}
+The PANOC algorithm does not require more advanced algebra operations, like solving a system. Only simple vector additions and inner product are required. This makes it quiet easy to implement in hardware. As it's very straightforward to implement with flip-flops and adders. The only hard part is the cost function and it's gradient, as Casadi does not support VHDL or Verilog at this time.
+
 
 %%% Local Variables: 
 %%% mode: latex
