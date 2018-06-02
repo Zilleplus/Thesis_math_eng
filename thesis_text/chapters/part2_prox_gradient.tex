@@ -1,6 +1,6 @@
 \chapter{Proximal gradient method}
 	\section{Proximal mapping}
-		The proximal operator is defined as $\prox_{\gamma g}(x)= \underset{u}{\argmin}(g(u) + \frac{1}{2 \gamma}||u-x||^2_2)$. 
+		The proximal operator is defined as $\prox_{\gamma g}(x)= \underset{u}{\argmin}(g(u) + \frac{1}{2 \gamma}||u-x||^2_2)$ in \cite{NealParikh}. 
 		
 		\begin{itemize}
 			\item if $h(x)=0$ then $\prox_{\gamma h}(x)=x$ 
@@ -57,7 +57,7 @@
 			\label{eq:prox grad problem}
 			\end{equation}
 		
-		Inspired by the projected gradient method, the proximal gradient method is defined as \eqref{eq:prox grad method}. The $\gamma$ variable is the step size, in order to have a convergence of O(1/k) $\gamma \in(0,1/L)$. If $\gamma \in (1/L,2/L)$ the algorithm will still converge but then its no longer a majorization-minimization method. (more on this see \cite{NealParikh})
+		Inspired by the projected gradient method, the proximal gradient method is defined as \eqref{eq:prox grad method} in \cite{NealParikh}. The $\gamma$ variable is the step size, in order to have a convergence of O(1/k) $\gamma \in(0,1/L)$. If $\gamma \in (1/L,2/L)$ the algorithm will still converge but then its no longer a majorization-minimization method. (more on this see \cite{NealParikh})
 		
 		\begin{equation}
 			x^k = \prox_{\gamma g}\big( x^{(k-1)}- \gamma \nabla f(x^{(k-1)})\big)
@@ -67,7 +67,7 @@
 	\section{Proximal minimization algorithm}
 		 \cite{QianYang} Contains a short proof that illustrates the proximal mapping as a fixed point minimization algorithm. A property of the conjugated function is used to derive the gradient, see appendix for the theorem.
 		 \begin{proof}
-		 	The iteration $x^{k+1}=\prox_g(x^k)$ will minimize the smoothed version of function f(x), a short version of this proof van be found in \cite{QianYang}. 
+		 	The iteration $x^{k+1}=\prox_g(x^k)$ will minimize the smoothed version of function f(x), a shorter version of this proof van be found in \cite{QianYang}. 
 		 	\begin{align*}
 		 	f_{\mu}
 		 	&= \underset{y}{\inf}\Big\{ |y| +\frac{1}{2 \mu}(x-y)^2 \Big\} \\
@@ -108,7 +108,7 @@
 			\label{eq:estimated lipschitz value in starting position}
 			\end{equation}
 			
-			The Lipschitz value is not explicitly saved but is used to estimate the line-search parameter $\gamma$. The backtracking of the proximal gradient algorithm then further improves this estimate. As the algorithm progresses and $\gamma$ improves, so does the estimation of the Lipschitz value indirectly.
+			The Lipschitz value is not explicitly saved but is used to estimate the line-search parameter $\gamma$. The backtracking of the proximal gradient algorithm then further improves $\gamma$. As the algorithm progresses and $\gamma$ improves, so does the estimation of the Lipschitz value indirectly.
 		
 		\subsubsection{Estimating gamma}	
 			\cite{LorenzoStella2017} states that $\gamma<\frac{1}{L}$ guarantees convergence to a local minimum. As gamma needs to be smaller than $\frac{1}{L}$ a safety value is introduced. This idea was copied over from the kul-forbes/ForBES library by Lorenzo Stella and Panos Patrinos, which uses a $\beta$ of 0.05. And leads to \eqref{eq:starting value gamma}.
@@ -157,7 +157,7 @@
 		\end{algorithm}
 \section{Proximal gradient alternative view}
 	\subsection{Majorization-minimization algorithm}
-	A Majorization-minimization algorithm, is a type of algorithm that minimizes a surrogate function. The surrogate function is a approximation of the actual problem. And needs to have the conditions described in \eqref{eq:MM algorithm conditions}, where h(x,y) is a surrogate function and f(x) is the actual problem. The problem described in \eqref{eq:MM algorithm formula step} is iteratively solved until convergence.
+	A Majorization-minimization algorithm is a type of algorithm that minimizes a surrogate function. The surrogate function is a approximation of the actual problem. And needs to have the conditions described in \eqref{eq:MM algorithm conditions}, where h(x,y) is a surrogate function and f(x) is the actual problem. The problem described in \eqref{eq:MM algorithm formula step} is iteratively solved until convergence.
 	\begin{equation}
 		\begin{cases}
 			h(x,x) = f(x) \\
@@ -172,7 +172,7 @@
 	\end{equation}
 
 	\subsection{The proximal gradient as majorization-minimization algorithm}
-	The proximal gradient algorithm can be seen as a majorization-minimization algorithm. Its surrogate function is described in \eqref{eq:surrogate function}, proof~\ref{prf:proximal gradient as MM} illustrates how minimizing the surrogates function is equal as taking a step of the proximal gradient algorithm.
+	\cite{NealParikh} States that the proximal gradient algorithm can be seen as a majorization-minimization algorithm. Its surrogate function is described in \eqref{eq:surrogate function}, proof~\ref{prf:proximal gradient as MM} illustrates how minimizing the surrogates function is equal as taking a step of the proximal gradient algorithm.
 	
 	\begin{equation}
 		h(x,y) = f(x) + \nabla f(x)^T(x-y) + \frac{1}{2 \cdot \gamma}||x-y||^2_2

@@ -2,7 +2,7 @@
 \section{Optimal control problem}
 	The optimal control problem goes back more than 300 years. From Galileo and Newton to Johann Bernoulli and Euler with the Brachistochrone problem. The goal in optimal control is to find the appropriate inputs or control law. So that the dynamic system behaves optimally, according to some criterion. 
 	
-	The main ingredients involved in the definition of an optimal are: a set of differential equations that describes the behavior of the system. A cost function that describes the cost of the specific trajectory integrated on the differential equations. The optimal solution has the lowest cost possible.
+	The main ingredients involved in the definition of an optimal are: a set of differential equations that describes the behavior of the system. A cost function that describes the cost of the specific trajectory integrated on the differential equations.
 	
 	Optimal control problems can be mathematically defined as \eqref{eq:optimal control definition}. With boundary conditions $S[x(t_0),t_0,x(T),T]=0$ and the behavior of the system $ \dot{x}(t) = F(x(t),u(t),t)$. Addition constraints can be placed on the state and inputs, like $C[x(t),u(t),t]\le 0$. 
 	
@@ -45,7 +45,7 @@
 				\label{eq:PANOC form}
 			\end{equation}
 		\subsubsection{Direct Single shoot}
-			The direct single shoot definition with a predict horizon of N. Can be written as a NLP that is solved for $u=[u_0,u_1,... u_{N-1}]$. Each of the $u_k$ vectors is the inputs of the system at a particular time in the predict horizon. This means that the size of the vector $u$ is the predict horizon multiplied with the dimension of the input .
+			The direct single shoot definition with a predict horizon of N. Can be written as a NLP that is solved for $u=[u_0,u_1,... u_{N-1}]$. Each of the $u_k$ vectors is the inputs of the system at a particular time in the predict horizon. This means that the size of the vector $u$ is the predict horizon multiplied by the dimension of the input .
 			
 			The cost on each step in the horizon is defined as \eqref{eq:single shot iteration cost}, this is called the stage cost.
 			\begin{equation}
@@ -68,7 +68,7 @@
 				\label{eq:single shot terminal cost}
 			\end{equation}
 			
-			The cost function $f(x_0,u)$ becomes \eqref{eq:single shot definition}, the sum of the stage costs and the terminal cost.
+			So according to \cite{Diehl2005} the cost function $f(x_0,u)$ becomes \eqref{eq:single shot definition}, the sum of the stage costs and the terminal cost.
 			
 			\begin{equation}
 				f(x_0,u) = \sum_{k=1}^{N-1} l_k(x_0,u) + l_N
@@ -77,7 +77,7 @@
 			
 			An other term can be added to \eqref{eq:single shot definition} to represent the obstacle avoidance. More on this later in the subsection on obstacles.
 		\subsection{Direct Multiple shoot}
-			The multiple shoot uses more initial information than just the initial inputs of the predict horizon. It requires an initial estimate of the intermediate states. These state estimates will be referred to as $x_i$ and the states derived from the estimate and its corresponding input will be referred to as $\bar{x_i}$. 
+			The multiple shoot as defined in \cite{Diehl2005} uses more initial information than just the initial inputs of the predict horizon. It requires an initial estimate of the intermediate states. These state estimates will be referred to as $x_i$ and the states derived from the estimate and its corresponding input will be referred to as $\bar{x_i}$. 
 			
 			Just as with the Single Shot, the goal is to find the optimal inputs $u_i$. However there are additional continuity conditions: $\bar{x_i} - x_{i+1} = 0$.
 			
@@ -93,7 +93,7 @@
 				\label{eq:continuety condition multiple shot}
 			\end{equation}
 			
-			The direct multiple shoot definition is formally defined as \eqref{eq:multiple shot cost}, and has an extra equality condition compared to the single shoot. The continuity conditions can be added as a soft constraints to the cost function. This is displayed in \eqref{eq:multiple shot cost with soft constraint} and will be used in the practical implementation.
+			The direct multiple shoot definition is formally defined as \eqref{eq:multiple shot cost} in \cite{Diehl2005}, and has an extra equality condition compared to the single shoot. The continuity conditions can be added as a soft constraints to the cost function. This is displayed in \eqref{eq:multiple shot cost with soft constraint} and will be used in the practical implementation.
 			
 			\begin{equation}
 				\begin{aligned}
@@ -112,8 +112,9 @@
 			\label{eq:multiple shot cost with soft constraint}
 			\end{equation}
 			
+			The simulation results using multiple shoot with the PANOC algorithm are quiet bad and not further discussed.
 		\subsection{Obstacle avoidance}
-			The obstacle avoidance is based on the soft constraint definition described in \cite{AjaySathya2017}. It can be described as either a set or a constraint.
+			The obstacle avoidance is based on the soft constraint definition described in \cite{AjaySathya2017}. It is described as either a set or a constraint in \cite{AjaySathya2017}.
 			\subsubsection{As set}
 				 The obstacle can be defined as an open set, as illustrated by \eqref{eq:obstacle as open set}. It is determined by the intersection of a set of nonlinear inequalities.
 				\begin{equation}
@@ -133,7 +134,7 @@
 					\label{eq:obstacle as equality}
 				\end{equation}
 				
-				The gradient of \eqref{eq:obstacle as equality} is define as \eqref{eq:obstacle as equality}
+				The gradient of \eqref{eq:obstacle as equality} is define as \eqref{eq:obstacle as equality} in cite{AjaySathya2017}.
 				
 				\begin{equation}
 					\nabla \Phi =

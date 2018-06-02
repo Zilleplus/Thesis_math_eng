@@ -1,9 +1,11 @@
 \begin{abstract}
-Modern control systems often make use of model predictive control. When linear models are used, a set of linear equations must be solved. Which is easily accomplished using linear algebra. When non linear models are used, a set of non linear equations must be solved.
+Modern control systems often make use of model predictive control. When linear models are used, a set of linear equations must be solved. Which is solved with linear algebra. When non linear models are used, a set of non linear equations must be solved.
 
-A set of nonlinear equation is typically solved with iterative algorithms. The current available algorithms, are very expensive in memory and CPU usage. This is where the PANOC algorithm comes in, as it uses a very limited amount of memory, and sometimes uses significantly less computations. And still maintains super linear convergence.
+A set of nonlinear equations is typically solved with an iterative algorithm. The current available algorithms, are costly in memory and CPU usage. This is where the PANOC algorithm comes in, as it uses a very limited amount of memory, and sometimes uses significantly less computations. And still maintains super linear convergence.
 
-The goal of this thesis, is to construct a framework in Matlab and Python that generates a non linear MPC controller in C code using the PANOC algorithm. And makes use of CASADI to calculate the gradient using automatic backward differentiation.
+The goal of this thesis, is to construct a framework in Matlab and Python that generates a non linear MPC controller in C code using the PANOC algorithm.
 
 The library also provides an easy way to simulate the controller in Python or Matlab. This way the necessary parameters can be properly tuned.
+
+In the first chapters the PANOC algorithm is discussed. Followed by a high level view of nmpc-codegen, the software package constructed with this thesis. Some simulation results are included to compare the implementation to some of the state of the art solver. The final chapter discuses a recent improvement of the PANOC algorithm with MPC.
 \end{abstract}
