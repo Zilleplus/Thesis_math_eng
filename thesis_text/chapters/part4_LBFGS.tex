@@ -106,7 +106,7 @@
 	\cite{Dong-HuiLi1999} Suggests a cautious update based on the size of the gradient and $\frac{y_k^Ts_k}{s_k^Ts_k}$ as illustrated in \eqref{eq:cautious update}. The two parameters epsilon and alpha are both positive constants. The cautious update of \eqref{eq:cautious update} is relevant when the algorithm is near fixed point. And the step size is so small the function values hardly change. The information in $s_k$ and $y_k$ is then dominated by noise and cannot be trusted.
 	
 	\subsection{L-BFGS implementation}
-		When using  L-BFGS algorithm(algorithm~\ref{alg:LBFGS}) to solve \eqref{eq:LBFGS problem}. The direction is equal to the proximal gradient step if there is no initial hessian estimate. The buffer size will increase with every valid update from 1 to the limit specified by the controller designer.
+		When using  L-BFGS algorithm(algorithm~\ref{alg:LBFGS}) to solve \eqref{eq:LBFGS problem}. The direction is equal to the proximal gradient step if there is no initial hessian estimate. The buffer size will increase with every valid update, to the limit specified by the controller designer.
 		
 		\begin{equation}
 			R(x) = \frac{1}{\gamma}\left[ x - \prox_g( x - \nabla f(x)\gamma) \right] = 0
