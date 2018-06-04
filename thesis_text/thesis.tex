@@ -33,6 +33,14 @@
 \usepackage{subcaption}
 \usepackage{amssymb}
 \usepackage{listings}
+\usepackage{tabularx}
+
+% package used to import poster
+\usepackage[final]{pdfpages}
+
+% allow landscape
+%\usepackage{pdflscape}
+%\usepackage{rotating}
 
 \usepackage{amsmath,amsthm,amssymb}
 \DeclareMathOperator{\project}{project}
@@ -46,12 +54,13 @@
 %\includeonly{chap-n}
 \begin{document}
 
-%\begin{preface}
+\begin{preface}
+TODO
 %  I would like to thank everybody who kept me busy the last year,
 %  especially my promoter and my assistants. I would also like to thank the
 %  jury for reading the text. My sincere gratitude also goes to my wive and
 %  the rest of my family.
-%\end{preface}
+\end{preface}
 
 \tableofcontents*
 
@@ -59,12 +68,12 @@
 
 % A list of figures and tables is optional
 \listoffigures
-%\listoftables
+\listoftables
 % If you only have a few figures and tables you can use the following instead
 
 % The list of symbols is also optional.
 % This list must be created manually, e.g., as follows:
-%\include{./extra/symbols_abbreviations}
+\include{./extra/symbols_abbreviations}
 
 % Now comes the main text
 \mainmatter
