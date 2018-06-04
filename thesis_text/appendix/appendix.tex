@@ -1,3 +1,11 @@
+\chapter{Abstract Dutch}
+Tegenwoordig gebruiken moderne controlesystemen "model predictive control" algoritmes. Wanneer lineaire modellen worden gebruikt, moet een stelsel van lineaire vergelijkingen worden opgelost. De algoritmes voor het oplossen van een stelsel van lineaire vergelijkingen zijn uitgebreid onderzocht en geimplementeerd. 
+
+Wanneer niet lineaire modellen worden gebruikt, moet een niet lineaire stelsel opgelost worden. Dit wordt typisch opgelost met een iteratief algoritme zoals "interior point" algoritmes. Deze algoritmes gebruiken veel geheugen wat ze vaak ondergeschikt maakt voor embedded toepassingen. Dit is waar het PANOC algoritme interessant wordt, het kan namelijk een niet lineaire stelsel oplossen met veel minder geheugen dan een "interior point" algoritme. Maar heeft aslook super lineaire convergentie.
+
+Het doel van deze thesis is om een raamwerk te implementeren dat een niet lineaire MPC controller genereerd in C, die gebruikt maakt van het PANOC algoritme. De code is specifiek gericht aan embedded toestellen, waardoor PANOC een uitstekende keuze is. 
+
+
 \chapter{Mathematical definitions}
 	\section{Box function}
 		1 dimension:
@@ -267,3 +275,6 @@
 	\caption{min time till convergence in milliseconds}
 	\label{tbl:min time till convergence with noise}
 \end{table}
+
+\chapter{Poster}
+\includepdf[pages={-},fitpaper,rotateoversize]{poster.pdf}
