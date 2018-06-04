@@ -2,12 +2,12 @@
 This chapter discusses simulations using simple mathematical models to create a controller. First the mathematical model is defined, after that some simulation results are discussed.
 
 \section{Solvers}
-In this chapter the following solvers will be used next to nmpc-codegen: ipopt from the OPTI toolbox in Matlab, fmincon the internal solvers of Matlab and PANOC draft. PANOC draft uses a similar solver implementation as nmpc-codengen, it is also implemented by Willem Melis. PANOC draft has the same software architecture as ipopt with OPTI toolbox. A solver implemented in C callable from Matlab trough a mex interface.
+In this chapter the following solvers will be used next to nmpc-codegen: ipopt from the OPTI toolbox in Matlab, fmincon the internal solvers of Matlab and PANOC draft. PANOC draft uses a similar solver implementation to nmpc-codengen, it is also implemented by Willem Melis. PANOC draft has the same software architecture as ipopt with OPTI toolbox. A solver implemented in C callable from Matlab trough a mex interface.
 
 \section{Notes simulations}
-In each of the simulation steps a NLP solver calculates the optimal input up to the tolerance of $10^{-3}$. The convergence time and the amount of iterations till convergence are also obtained. The optimal input is then applied to one step of the system, and the next state is obtained. The same nmpc problem is solved using the new state as current state  and the new input is applied again to the system. The simulation steps are usually plotted on the x axis and the convergence time on the y axis.
+In each of the simulation steps the NLP solver calculates the optimal inputs up to the tolerance of $10^{-3}$. The optimal input, convergence time and the amount of iterations till convergence are obtained. The optimal input is then applied to one step of the system, and the next state is obtained. A new nmpc problem is setup using the new state as initial state. The nmpc problem is solved using the NLP solver and the cycle repeats itself. The simulation steps are usually plotted on the x axis and the convergence time on the y axis.
 
-The time measurements in this thesis are all measured up to an accuracy of 1 ms. When the time is less then 1 ms, it will be assumed zero. The time plots that have a logarithmic scale will not be able to display zero, and so no data-points will be visualized when they are zero.
+The time measurements in this thesis are all measured to an accuracy of 1 ms. When the time is less then 1 ms, it will be assumed zero. The time plots that have a logarithmic scale will not be able to display zero, and so no data-points will be visualized when they are zero.
 
 \section{Model complexity}
 The trailer model has a low computational cost, which makes simulations cheap. The quad copter model, is a complex model, that requires lots of computations in each of the simulation steps. In this chapter it will become clear that PANOC is very good with simple models, but significantly slower with complex models.
@@ -33,13 +33,15 @@ The mathematical model of the trailer is represented in \eqref{eq:trailer model}
 	\label{eq:trailer model}
 \end{equation}
 
+The state of the trailer is represented on the illustrations by an arrow. The starting point of the arrow is the position of the trailer. The angle of the arrow represents the positional angle of the trailer. The amplitude of the arrow has no meaning.
+
 \section{A simple trailer example}
-One way of measuring the performance of the library is to compared it to the alternatives. In the following simulation the nmpc-codegen library will be compared to, ForBes zerofrp2, PANOC draft, ipopt and fmincon the internal Matlab solver. Using either of the three algorithms: interior point, SQP and active set available in fmincon.
+One way of measuring the performance of the library is to compared it to the alternatives. In the following simulation the nmpc-codegen library will be compared to, ForBes zerofrp2, PANOC draft, ipopt and fmincon the internal Matlab solver. Using fmincon with either of the three algorithms available: interior point, SQP and active set.
 
 \subsection{General performance}
-Several NMPC problems can be constructed and solved with nmpc-codegen. Figure~\ref{fig:demos} illustrates the problems used to benchmark nmpc-codegen, they all use the same trailer model but have different obstacles. The time till convergence is measured, the average time is displayed in the appendix table~\ref{tbl:mean time till convergence}. While the maximum and minimum time is displayed in the appendix: table~\ref{tbl:min time till convergence} and table~\ref{tbl:max time till convergence}.
+Several NMPC problems can be constructed and solved with nmpc-codegen. Figure~\ref{fig:demos} in the appendix illustrates the problems used to benchmark nmpc-codegen, they all use the same trailer model but have different obstacles. The time till convergence is measured, the average time is displayed in the appendix table~\ref{tbl:mean time till convergence}. While the maximum and minimum time is displayed in the appendix: table~\ref{tbl:min time till convergence} and table~\ref{tbl:max time till convergence}.
 
-The convergence time can be expresses relatively to the convergence time of the nmpc-codegen time as illustrated by \eqref{eq:definition relative time}. These results are displayed in table~\ref{tbl:mean relative time till convergence}. From table~\ref{tbl:mean relative time till convergence} it's clear that nmpc-codegen dominates by a significant margin. The section on the influence of noise will discuss the effects of state noise on the measurements.
+The convergence time can be expresses relatively to the convergence time of the nmpc-codegen time as \eqref{eq:definition relative time}. The relative timings are displayed in table~\ref{tbl:mean relative time till convergence}. From table~\ref{tbl:mean relative time till convergence} it's clear that nmpc-codegen dominates by a significant margin. The section on the influence of noise will discuss the effects of state noise on the measurements.
 
 \begin{equation}
 	t_{relative} = \frac{t_{algorithm}}{t_{nmpc-codegen}}
@@ -47,11 +49,9 @@ The convergence time can be expresses relatively to the convergence time of the 
 \end{equation}
 
 \subsection{In-dept analysis of performance}
-The in-dept simulation contains four circular obstacles, the trailer will move from the lower left corner to the upper right corner. The state of the trailer will is represented by arrows, the starting point of the arrow is the position of the trailer. The angle of the arrow represents the positional angle of the trailer. The amplitude of the arrow has no meaning.
+The in-dept simulation contains four circular obstacles, the trailer will move from the circle symbol towards the star symbol as illustrated in figure~\ref{fig:solution path trailer example}. Figure~\ref{fig:simulation result trailer model} contains the results of the trailer model simulation. The PANOC algorithm calculated the lowest located path displayed in figure~\ref{fig:solution path trailer example} while all other algorithms like the interior point method of ipopt obtained the upper located path.
 
-Figure~\ref{fig:simulation result trailer model} contains the results a trailer model simulation. The PANOC algorithm calculated the lowest located path displayed in figure~\ref{fig:solution path trailer example} while all other algorithms like the interior point method of ipopt obtained the upper located path.
-
-Figure~\ref{fig:timings trailer example} clearly indicates that the nmpc-codegen library is the fastest solver. As nmpc-codegen works completely in C, it has a advantage that has little to do with the algorithm but with the software architecture. Therefore it is advisable to compare PANOC draft and ipopt. PANOC draft dominates after the first few steps in the simulation. Figure~\ref{fig:timings fmincon Matlab trailer example} shows that this is also the case when comparing PANOC draft with the 3 different fmincon algorithms.
+Figure~\ref{fig:timings trailer example} clearly indicates that the nmpc-codegen library is the fastest solver. As nmpc-codegen is completely implemented in C, it has a advantage that has little to do with the algorithm but with the software architecture. Therefore it is advisable to compare PANOC draft and ipopt. PANOC draft dominates after the first few steps in the simulation. Figure~\ref{fig:timings fmincon Matlab trailer example} shows that this is also the case when comparing PANOC draft with the 3 different fmincon algorithms.
 
 \begin{figure}[H]
 	\centering
@@ -86,11 +86,11 @@ Figure~\ref{fig:timings trailer example} clearly indicates that the nmpc-codegen
 	\label{fig:simulation result trailer model}
 \end{figure}
 
-The nmpc-codegen library and PANOC draft are using a cautious L-BFGS update which improves the performance of the L-BFGS. This is clear from figure~\ref{fig:iterations trailer example} where not the time till convergence, but the amount of iterations till convergence are illustrated. The nmpc-codegen clearly needs less iterations than  Forbes zerofpr2. As the simulation progresses, less and less iterations are needed to converge. And the L-BFGS doesn't influence the convergence as much, so the two algorithms have about the same amount iterations till convergence. Figure~\ref{fig:timings fmincon Matlab trailer example} show
+The nmpc-codegen library and PANOC draft libraries both use a cautious L-BFGS update which improves the performance of the L-BFGS. This is clear from figure~\ref{fig:iterations trailer example} where not the time till convergence, but the amount of iterations till convergence are illustrated. The nmpc-codegen clearly needs less iterations than  Forbes zerofpr2. As the simulation progresses, less and less iterations are needed to converge. And the L-BFGS doesn't influence the convergence as much, so the two algorithms have about the same amount iterations till convergence. Figure~\ref{fig:timings fmincon Matlab trailer example} show
 
 
 \section{Quadcopter model}
-The invention of electronic control systems has proven to be especially useful when controlling quadcopters. Because of their complex behavior they are hard to control manually by a pilot. However quadcopters are popular among unmanned aerial vehicles, because they can be controlled by a fast digital/analog controller.
+The invention of electronic control systems has proven to be especially useful when controlling quadcopters. Because of their complex behavior they are hard to control manually by a pilot. However quadcopters are popular among unmanned aerial vehicles, because they can be controlled by a fast electronic controller.
 
 \subsection{Mathematical model}
 The mathematical model of the quadcopter is obtained from \cite{Agudelo}. The behavior of the quad copter is described by a set of nonlinear equations as illustrated in \eqref{eq:mathematical model quadcopter}. The $x$, $y$ and $z$ states, are the coordinates towards the origin, also called the inertial frame. The $\gamma$, $\theta$ and $\phi$ states are the angles displayed in figure~\ref{fig:quadcopter model diagram}. And finally $\omega_x$,$\omega_x$ and $\omega_x$ are the angular velocities.
@@ -169,9 +169,9 @@ This means that the difference between PANOC and ipopt is rather small when usin
 \end{figure}
 
 \section{Influence of noise}
-Until now all simulations were executed without any kind of noise. However in reality there is always some kind of state noise. So it is essential to study how PANOC behaves with state noise, more specifically white noise in this case.
+Until now all simulations were executed without any kind of noise. However in reality there is always some kind of state noise. So it is essential to study how PANOC behaves when white state noise is applied to the system.
 
-The white noise has a maximum amplitude of 0.1 on the x coordinate and the y coordinate. And an amplitude of 0.05 on the angle $\theta$. The double noise simulations simply double the maximum amplitude of the noise. This way the influence of the size of the noise can be studied.
+The white noise has a maximum amplitude of 0.1 on the x coordinate and the y coordinate. And an amplitude of 0.05 on the angle $\theta$. The double noise simulations simply double the maximum amplitude of the noise. This way the influence of the amplitude of the noise can be studied.
 
 Figure~\ref{fig:Noise simulations with the trailer model} contains the simulation results using PANOC or ipopt as solver. Going from no state noise to a bit of state noise makes a significant difference when solving with PANOC. The interior point method from ipopt, also takes longer to converge when noise is added. However it is much less correlated with the size of the noise, as the interior point method here uses a direct method to solve the system. And doesn't use the initial position to solve its system of equations. 
 
@@ -225,7 +225,7 @@ The benchmarks from appendix~\ref{appendix:benchmarks trailer without noise} are
 \end{table}
 
 \section{Problem with local minimum}
-One very common problem with using PANOC in MPC is visible in the third demo. The results of the third demo are illustrated in figure~\ref{fig:demo: local minimum problem}, the trailer drives through the obstacle which might be impossible in reality. In reality the trailer might crash into the obstacle, and get stuck. Of course it is possible to increase the weight on the obstacle, this will make the problem harder. As the condition will get worse, and the solution will stay about the same. The trainer will get stuck against the obstacle. PANOC is stuck inside a local minimum.
+One very common problem when using PANOC in MPC is visible in the third demo. The results of the third demo are illustrated in figure~\ref{fig:demo: local minimum problem}, the trailer drives through the obstacle which might be impossible in reality. In reality the trailer might crash into the obstacle, and get stuck. Of course it is possible to increase the weight on the obstacle, this will worsen the condition. As the condition will get worse, and the solution will stay about the same. The trainer will get stuck against the obstacle. PANOC is stuck inside a local minimum.
 
 \begin{figure}[H]
 	\centering
@@ -236,4 +236,4 @@ One very common problem with using PANOC in MPC is visible in the third demo. Th
 
 \section{Conclusion}
 
-The simulations clearly indicate that a great speed up his gained by implementing the PANOC algorithm in C. As the algorithm doesn't require a lot of memory, and it can be run efficiently on small embedded devices. PANOC behaves well when noise is introduced. The performance of PANOC is very good compared to ipopt if the models are simple. However as the models get more complex, PANOC loses its speed edge over ipopt. It does still however use significantly less memory.
+The simulations clearly indicate that a great speed up his gained by implementing the PANOC algorithm in C. As the algorithm doesn't require a lot of memory, and it can be run efficiently on small embedded devices. PANOC behaves well when noise is introduced. The performance of PANOC is very good compared to ipopt if the models are simple. However as the models get more complex, PANOC loses its speed edge over ipopt. It still does use significantly less memory then ipopt.
