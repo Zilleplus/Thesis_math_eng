@@ -8,36 +8,38 @@ Het doel van deze thesis is om een raamwerk te implementeren dat een niet lineai
 
 \chapter{Mathematical definitions}
 	\section{Box function}
+	\label{appendix:box function}
 		1 dimension:
 		\begin{equation}
-			box_{1D}(u) =
-			\begin{aligned}
-			 & 1 && u \in [-U_b:U_b]\\
-			 & 0 && otherwise
-			\end{aligned}
+			\boxfunction_{1D}(u) =
+			\begin{cases}
+				 1 & u \in [-U_b:U_b]\\
+				 0 & \other
+			\end{cases}
 			\label{eq:box function 1 dimension}
 		\end{equation}
 		N dimensions:
 		\begin{equation}
-		box(u) = min\left[ \sum_{k=1}^ N box_{1D}(u) \right]
-		\label{eq:box function N dimensions}
+			\boxfunction(u) = \min\left[ \sum_{k=1}^ N \boxfunction_{1D}(u) \right]
+			\label{eq:box function N dimensions}
 		\end{equation}
 	\section{Indicator Box function}
+	\label{appendix:indicator box function}
 		\begin{equation}
-			I[box]=
-			\begin{aligned}
-			& 0 && u \in [-U_b:U_b]\\
-			& \inf && otherwise
-			\end{aligned}
+			I_{\boxfunction}(u)=
+			\begin{cases}
+				0 & u \in [-U_b:U_b]\\
+				\inf & \other
+			\end{cases}
 		\end{equation}
 		
 		\begin{equation}
-		prox[I[box]]=
-		\begin{aligned}
-		& u && u \in [-U_b:U_b]\\
-		& -U_b && u \in [-\inf:-U_b]\\
-		& -U_b && u \in [U_b:\inf]\\
-		\end{aligned}
+			\prox_{\gamma I_{\boxfunction}}(u)=
+			\begin{cases}
+				u & u \in [-U_b:U_b]\\
+				-U_b & u \in [-\inf:-U_b)\\
+				-U_b & u \in (U_b:\inf]\\
+			\end{cases}
 		\end{equation}
 	\section{Conjugate of strongly convex function}
 		\begin{equation}
