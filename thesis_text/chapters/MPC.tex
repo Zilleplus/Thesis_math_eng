@@ -68,7 +68,7 @@
 				\label{eq:single shot terminal cost}
 			\end{equation}
 			
-			So according to \cite{Diehl2005} the cost function $f(x_0,u)$ becomes \eqref{eq:single shot definition}, the sum of the stage costs and the terminal cost.
+			So according to \cite{Diehl2005} the cost function $f(x_0,u)$ then becomes \eqref{eq:single shot definition}, the sum of the stage costs and the terminal cost.
 			
 			\begin{equation}
 				f(x_0,u) = \sum_{k=1}^{N-1} l_k(x_0,u) + l_N
@@ -93,7 +93,7 @@
 				\label{eq:continuety condition multiple shot}
 			\end{equation}
 			
-			The direct multiple shoot definition is formally defined as \eqref{eq:multiple shot cost} in \cite{Diehl2005}, and has an extra equality condition compared to the single shoot. The continuity conditions can be added as a soft constraints to the cost function. This is displayed in \eqref{eq:multiple shot cost with soft constraint} and will be used in the practical implementation.
+			The direct multiple shoot definition is formally defined as \eqref{eq:multiple shot cost} in \cite{Diehl2005}, and has an extra equality condition compared to the single shoot. The continuity conditions can be added as a soft constraints to the cost function. This leads to \eqref{eq:multiple shot cost with soft constraint} and can be used with PANOC.
 			
 			\begin{equation}
 				\begin{aligned}
@@ -112,7 +112,7 @@
 			\label{eq:multiple shot cost with soft constraint}
 			\end{equation}
 			
-			The simulation results using multiple shoot with the PANOC algorithm are quiet bad and not further discussed.
+			The simulation results of multiple shoot with the PANOC algorithm are quiet bad and not further discussed. However it might be interesting to revisit this subject when the Lagrangian is introduced later on.
 		\subsection{Obstacle avoidance}
 			The obstacle avoidance is based on the soft constraint definition described in \cite{AjaySathya2017}. It is described as either a set or a constraint in \cite{AjaySathya2017}.
 			\subsubsection{As set}
@@ -154,7 +154,7 @@
 				\end{equation}
 			
 			\subsubsection{Obstacle as soft constraint}
-				The obstacle avoidance is added as a soft constraint into the cost function. As demonstrated in \eqref{eq:derivative obstacle as equality}, this definition is two times differentiable and so this does not break the condition that the cost functions needs to be twice differentiable.
+				The obstacle avoidance is added as a soft constraint into the cost function. As demonstrated in \eqref{eq:derivative obstacle as equality}, this definition is still two times differentiable.
 			
 		\subsection{Input constraints}
 			An other important aspect of a MPC problem is the input constraint. In practice inputs have to comply with the physical properties of the devices. For instance absurdly high or low input values might in theory lead to a fast solution, but are not feasible in practice.

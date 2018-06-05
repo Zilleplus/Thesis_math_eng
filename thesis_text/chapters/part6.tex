@@ -5,7 +5,7 @@ This chapter discusses simulations using simple mathematical models to create a 
 In this chapter the following solvers will be used next to nmpc-codegen: ipopt from the OPTI toolbox in Matlab, fmincon the internal solvers of Matlab and PANOC draft. PANOC draft uses a similar solver implementation to nmpc-codengen, it is also implemented by Willem Melis. PANOC draft has the same software architecture as ipopt with OPTI toolbox. A solver implemented in C callable from Matlab trough a mex interface.
 
 \section{Notes simulations}
-In each of the simulation steps the NLP solver calculates the optimal inputs up to the tolerance of $10^{-3}$. The optimal input, convergence time and the amount of iterations till convergence are obtained. The optimal input is then applied to one step of the system, and the next state is obtained. A new nmpc problem is setup using the new state as initial state. The nmpc problem is solved using the NLP solver and the cycle repeats itself. The simulation steps are usually plotted on the x axis and the convergence time on the y axis.
+In each of the simulation steps the NLP solver calculates the optimal inputs up to the tolerance of $10^{-3}$. The optimal input, convergence time and the amount of iterations till convergence are obtained. The optimal input is then applied to one step of the system, and the next state is obtained. A new nmpc problem is constructed using the new state as initial state. The nmpc problem is solved using the NLP solver and so the cycle repeats itself. The simulation steps are usually plotted on the x axis and the convergence time on the y axis.
 
 The time measurements in this thesis are all measured to an accuracy of 1 ms. When the time is less then 1 ms, it will be assumed zero. The time plots that have a logarithmic scale will not be able to display zero, and so no data-points will be visualized when they are zero.
 
@@ -41,7 +41,7 @@ One way of measuring the performance of the library is to compared it to the alt
 \subsection{General performance}
 Several NMPC problems can be constructed and solved with nmpc-codegen. Figure~\ref{fig:demos} in the appendix illustrates the problems used to benchmark nmpc-codegen, they all use the same trailer model but have different obstacles. The time till convergence is measured, the average time is displayed in the appendix table~\ref{tbl:mean time till convergence}. While the maximum and minimum time is displayed in the appendix: table~\ref{tbl:min time till convergence} and table~\ref{tbl:max time till convergence}.
 
-The convergence time can be expresses relatively to the convergence time of the nmpc-codegen time as \eqref{eq:definition relative time}. The relative timings are displayed in table~\ref{tbl:mean relative time till convergence}. From table~\ref{tbl:mean relative time till convergence} it's clear that nmpc-codegen dominates by a significant margin. The section on the influence of noise will discuss the effects of state noise on the measurements.
+The convergence time can be expresses relatively to the convergence time of the nmpc-codegen time as \eqref{eq:definition relative time}. The relative timings are displayed in table~\ref{tbl:mean relative time till convergence}. From table~\ref{tbl:mean relative time till convergence} it's clear that nmpc-codegen dominates by a significant margin. The section on the influence of noise will discuss the effects of state noise on the measurements, by further using these measurements.
 
 \begin{equation}
 	t_{relative} = \frac{t_{algorithm}}{t_{nmpc-codegen}}
@@ -51,7 +51,7 @@ The convergence time can be expresses relatively to the convergence time of the 
 \subsection{In-dept analysis of performance}
 The in-dept simulation contains four circular obstacles, the trailer will move from the circle symbol towards the star symbol as illustrated in figure~\ref{fig:solution path trailer example}. Figure~\ref{fig:simulation result trailer model} contains the results of the trailer model simulation. The PANOC algorithm calculated the lowest located path displayed in figure~\ref{fig:solution path trailer example} while all other algorithms like the interior point method of ipopt obtained the upper located path.
 
-Figure~\ref{fig:timings trailer example} clearly indicates that the nmpc-codegen library is the fastest solver. As nmpc-codegen is completely implemented in C, it has a advantage that has little to do with the algorithm but with the software architecture. Therefore it is advisable to compare PANOC draft and ipopt. PANOC draft dominates after the first few steps in the simulation. Figure~\ref{fig:timings fmincon Matlab trailer example} shows that this is also the case when comparing PANOC draft with the 3 different fmincon algorithms.
+Figure~\ref{fig:timings trailer example} clearly indicates that the nmpc-codegen library is the fastest solver. As nmpc-codegen is completely implemented in C (the call to the cost function/gradient does not go trough MAtlab/Python), it has a advantage that has little to do with the algorithm but with the software architecture. Therefore it is advisable to compare PANOC draft and ipopt. PANOC draft dominates after the first few steps in the simulation. Figure~\ref{fig:timings fmincon Matlab trailer example} shows that this is also the case when comparing PANOC draft with the 3 different fmincon algorithms.
 
 \begin{figure}[H]
 	\centering
@@ -86,14 +86,14 @@ Figure~\ref{fig:timings trailer example} clearly indicates that the nmpc-codegen
 	\label{fig:simulation result trailer model}
 \end{figure}
 
-The nmpc-codegen library and PANOC draft libraries both use a cautious L-BFGS update which improves the performance of the L-BFGS. This is clear from figure~\ref{fig:iterations trailer example} where not the time till convergence, but the amount of iterations till convergence are illustrated. The nmpc-codegen clearly needs less iterations than  Forbes zerofpr2. As the simulation progresses, less and less iterations are needed to converge. And the L-BFGS doesn't influence the convergence as much, so the two algorithms have about the same amount iterations till convergence. Figure~\ref{fig:timings fmincon Matlab trailer example} show
+The nmpc-codegen library and PANOC draft libraries both use a cautious L-BFGS update which improves the performance of the L-BFGS. This is clear from figure~\ref{fig:iterations trailer example} where not the time till convergence, but the amount of iterations till convergence are illustrated. The nmpc-codegen clearly needs less iterations than  Forbes zerofpr2. As the simulation progresses, less and less iterations are needed to converge. And the L-BFGS doesn't influence the convergence as much, so the two algorithms have about the same amount iterations till convergence.
 
 
 \section{Quadcopter model}
 The invention of electronic control systems has proven to be especially useful when controlling quadcopters. Because of their complex behavior they are hard to control manually by a pilot. However quadcopters are popular among unmanned aerial vehicles, because they can be controlled by a fast electronic controller.
 
 \subsection{Mathematical model}
-The mathematical model of the quadcopter is obtained from \cite{Agudelo}. The behavior of the quad copter is described by a set of nonlinear equations as illustrated in \eqref{eq:mathematical model quadcopter}. The $x$, $y$ and $z$ states, are the coordinates towards the origin, also called the inertial frame. The $\gamma$, $\theta$ and $\phi$ states are the angles displayed in figure~\ref{fig:quadcopter model diagram}. And finally $\omega_x$,$\omega_x$ and $\omega_x$ are the angular velocities.
+The mathematical model of the quad copter is obtained from \cite{Agudelo}. The behavior of the quad copter is described by a set of nonlinear equations as illustrated in \eqref{eq:mathematical model quadcopter}. The $x$, $y$ and $z$ states, are the coordinates towards the origin, also called the inertial frame. The $\gamma$, $\theta$ and $\phi$ states are the angles displayed in figure~\ref{fig:quadcopter model diagram}. And finally $\omega_x$,$\omega_x$ and $\omega_x$ are the angular velocities.
 
 \begin{table}[]
 	\centering
