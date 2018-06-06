@@ -1,7 +1,7 @@
 \documentclass[master=ewit]{kulemt}
 \setup{title={Newton-type operator splitting methods for embedded model predictive control},
   author={Willem Melis},
-  promotor={Prof.\,dr.\,ir.\ Panos Patrinos},
+  promotor={Prof.\,dr.\,ir.\ Panagiotis Patrinos},
   assessor={Prof.\,dr.\,ir.\ Johan Suykens \\ Prof.\,dr.\,ir.\ Daan Huybrechs},
   assistant={dr.\,Pantelis Sopasakis}}
 % The following \setup may be removed entirely if no filing card is wanted
@@ -13,10 +13,31 @@
     \texttt{\string\pa r}) are not allowed!
     \endgraf endgraf}}
 % Uncomment the next line for generating the cover page
-%\setup{coverpageonly}
+% \setup{coverpageonly}
+
+\setup{filingcard, % Do not change anything in this line!
+	%
+	% Give the dutch translation of the title of your master's thesis below between the { and }:
+	translatedtitle={Newton-type operator splitsen methoden voor embedded model predictive control},
+	%
+	% UDC number depends on your discipline. see http://www.udcsummary.info/php/index.php to find the number.
+	udc=621.3,
+	%
+	% Add between { and } a short abstract.
+	% Empty lines or the commando \par are not admitted.
+	% Be careful with special TeX-signs #$%&^_~{}\ !!
+	shortabstract={%
+		This is where a short abstract of at most 500 words is inserted.
+		\LaTeX\ commandos can be used.
+		Some lettres with an accent:
+		``{\'e}{\"\i}{\c{c}}{\`a}{\^o}''.
+		(Use {\"\i} in stead of {\"i}, to avoid 3 dots.)
+}}
 
 % Choose the main text font (e.g., Latin Modern)
 \setup{font=lm}
+
+\bibliographystyle{IEEEtran}
 
 \usepackage{algorithm} 
 \usepackage{algcompatible}
@@ -53,11 +74,7 @@
 \begin{document}
 
 \begin{preface}
-TODO
-%  I would like to thank everybody who kept me busy the last year,
-%  especially my promoter and my assistants. I would also like to thank the
-%  jury for reading the text. My sincere gratitude also goes to my wive and
-%  the rest of my family.
+I would like to thank everyone that contributed in any way to this thesis, especially my promoter P. Patrinos and mentor P. Sopasakis. I would also like to thank the jury for reading the text. Finally i would like to thank my family for the moral support they gave me this last year.
 \end{preface}
 
 \tableofcontents*

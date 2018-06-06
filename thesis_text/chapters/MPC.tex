@@ -4,14 +4,14 @@
 	
 	The main ingredients involved in the definition of an optimal are: a set of differential equations that describes the behavior of the system. A cost function that describes the cost of the specific trajectory integrated on the differential equations.
 	
-	Optimal control problems can be mathematically defined as \eqref{eq:optimal control definition}. With boundary conditions $S[x(t_0),t_0,x(T),T]=0$ and the behavior of the system $ \dot{x}(t) = F(x(t),u(t),t)$. Addition constraints can be placed on the state and inputs, like $C[x(t),u(t),t]\le 0$. 
+	Optimal control problems can be mathematically defined as \eqref{eq:optimal control definition}. With boundary conditions $B[x(t_0),t_0,x(T),T]=0$ and the behavior of the system $ \dot{x}(t) = F(x(t),u(t),t)$. Additionally constraints can be placed on the state and input, such as $C[x(t),u(t),t]\le 0$. 
 	
 	\begin{equation}
 		\begin{aligned}
-			\min_u \ & S[x(t_0),t_0,x(T),T] + \int_{t_0}^{T} L[x(t),u(t),t] \\ 
+			\min_u \ & \int_{t_0}^{T} L[x(t),u(t),t] \\ 
 			\text{subject to: } & \dot{x}(t) = F(x(t),u(t),t) \\
-			& C[x(t),u(t),t]\le 0 \\
-			& S[x(t_0),t_0,x(T),T]=0
+			& B[x(t_0),t_0,x(T),T]=0 \\
+			& C[x(t),u(t),t]\le 0
 		\end{aligned}
 		\label{eq:optimal control definition}
 	\end{equation}
@@ -21,7 +21,7 @@
 	
 	A continuous-time physical system can be defined as $\dot{x}=F_c(x,u)$, where $x$ is the current state and $u$ is the current input. However when using computer systems it's often required to have a discrete-time system. A discrete integrator can transform a continuous-time system into a discrete-time system, defined as: $x^{k+1}=F_d(x^{k},u^{k})$. 
 	
-	\eqref{fig:MPC diagram} Is a diagram from Wikipedia \cite{Wikipedia} that illustrates MPC. The reference trajectory is the wanted behavior, the predicted control input is the input that is obtained from the controller that leads to the predicted trajectory.
+	Figure~\ref{fig:MPC diagram} is a diagram from Wikipedia \cite{Wikipedia} that illustrates MPC. The reference trajectory is the wanted behavior, the predicted control input is the input that is obtained from the controller that leads to the predicted trajectory.
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.7\textwidth]{MPC_scheme}

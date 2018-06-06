@@ -21,7 +21,7 @@
 @Unpublished{QianYang,
   author = {Q. Yang and E. Candes},
   title  = {MATH 301: Advanced Topics in Convex Optimization, Lecture 22},
-  url    = {https://statweb.stanford.edu/~candes/math301/Lectures/Moreau-Yosida.pdf},
+  url = {https://statweb.stanford.edu/~candes/math301/Lectures/Moreau-Yosida.pdf},
 }
 
 @Article{Themelis,

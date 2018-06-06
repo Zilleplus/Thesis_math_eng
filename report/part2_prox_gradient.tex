@@ -132,14 +132,14 @@
 			Line-search more specific backtracking will reduce the value of $\gamma$ until the condition of \eqref{eq:Armijo's sufficient decrease condition} fails.
 			
 		\subsubsection{Backtracking in proximal gradient descent used in FBS}
-			The  "Armijo's sufficient decrease condition" is adjusted to \eqref{eq:Armijo's sufficient decrease condition prox grad PANOC} Which is an quadratic bound, $-p_k=x-\bar{x}$ and an additional term $\frac{1-\beta}{2 \gamma}||x-\bar{x}||^2$ is added.
+			The  "Armijo's sufficient decrease condition" is adjusted to \eqref{eq:quadratic bound linesearch prox grad} Which is an quadratic bound, $-p_k=x-\bar{x}$ and an additional term $\frac{1-\beta}{2 \gamma}||x-\bar{x}||^2$ is added.
 			
 			\begin{equation}
 			f({\bar{x}}) \leq f(x) - \nabla f(x)^T[x-\bar{x}] + \frac{1}{2 \gamma}||x-\bar{x}||^2
-			\label{eq:Armijo's sufficient decrease condition prox grad PANOC}
+			\label{eq:quadratic bound linesearch prox grad}
 			\end{equation}
 			
-			This all leads to algorithm~\ref{alg:backtracking on gamma} the proximal gradient method. \eqref{eq:Armijo's sufficient decrease condition prox grad PANOC} can be seen as a quadratic model, as the Lipschitz value of the gradient is equal to $L=\frac{1}{\gamma}$.
+			This all leads to algorithm~\ref{alg:backtracking on gamma} the proximal gradient method. \eqref{eq:quadratic bound linesearch prox grad} can be seen as a quadratic model, as the Lipschitz value of the gradient is equal to $L=\frac{1}{\gamma}$.
 			
 			\begin{algorithm}
 				\caption{backtracking $\gamma$}

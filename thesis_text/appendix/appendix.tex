@@ -1,10 +1,17 @@
 \chapter{Abstract Dutch}
-Tegenwoordig gebruiken moderne controlesystemen "model predictive control" algoritmes. Wanneer lineaire modellen worden gebruikt, moet een stelsel van lineaire vergelijkingen worden opgelost. De algoritmes voor het oplossen van een stelsel van lineaire vergelijkingen zijn uitgebreid onderzocht en geimplementeerd. 
+Moderne controle systemen maken vaak gebruik van "model predictive control" algoritmes. Wanneer lineaire modellen gebruikt worden, moet een stelsel van lineaire vergelijkingen worden opgelost. De algoritmes voor het oplossen van een stelsel van lineaire vergelijkingen zijn uitgebreid onderzocht en ge\"{i}mplementeerd. 
 
-Wanneer niet lineaire modellen worden gebruikt, moet een niet lineaire stelsel opgelost worden. Dit wordt typisch opgelost met een iteratief algoritme zoals "interior point" algoritmes. Deze algoritmes gebruiken veel geheugen wat ze vaak ondergeschikt maakt voor embedded toepassingen. Dit is waar het PANOC algoritme interessant wordt, het kan namelijk een niet lineaire stelsel oplossen met veel minder geheugen dan een "interior point" algoritme. Maar heeft aslook super lineaire convergentie.
+Wanneer een niet-lineaire model wordt gebruikt, moet een niet-lineaire stelsel opgelost worden. Dit stelsel kan worden opgelost met iteratieve algoritmes zoals "interior point" of SQP algoritmes. Deze algoritmes gebruiken veel geheugen, wat ze vaak ondergeschikt maken voor embedded toepassingen. Het "proximal gradient" algoritme gebruikt weinig geheugen maar heeft slechts sub lineaire convergentie. Dit is waar het PANOC algoritme interessant wordt, het kan namelijk een niet lineaire stelsel oplossen met veel minder geheugen dan een "interior point" algoritme. Maar heeft wel super lineaire convergentie. 
 
-Het doel van deze thesis is om een raamwerk te implementeren dat een niet lineaire MPC controller genereerd in C, die gebruikt maakt van het PANOC algoritme. De code is specifiek gericht aan embedded toestellen, waardoor PANOC een uitstekende keuze is. 
+Het doel van deze masterproef is een raamwerk te implementeren die een niet-lineaire MPC controller genereert in C. De controller maakt gebruik van het PANOC algoritme voor het oplossen van het niet lineaire stelsel. De code is specifiek gericht aan embedded toestellen, waardoor PANOC een uitstekende keuze is. De gebruiker van de software wordt verondersteld alleen controletheorie te kennen, en hoeft niets over PANOC algoritme noch embedded software te kennen.
 
+De implementatie is gerealiseerd in Matlab en Python, aangezien dit de twee dominerende talen zijn bij computer simulaties van controlesystemen. Er wordt geen gebruik gemaakt van externe bibliotheken om de C code te genereren. Het PANOC is een convexe combinatie van het "proximal gradient" algoritme en L-BFGS. Er wordt gebruik gemaakt van het pakket Casadi om de gradi\"{e}nt te berekenen. Het is mogelijk om vanuit Matlab of Pyhton simulaties uit te voeren op de gegenereerde C code. Zo kunnen de nodige controle parameters afgesteld worden vanuit Matlab of Python.
+
+De gegenereerde C code is getest met de GNU C compiler, Clang LLVM compiler, Microsoft C compiler en de Intel C compiler onder de ANSI C89 standaard. Er worden geen externe C bibliotheken gebruikt zodat de code eenvoudig kan gecompileerd worden voor verschillende platformen. Het enige noodzakelijke is een C compiler.
+
+Vervolgens wordt aangetoond dat PANOC bij eenvoudige systemen sneller is dan "interior point" methodes, maar bij complexe systemen verliest het zijn snelheids voordeel. PANOC verbruikt wel altijd minder geheugen.
+
+Tot slot is er recentelijk onderzoek ge\"{i}mplementeerd. Het toevoegen van voorwaarden op het controlesysteem kan namelijk leiden tot een slecht geconditioneerd probleem. De "augmented Lagrangian" methode bied hiervoor een oplossing. Door het probleem in verschillende stappen op te lossen kan er soms een beter resultaat bereikt worden.
 
 \chapter{Mathematical definitions}
 	\section{Box function}
@@ -57,9 +64,8 @@ Het doel van deze thesis is om een raamwerk te implementeren dat een niet lineai
 			\label{eq:appendix f lip}
 		\end{equation}
 		
-\chapter{Proof FBE alternate equation}
+\chapter{Proof FBE alternative equation}
 \label{appendix:proof FBE alternate equation}
-
 \begin{proof}
 	$\varphi_{\gamma} =   f(x) + \underset{y}{\inf} \Big\{ \nabla f(x)^T(y-x) + g(y) + \frac{1}{2 \gamma} ||x-y||^2  \Big\} $
 	\begin{align*}
@@ -72,14 +78,11 @@ Het doel van deze thesis is om een raamwerk te implementeren dat een niet lineai
 	\bar{x}^T\bar{x}
 	&=[x- \gamma \nabla f(x)]^T[x- \gamma \nabla f(x)] \\
 	&= x^Tx -2x^T\nabla f(x) \gamma + \gamma^2 \nabla f(x)^T\nabla f(x)-2x^Ty \\
-	&=-2(x-\gamma f\nabla(x))^Ty\\
 	&=-2x^Ty + 2\gamma \nabla f(x)^Ty \\
 	\frac{1}{2 \gamma}||\bar{x}-y||^2
 	&=\frac{1}{2 \gamma} \Big [ (\bar{x}-y)^T(\bar{x}-y) \Big]\\
 	&=\frac{1}{2 \gamma} \Big [ x^Tx - 2 x^Ty + y^Ty \Big]\\
-	& =\frac{1}{2 \gamma}[x^Tx-2x^T\nabla f(x) \gamma + \gamma^2 \nabla f(x)^T\nabla f(x) -2x^Ty + 2\gamma \nabla f(x)^Ty +y^Ty] \\
 	& = \frac{1}{2 \gamma}[-2x^T\nabla f(x) \gamma  + 2\gamma \nabla f(x)^Ty + \gamma^2 \nabla f(x)^T\nabla f(x) +x^Tx -2x^Ty +y^Ty]\\
-	&= \frac{1}{2 \gamma}[ 2\gamma \nabla f(x)^T(y-x) + \gamma^2||\nabla f(x)||^2 + (x-y)^T(x-y)]\\
 	&= \frac{1}{2 \gamma}[ 2\gamma \nabla f(x)^T(y-x) + \gamma^2||\nabla f(x)||^2 + ||x-y||^2] \\
 	&=  \nabla f(x)^T(y-x) +\frac{\gamma}{2}||\nabla f(x)||^2 + \frac{1}{2 \gamma} ||x-y||^2 \\
 	g^{\gamma} (\bar{x})
@@ -145,8 +148,8 @@ Het doel van deze thesis is om een raamwerk te implementeren dat een niet lineai
 	\begin{tabular}{|l|c|c|c|c|}
 		\hline
 		&\textbf{demo5}&\textbf{demo2}&\textbf{demo3}\\\hline
-		\textbf{nmpc-codegen}&9.00e-01&1.00e-01&4.10e-01\\\hline
-		\textbf{PANOC Matab}&2.99e+01&4.20e+00&5.56e+00\\\hline
+		\textbf{nmpc-codegen (PANOC)}&9.00e-01&1.00e-01&4.10e-01\\\hline
+		\textbf{ForBeS zerofrp2 (PANOC)}&2.99e+01&4.20e+00&5.56e+00\\\hline
 		\textbf{PANOC draft}&5.73e+00&1.29e+00&2.00e+00\\\hline
 		\textbf{fmincon:interior-point}&8.62e+01&2.31e+01&2.03e+01\\\hline
 		\textbf{fmincon:sqp}&2.18e+01&1.15e+01&9.29e+00\\\hline
@@ -162,8 +165,8 @@ Het doel van deze thesis is om een raamwerk te implementeren dat een niet lineai
 	\begin{tabular}{|l|c|c|c|c|}
 		\hline
 		&\textbf{demo5}&\textbf{demo2}&\textbf{demo3}\\\hline
-		\textbf{nmpc-codegen}&100&100&100\\\hline
-		\textbf{PANOC Matab}&3323&4202&1357\\\hline
+		\textbf{nmpc-codegen (PANOC)}&100&100&100\\\hline
+		\textbf{ForBeS zerofrp2 (PANOC)}&3323&4202&1357\\\hline
 		\textbf{PANOC draft}&637&1289&489\\\hline
 		\textbf{fmincon:interior-point}&9579&23107&4943\\\hline
 		\textbf{fmincon:sqp}&2422&11469&2265\\\hline
@@ -179,8 +182,8 @@ Het doel van deze thesis is om een raamwerk te implementeren dat een niet lineai
 	\begin{tabular}{|l|c|c|c|c|}
 		\hline
 		&\textbf{demo5}&\textbf{demo2}&\textbf{demo3}\\\hline
-		\textbf{nmpc-codegen}&2.20e+01&8.00e+00&4.00e+01\\\hline
-		\textbf{PANOC Matab}&7.95e+02&1.25e+02&3.06e+02\\\hline
+		\textbf{nmpc-codegen (PANOC)}&2.20e+01&8.00e+00&4.00e+01\\\hline
+		\textbf{ForBeS zerofrp2 (PANOC)}&7.95e+02&1.25e+02&3.06e+02\\\hline
 		\textbf{PANOC draft}&1.12e+02&3.66e+01&1.30e+02\\\hline
 		\textbf{fmincon:interior-point}&1.55e+03&2.29e+02&2.95e+02\\\hline
 		\textbf{fmincon:sqp}&1.01e+02&8.83e+01&1.10e+02\\\hline
@@ -196,8 +199,8 @@ Het doel van deze thesis is om een raamwerk te implementeren dat een niet lineai
 	\begin{tabular}{|l|	c|c|c|c|}
 		\hline
 		&\textbf{demo5}&\textbf{demo2}&\textbf{demo3}\\\hline
-		\textbf{nmpc-codegen}&0.00e+00&0.00e+00&0.00e+00\\\hline
-		\textbf{PANOC Matab}&2.11e+00&2.03e+00&2.01e+00\\\hline
+		\textbf{nmpc-codegen (PANOC)}&0.00e+00&0.00e+00&0.00e+00\\\hline
+		\textbf{ForBeS zerofrp2 (PANOC)}&2.11e+00&2.03e+00&2.01e+00\\\hline
 		\textbf{PANOC draft}&5.16e-01&5.26e-01&5.16e-01\\\hline
 		\textbf{fmincon:interior-point}&8.95e+00&8.35e+00&7.57e+00\\\hline
 		\textbf{fmincon:sqp}&6.37e+00&6.58e+00&6.02e+00\\\hline
@@ -217,8 +220,8 @@ Het doel van deze thesis is om een raamwerk te implementeren dat een niet lineai
 	\begin{tabular}{|l|c|c|c|c|}
 		\hline
 		&\textbf{demo5}&\textbf{demo2}&\textbf{demo3}\\\hline
-		\textbf{nmpc-codegen}&5.82e+00&4.20e-01&2.20e-01\\\hline
-		\textbf{PANOC Matab}&8.69e+01&1.19e+01&9.64e+00\\\hline
+		\textbf{nmpc-codegen (PANOC)}&5.82e+00&4.20e-01&2.20e-01\\\hline
+		\textbf{ForBeS zerofrp2 (PANOC)}&8.69e+01&1.19e+01&9.64e+00\\\hline
 		\textbf{PANOC draft}&2.77e+01&4.54e+00&3.24e+00\\\hline
 		\textbf{fmincon:interior-point}&3.17e+02&1.01e+02&8.15e+01\\\hline
 		\textbf{fmincon:sqp}&9.07e+01&4.77e+01&3.93e+01\\\hline
@@ -234,8 +237,8 @@ Het doel van deze thesis is om een raamwerk te implementeren dat een niet lineai
 	\begin{tabular}{|l|c|c|c|c|}
 		\hline
 		&\textbf{demo5}&\textbf{demo2}&\textbf{demo3}\\\hline
-		\textbf{nmpc-codegen}&100&100&100\\\hline
-		\textbf{PANOC Matab}&1494&2839&4383\\\hline
+		\textbf{nmpc-codegen (PANOC)}&100&100&100\\\hline
+		\textbf{ForBeS zerofrp2 (PANOC)}&1494&2839&4383\\\hline
 		\textbf{PANOC draft}&476&1080&1472\\\hline
 		\textbf{fmincon:interior-point}&5453&24054&37058\\\hline
 		\textbf{fmincon:sqp}&1560&11360&17870\\\hline
@@ -251,8 +254,8 @@ Het doel van deze thesis is om een raamwerk te implementeren dat een niet lineai
 	\begin{tabular}{|l|c|c|c|c|}
 		\hline
 		&\textbf{demo5}&\textbf{demo2}&\textbf{demo3}\\\hline
-		\textbf{nmpc-codegen}&1.06e+02&1.30e+01&1.80e+01\\\hline
-		\textbf{PANOC Matab}&9.82e+02&2.23e+02&3.87e+01\\\hline
+		\textbf{nmpc-codegen (PANOC)}&1.06e+02&1.30e+01&1.80e+01\\\hline
+		\textbf{ForBeS zerofrp2 (PANOC)}&9.82e+02&2.23e+02&3.87e+01\\\hline
 		\textbf{PANOC draft}&2.38e+02&7.07e+01&1.83e+01\\\hline
 		\textbf{fmincon:interior-point}&2.45e+03&4.68e+02&3.40e+02\\\hline
 		\textbf{fmincon:sqp}&4.22e+02&3.25e+02&4.18e+02\\\hline
@@ -268,8 +271,8 @@ Het doel van deze thesis is om een raamwerk te implementeren dat een niet lineai
 	\begin{tabular}{|l|	c|c|c|c|}
 		\hline
 		&\textbf{demo5}&\textbf{demo2}&\textbf{demo3}\\\hline
-		\textbf{nmpc-codegen}&0.00e+00&0.00e+00&0.00e+00\\\hline
-		\textbf{PANOC Matab}&4.62e+00&3.55e+00&3.18e+00\\\hline
+		\textbf{nmpc-codegen (PANOC)}&0.00e+00&0.00e+00&0.00e+00\\\hline
+		\textbf{ForBeS zerofrp2 (PANOC)}&4.62e+00&3.55e+00&3.18e+00\\\hline
 		\textbf{PANOC draft}&1.80e+00&1.26e+00&1.22e+00\\\hline
 		\textbf{fmincon:interior-point}&4.85e+01&1.33e+01&1.05e+01\\\hline
 		\textbf{fmincon:sqp}&1.44e+01&8.63e+00&9.95e+00\\\hline

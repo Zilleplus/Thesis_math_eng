@@ -1,7 +1,5 @@
 \chapter{Conclusion}
 \label{cha:conclusion}
-%The final chapter contains the overall conclusion. It also contains
-%suggestions for future work and industrial applications.
 
 \section{Nmpc-codegen library}
 The controller code generation and simulation is available in both Python and Matlab, which are computer languages with a fast learning curve. It is very straightforward for a control engineer to design and test a controller, without knowing anything about low level programming.
@@ -10,13 +8,20 @@ The generated controller, has a simple interface that requires nearly no control
 
 However as the MPC problem becomes more complex. The algorithm can get stuck on a local minimums, which might not be a viable solution. It might violate the constraint by a too large margin. This can partially be avoided by properly tuning the weights of the constraints. 
 
-However this weight tuning is rather hard, as increasing the weights worsens the condition of the problem. So the controller designer often ends up with an impossible choice. The last chapter tries to partially solve this by using a Lagrangian. And succeeds for some constraints, it's easier to tune and improves the performance of the controller. 
+However this weight tuning is rather hard, as increasing the weights worsens the condition of the problem. So the controller designer often ends up with an impossible choice. The last chapter tries to partially solve this by using a Lagrangian. It is easier to tune the parameters and it improves the performance of the controller. 
 
 \section{Future work}
-The PANOC algorithm does not require more advanced algebra operations, like solving a system. Only simple vector additions and inner product are required. This makes it quiet easy to implement in hardware. As it's very straightforward to implement with flip-flops and adders. The only hard part is the cost function and it's gradient, as Casadi does not support VHDL or Verilog at this time.
+The PANOC algorithm does not require advanced algebra operations such as solving a system. Only simple vector additions and inner product are required. So it's straightforward to implement PANOC with flip-flops and adders. The only hard part is the cost function and it's gradient, as Casadi does not support VHDL or Verilog at this time.
 
 \section{Industrial applications}
-
+Embedded model predictive control is used in a wide variety of domains, here are a few examples:
+\begin{itemize}
+	\item Unmanned Aerial vehicles (UAV's)
+	\item Self driving robots
+	\item Anti-lock brakes cars
+	\item Adaptive cruise control cars
+	\item Robotics
+\end{itemize}
 
 %%% Local Variables: 
 %%% mode: latex
