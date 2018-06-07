@@ -13,12 +13,27 @@
 		\texttt{\string\pa r}) are not allowed!
 		\endgraf endgraf}}
 % Verwijder de "%" op de volgende lijn als je de kaft wil afdrukken
-% \setup{coverpageonly}
+%\setup{coverpageonly}
 % Verwijder de "%" op de volgende lijn als je enkel de eerste pagina's wil
 % afdrukken en de rest bv. via Word aanmaken.
 %\setup{frontpagesonly}
 % Uncomment the next line for generating the cover page
 %\setup{coverpageonly}
+
+\setup{filingcard, % Do not change anything in this line!
+	%
+	% Give the dutch translation of the title of your master's thesis below between the { and }:
+	translatedtitle={Newton-type operator splitsen methoden voor embedded model predictive control},
+	%
+	% UDC number depends on your discipline. see http://www.udcsummary.info/php/index.php to find the number.
+	udc=621.3,
+	%
+	% Add between { and } a short abstract.
+	% Empty lines or the commando \par are not admitted.
+	% Be careful with special TeX-signs #$%&^_~{}\ !!
+	shortabstract={%
+		The goal of this thesis is to implement a Matlab and Python library that generates a MPC controller in C that makes use of the PANOC algorithm. No toolboxes or external libraries were used to generated the C code, with the  exception of Casadi. Casadi is used to generate the gradient used in the proximal gradient algorithm. In the first chapters the PANOC algorithm is discussed. Followed by a high level view of nmpc-codegen, the software package constructed with this thesis. After the theory some simulation results are included that compare PANOC to some of the state of the art interior point and SQP solvers. PANOC dominates the simulations when the system equations are small, but loses this advantage when complex system equations are used. It does however always use less memory then the alternatives. The final chapter discuses a recent improvement of the PANOC algorithm. When adding soft constraints onto the problem, the weights of theses constraints must be set. Setting the weights too low will result in violations of those constraints, and setting it too worsens the condition of the problem. Recent research surrounding PANOC and the augmented Lagrangian sudgest that by defining and solving the MPC problem iteratively, the performance can be significantly improved. It is also much more intuitive to tune the augmented Lagrangian then to tune the weights of the constraints.	
+}}
 
 % Choose the main text font (e.g., Latin Modern)
 \setup{font=lm}

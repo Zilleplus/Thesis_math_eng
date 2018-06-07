@@ -65,7 +65,7 @@ Figure~\ref{fig:bottom-up analysis} provides a high-level view of the bottom-up 
 
 The number of iterations till convergence is illustrated in Figure~\ref{fig:Simulations with different buffer sizes}, if no L-BFGS is used, the algorithm clearly needs significantly more iterations. However if the L-BFGS method is used it will decrease the amount iterations till convergence. The buffer size can be quiet small, as it doesn't seem to improve the performance when the size is greater then 10. This is visible from Figure~\ref{fig:different lbfgs buffer iterations till convergence},  where it is clear that a buffer size of 2, 7 or 200 can result in about the same convergence time.
 
-The bigger the size of the L-BFGS buffer the more inner products and vector additions are required in each step. It is imperative to not only take a large enough buffer, but also not take it too large as this can significantly impact the performance.
+The bigger the size of the L-BFGS buffer the more inner products and vector additions are required in each step. So it is imperative to use the smallest possible buffer that still results in the best convergence possible.
 
 \begin{figure}[H]
 	\centering
@@ -86,14 +86,14 @@ The bigger the size of the L-BFGS buffer the more inner products and vector addi
 	\label{fig:Simulations with different buffer sizes}
 \end{figure}
 
-The opposite of a bottum-up  analysis is a top down analysis, which determines how  much time the  function spends inside the functions it calls. The results of this analysis is illustrated in Figure~\ref{fig:no mkl top down}. Figure~\ref{fig:no mkl top down} indicates that about one third of the execution time is spend calculating the direction of the quasi Newton method. The two most dominant costs when calculating this direction are the inner products and the vector addition.
+The opposite of a bottum-up  analysis is a top-down analysis, which determines how  much time the  function spends inside the functions it calls. The results of this analysis is illustrated in Figure~\ref{fig:no mkl top down}. Figure~\ref{fig:no mkl top down} indicates that about one third of the execution time is spend calculating the direction of the quasi Newton method. The two most dominant costs when calculating this direction are the inner products and the vector addition.
 
 The rest of the time is mostly spent calculating the gradient and cost function. The proximal gradient method, is not so dependent upon inner products and vector additions. This is also visible in the caller callee analysis displayed in table~\ref{tbl:Caller Callee analysis}, about 61\% of the time is spent calculating the gradient. If the problem is easier to solve, or the buffer is smaller, then the cost of the gradient is even more dominant. And can easily go up to 80\% or 90\%. This is why a hard problem was used when profiling the algorithm. If an easy problem was used, then the results become irrelevant as the relative costs of the gradient will make everything else irrelevant.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{intel_analysis/no_mkl_topdown}
-	\caption{Top down analysis}
+	\caption{Top-down analysis}
 	\label{fig:no mkl top down}
 \end{figure}
 

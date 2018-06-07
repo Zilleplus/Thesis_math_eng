@@ -1,4 +1,4 @@
-\chapter{Model predictive}
+\chapter{Model predictive control}
 \section{Optimal control problem}
 	The optimal control problem goes back more than 300 years. From Galileo and Newton to Johann Bernoulli and Euler with the Brachistochrone problem. The goal in optimal control is to find the appropriate inputs or control law, so that the dynamic system behaves optimally, according to some criterion. 
 	
@@ -114,9 +114,10 @@
 			\subsubsection{As set}
 				 The obstacle can be defined as a bounded set, as illustrated by \eqref{eq:obstacle as open set}. It is determined by the intersection of a set of non-linear inequalities.
 				\begin{equation}
-					O = \{ z \in \Re^d : h^i(z)>0,\ i \in N \}
+					O = \{ z \in \Re^{n_d} : h^i(z)>0,\ i \in N_{[1,m]} \}
 					\label{eq:obstacle as open set}
 				\end{equation}
+				Where $ h^i:\Re^{n_d} \rightarrow \Re $ are $C^{1,1}$ functions.
 				
 			\subsubsection{As constraint}
 				\begin{equation}
