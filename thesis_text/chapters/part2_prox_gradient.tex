@@ -27,12 +27,12 @@
 			& \underset{x}{\text{argmin}}
 			& & f_0(x) \\
 			& \text{subject to}
-			& & g(x)=0
+			& & x \in C
 			\end{aligned}
 			\label{eq:prox grad opti problem}
 		\end{equation}
 		
-		The classical gradient decent method cannot be used to solve the problem of \eqref{eq:prox grad opti problem}. Because this problem has a condition $g(x)=0$ that must be met by the solution. If in each iteration the solution is projected on the space spanned by $g(x)=0$, the iteration of \eqref{eq:grad descent} becomes \eqref{eq:projected grad descent}. This algorithm is called the gradient projection method, and every iteration now complies with the condition $g(x)=0$
+		The classical gradient decent method cannot be used to solve the problem of \eqref{eq:prox grad opti problem}. Because this problem has a condition $x \in C$ that must be met by the solution. If in each iteration the solution is projected on the space spanned by $C$, the iteration of \eqref{eq:grad descent} becomes \eqref{eq:projected grad descent}. This algorithm is called the gradient projection method, and every iteration now complies with the condition $g(x)=0$
 		
 		\begin{equation}
 			x^k = x^{k-1} - \gamma \nabla f(x^{k-1})
@@ -40,7 +40,7 @@
 		\end{equation}
 		
 		\begin{equation}
-			x^k = \project_{g(x)=0}[ x^{k-1} - \gamma \nabla f(x^{k-1})]
+			x^k = \Pi_C[ x^{k-1} - \gamma \nabla f(x^{k-1})]
 			\label{eq:projected grad descent}
 		\end{equation}
 		
@@ -52,7 +52,7 @@
 		\end{equation}
 	
 	\section{The proximal gradient method}
-		\eqref{eq:prox grad problem} Can be solved with the proximal gradient method, if the proximal mapping of $g(x)$ is analytically defined.  The proximal gradient method is sometimes called forward backward splitting (FBS). Moving down with the gradient is the forward movement, and the proximal mapping is the backward movement.
+		\eqref{eq:prox grad problem} Can be solved with the proximal gradient method, if the proximal mapping of $g(x)$ is analytically defined.  The proximal gradient method is sometimes called forward backward splitting (FBS). Moving down with the gradient called is the forward movement, and the proximal mapping is the backward movement.
 		
 			\begin{equation}
 			\underset{x}{\argmin} = f(x) + g(x)
@@ -67,7 +67,7 @@
 		\end{equation}	
 	
 	\section{Proximal minimization algorithm}
-		 \cite{QianYang} Contains a short proof that illustrates the proximal mapping as a fixed point minimization algorithm. A special property of the conjugated function is used to derive the gradient, see appendix~\ref{appendix:conjugate of strongly convex function} for the theorem. This means thats the iteration $x^{k+1}=\prox_g(x^k)$ will minimize the smoothed version of function g(x). 
+		 \cite{QianYang} Contains a short proof that illustrates the proximal mapping as a fixed point minimization algorithm. A special property of the conjugated function is used to derive the gradient, see appendix~\ref{appendix:conjugate of strongly convex function} for the theorem. This means that the iteration $x^{k+1}=\prox_g(x^k)$ will minimize the smoothed version of function g(x). 
 		 
 		 \begin{proof}
 		 	The iteration $x^{k+1}=\prox_g(x^k)$ will minimize the smoothed version of function f(x). The original proof can be found in \cite{QianYang}. 
@@ -95,7 +95,7 @@
 \section{Proximal gradient method with line search}
 	\subsection{Starting value gamma }
 		\subsubsection{Estimating Lipschitz value}
-			The Lipschitz of $\nabla f(x)$ value is a non negative number that complies with \eqref{eq:definition lipschitz value}.
+			The Lipschitz of $\nabla f(x)$ value is a non-negative number that complies with \eqref{eq:definition lipschitz value}.
 			\begin{equation}
 			L = \underset{x \neq y}{\sup} \frac{|\nabla f(y)-\nabla f(x)|}{|y-x|}
 			\label{eq:definition lipschitz value}
@@ -112,7 +112,7 @@
 			The Lipschitz value is not explicitly saved but is used to estimate the line-search parameter $\gamma$. The backtracking of the proximal gradient algorithm then further improves $\gamma$. As the algorithm progresses and $\gamma$ improves, so does the estimation of the Lipschitz value indirectly.
 		
 		\subsubsection{Estimating gamma}	
-			\cite{LorenzoStella2017} states that $\gamma<\frac{1}{L}$ guarantees convergence to a local minimum. As gamma needs to be smaller than $\frac{1}{L}$ a safety value is introduced. This idea was copied over from the kul-forbes/ForBES library by Lorenzo Stella and Panos Patrinos, which uses a $\beta$ of 0.05. And leads to \eqref{eq:starting value gamma}.
+			\cite{LorenzoStella2017} states that $\gamma<\frac{1}{L}$ guarantees convergence to a local minimum. As gamma needs to be smaller than $\frac{1}{L}$ a safety value is introduced. This idea was copied over from the kul-forbes/ForBES library by Lorenzo Stella and Panos Patrinos, which uses a $\beta$ of 0.05 and leads to \eqref{eq:starting value gamma}.
 			\begin{equation}
 			\gamma = \frac{1-\beta}{L}
 			\label{eq:starting value gamma}

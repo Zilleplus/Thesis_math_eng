@@ -23,7 +23,7 @@ In order to avoid confusion in this chapter, adding constraints by adding them t
 		\label{eq:lagrangian quadratic model}
 	\end{equation}
 	
-	By adding Lagrangian multipliers \eqref{eq:augmented lagrangian definition} is obtained. However the feasibility condition $c_i(x)=0$ will not be met in the first iterations. Each time the problem is solved, the condition of \eqref{eq:perturbed feasibility conditions} is met. As $\mu_k$ goes to infinity the condition of \eqref{eq:perturbed feasibility conditions} will get more similar to that of the feasibility condition.
+	By adding Lagrangian multipliers to the cost function \eqref{eq:augmented lagrangian definition} is obtained. However the feasibility condition $c_i(x)=0$ will not be met in the first iterations. Each time the problem is solved, the condition of \eqref{eq:perturbed feasibility conditions} is met. As $\mu_k$ goes to infinity the condition of \eqref{eq:perturbed feasibility conditions} will get more similar to that of the feasibility condition.
 	
 	\begin{equation}
 		\Lagr_A(x,\lambda;\mu) \overset{def}{=} f(x) - \sum_{i \in \epsilon}\lambda_ic_i(x) + \mu \sum_{i \in \epsilon}c_i^2(x)
@@ -54,7 +54,7 @@ In order to avoid confusion in this chapter, adding constraints by adding them t
 	
 	
 \section{Algorithm}
-	Algorithm~\ref{alg:PANOC with augmented lagrangian} proposed by ?? Ben Hermans ??, where $0<\beta<1$. Ben Hermans proposes to set $\mu_{k+1}=\mu_k \cdot 2$ if $c_i(x)$ is over a certain predefined tolerance. The idea is, that if a constraint is too badly violated its weight clearly needs to be increased. So when it's solved in the next iteration, it won't be violated as much.
+	Algorithm~\ref{alg:PANOC with augmented lagrangian} proposed by Ben Hermans, where $0<\beta<1$. Ben Hermans proposes to set $\mu_{k+1}=\mu_k \cdot 2$ if $c_i(x)$ is over a certain predefined tolerance. The idea is, that if a constraint is too badly violated its weight clearly needs to be increased. So when it's solved in the next iteration, it won't be violated as much.
 	
 	\begin{algorithm}
 		\caption{PANOC nmpc with augmented lagrangian}
@@ -74,7 +74,7 @@ In order to avoid confusion in this chapter, adding constraints by adding them t
 	\end{algorithm}
 
 \section{Simulation}
-In order to illustrate the advantage of the augmented Lagrangian towards a simple soft constraint on the cost function. A simple simulation is set up with two obstacles, using the trailer model. The trainer has to move from the circle towards the star, while avoiding the two circles. The two obstacles, are always added using the direct method. The path taken by the trailer is illustrated in figure~\ref{fig:LA path}.
+In order to illustrate the advantage of the augmented Lagrangian towards a simple soft constraint on the cost function. A simple simulation is set up with two obstacles, using the trailer model. The trainer has to move from the circle towards the star, while avoiding the two circles. The two obstacles, are always added using the direct method. The path taken by the trailer is illustrated in Figure~\ref{fig:LA path}.
 
 In addition to the two obstacles a speed limit can be added to the problem. The speed limit can be expressed added using the direction method. Or it can be added using the augmented Lagrangian. The  constraint is mathematically expressed in \eqref{eq:speed limit constraint} with M the maximum allowed speed..
 
@@ -87,9 +87,9 @@ Figure~\ref{fig:simulation with augmented Lagrangian} contains the simulation re
 
 The optimal constraint violation value is set to 0.1 which means that the augmented Lagrangian algorithm will increase the weight of the speed limit constraint, until the violation of the constraint is under 0.1 . 
 
-Figure~\ref{fig:LA iterations} contains the amount of iterations till convergence in each step of the simulation. Figure~\ref{fig:LA time} contains the time to convergence in each step of the simulation. Figure~\ref{fig:LA time} contains the speed of the trailer at each step in the simulation, the maximum speed is set to one. This means that the speed of the trailer in figure~\ref{fig:LA speed} should never go over one.
+Figure~\ref{fig:LA iterations} contains the amount of iterations till convergence in each step of the simulation. Figure~\ref{fig:LA time} contains the time to convergence in each step of the simulation. Figure~\ref{fig:LA time} contains the speed of the trailer at each step in the simulation, the maximum speed is set to one. This means that the speed of the trailer in Figure~\ref{fig:LA speed} should never go over one.
 
-From figure~\ref{fig:LA time} it is obvious that without the speed limit the convergence is faster than with either the direct method or with the augmented Lagrangian method. However the augmented Lagrangian method is significantly faster then using a soft constraint.
+From Figure~\ref{fig:LA time} it is obvious that without the speed limit the convergence is faster than with either the direct method or with the augmented Lagrangian method. However the augmented Lagrangian method is significantly faster then using a soft constraint.
 
 If the weight of the soft constraint is lowered the direct method can be faster than the augmented Lagrangian method. However if the weight of the soft constraint is lowered, the soft constraint will will be significantly violated. And some sort of trade-off must be made, by the user before hand.
 

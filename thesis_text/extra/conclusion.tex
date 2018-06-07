@@ -8,7 +8,7 @@ The generated controller, has a simple interface that requires nearly no control
 
 However as the MPC problem becomes more complex. The algorithm can get stuck on a local minimums, which might not be a viable solution. It might violate the constraint by a too large margin. This can partially be avoided by properly tuning the weights of the constraints. 
 
-However this weight tuning is rather hard, as increasing the weights worsens the condition of the problem. So the controller designer often ends up with an impossible choice. The last chapter tries to partially solve this by using a Lagrangian. It is easier to tune the parameters and it improves the performance of the controller. 
+This weight tuning is rather hard, as increasing the weights worsens the condition of the problem. So the controller designer often ends up with an impossible choice. The last chapter partially solves this by using a Lagrangian. It is easier to tune the parameters and it improves the performance of the controller. 
 
 \section{Future work}
 The PANOC algorithm does not require advanced algebra operations such as solving a system. Only simple vector additions and inner product are required. So it's straightforward to implement PANOC with flip-flops and adders. The only hard part is the cost function and it's gradient, as Casadi does not support VHDL or Verilog at this time.

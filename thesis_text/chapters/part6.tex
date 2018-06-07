@@ -5,7 +5,7 @@ This chapter discusses simulations using simple mathematical models to create a 
 In this chapter the following solvers will be used next to nmpc-codegen: ipopt from the OPTI toolbox in Matlab, fmincon the internal solvers of Matlab and PANOC draft. PANOC draft uses a similar solver implementation to nmpc-codengen, it is also implemented by Willem Melis. PANOC draft has the same software architecture as ipopt with OPTI toolbox. A solver implemented in C callable from Matlab trough a mex interface.
 
 \section{Notes simulations}
-In each of the simulation steps the NLP solver calculates the optimal inputs up to the tolerance of $10^{-3}$. The optimal input, convergence time and the amount of iterations till convergence are obtained. The optimal input is then applied to one step of the system, and the next state is obtained. A new nmpc problem is constructed using the new state as initial state. The nmpc problem is solved using the NLP solver and so the cycle repeats itself. The simulation steps are usually plotted on the x axis and the convergence time on the y axis.
+In each of the simulation steps the NLP solver calculates the optimal inputs up to the tolerance of $10^{-3}$. The optimal input, convergence time and the amount of iterations till convergence are obtained. The optimal input is then applied to one step of the system, and the next state is obtained. A new MPC problem is constructed using the new state as initial state. The MPC problem is solved using the NLP solver and so the cycle repeats itself. The simulation steps are usually plotted on the x axis and the convergence time on the y axis.
 
 The time measurements in this thesis are all measured to an accuracy of 1 ms. When the time is less then 1 ms, it will be assumed zero. The time plots that have a logarithmic scale will not be able to display zero, and so no data-points will be visualized when they are zero.
 
@@ -13,7 +13,7 @@ The time measurements in this thesis are all measured to an accuracy of 1 ms. Wh
 The trailer model has a low computational cost, which makes simulations cheap. The quad copter model, is a complex model, that requires lots of computations in each of the simulation steps. In this chapter it will become clear that PANOC is very good with simple models, but significantly slower with complex models.
 
 \section{Trailer model}
-The trailer model is illustrated in figure~\ref{fig:trailer model}, the left rectangle is the trailer and the right rectangle is the driver. The driver pulls the trailer forward. The driver is connected to the trailer via a single arm as illustrated in figure~\ref{fig:trailer model}. The control system can only change the speed and direction of the driver. The goal of the control system is to get the trailer at a certain position and angle. Figure~\ref{fig:trailer model} illustrates the trailer in a neutral position, which means under an angle of 0 degrees.
+The trailer model is illustrated in Figure~\ref{fig:trailer model}, the left rectangle is the trailer and the right rectangle is the driver. The driver pulls the trailer forward. The driver is connected to the trailer via a single arm as illustrated in Figure~\ref{fig:trailer model}. The control system can only change the speed and direction of the driver. The goal of the control system is to get the trailer at a certain position and angle. Figure~\ref{fig:trailer model} illustrates the trailer in a neutral position, which means under an angle of 0 degrees.
 
 \begin{figure}
 	\centering
@@ -22,13 +22,13 @@ The trailer model is illustrated in figure~\ref{fig:trailer model}, the left rec
 	\label{fig:trailer model}
 \end{figure}
 
-The mathematical model of the trailer is represented in \eqref{eq:trailer model}, $u_x$ and $u_y$ are the inputs of the system and represent the speed in the Y and X direction. The angle is represented by $\theta$ , the distance between the driver and the trailer is represented by L. The coordinates of the trailer are represented by $p_x$ and $p_y$.
+The mathematical model of the trailer is represented in \eqref{eq:trailer model}, $u_x$ and $u_y$ are the inputs of the system and represent the speed in the $Y$ and $X$ direction. The angle is represented by $\theta$ , the distance between the driver and the trailer is represented by L. The coordinates of the trailer are represented by $p_x$ and $p_y$.
 
 \begin{equation}
 	\begin{cases}
-		\dot{p_x} = u_x + L sin \theta \cdot \dot{\theta} \\
-		\dot{p_y} = u_y + L cos \theta \cdot \dot{\theta} \\
-		\dot{\theta} = \frac{1}{L}(u_ycos \theta - u_x sin \theta)	
+		\dot{p_x} = u_x + L \sin \theta \cdot \dot{\theta} \\
+		\dot{p_y} = u_y + L \cos \theta \cdot \dot{\theta} \\
+		\dot{\theta} = \frac{1}{L}(u_y\cos \theta - u_x \sin \theta)	
 	\end{cases}
 	\label{eq:trailer model}
 \end{equation}
@@ -36,7 +36,7 @@ The mathematical model of the trailer is represented in \eqref{eq:trailer model}
 The state of the trailer is represented on the illustrations by an arrow. The starting point of the arrow is the position of the trailer. The angle of the arrow represents the positional angle of the trailer. The amplitude of the arrow has no meaning.
 
 \section{A simple trailer example}
-One way of measuring the performance of the library is to compared it to the alternatives. In the following simulation the nmpc-codegen library will be compared to, ForBes zerofrp2, PANOC draft, ipopt and fmincon the internal Matlab solver. Using fmincon with either of the three algorithms available: interior point, SQP and active set.
+One way of measuring the performance of the library is to compared it to the alternatives. In the following simulation the nmpc-codegen library will be compared to: ForBes zerofrp2, PANOC draft, ipopt and fmincon the internal Matlab solver. Using fmincon with either of the three algorithms available: interior point, SQP and active set.
 
 \subsection{General performance}
 Several NMPC problems can be constructed and solved with nmpc-codegen. Figure~\ref{fig:demos} in the appendix illustrates the problems used to benchmark nmpc-codegen, they all use the same trailer model but have different obstacles. The time till convergence is measured, the average time is displayed in the appendix table~\ref{tbl:mean time till convergence}. While the maximum and minimum time is displayed in the appendix: table~\ref{tbl:min time till convergence} and table~\ref{tbl:max time till convergence}.
@@ -48,10 +48,10 @@ The convergence time can be expresses relatively to the convergence time of the 
 	\label{eq:definition relative time}
 \end{equation}
 
-\subsection{In-dept analysis of performance}
-The in-dept simulation contains four circular obstacles, the trailer will move from the circle symbol towards the star symbol as illustrated in figure~\ref{fig:solution path trailer example}. Figure~\ref{fig:simulation result trailer model} contains the results of the trailer model simulation. The PANOC algorithm calculated the lowest located path displayed in figure~\ref{fig:solution path trailer example} while all other algorithms like the interior point method of ipopt obtained the upper located path.
+\subsection{In-depth analysis of performance}
+The in-dept simulation contains four circular obstacles, the trailer will move from the circle symbol towards the star symbol as illustrated in Figure~\ref{fig:solution path trailer example}. Figure~\ref{fig:simulation result trailer model} contains the results of the trailer model simulation. The PANOC algorithm calculated the lowest located path displayed in Figure~\ref{fig:solution path trailer example} while all other algorithms like the interior point method of ipopt obtained the upper located path.
 
-Figure~\ref{fig:timings trailer example} clearly indicates that the nmpc-codegen library is the fastest solver. As nmpc-codegen is completely implemented in C (the call to the cost function/gradient does not go trough MAtlab/Python), it has a advantage that has little to do with the algorithm but with the software architecture. Therefore it is advisable to compare PANOC draft and ipopt. PANOC draft dominates after the first few steps in the simulation. Figure~\ref{fig:timings fmincon Matlab trailer example} shows that this is also the case when comparing PANOC draft with the 3 different fmincon algorithms.
+Figure~\ref{fig:timings trailer example} clearly indicates that the nmpc-codegen library is the fastest solver. As nmpc-codegen is completely implemented in C (the call to the cost function/gradient does not go trough Matlab/Python), it has a advantage that has little to do with the algorithm but with the software architecture. Therefore it is advisable to compare PANOC draft and ipopt. PANOC draft dominates after the first few steps in the simulation. Figure~\ref{fig:timings fmincon Matlab trailer example} shows that this is also the case when comparing PANOC draft with the 3 different fmincon algorithms.
 
 \begin{figure}[H]
 	\centering
@@ -86,14 +86,14 @@ Figure~\ref{fig:timings trailer example} clearly indicates that the nmpc-codegen
 	\label{fig:simulation result trailer model}
 \end{figure}
 
-The nmpc-codegen library and PANOC draft libraries both use a cautious L-BFGS update which improves the performance of the L-BFGS. This is clear from figure~\ref{fig:iterations trailer example} where not the time till convergence, but the amount of iterations till convergence are illustrated. The nmpc-codegen clearly needs less iterations than  Forbes zerofpr2. As the simulation progresses, less and less iterations are needed to converge. And the L-BFGS doesn't influence the convergence as much, so the two algorithms have about the same amount iterations till convergence.
+The nmpc-codegen library and PANOC draft libraries both use a cautious L-BFGS update which improves the performance of the L-BFGS. This is clear from Figure~\ref{fig:iterations trailer example} where not the time till convergence, but the amount of iterations till convergence are illustrated. The nmpc-codegen clearly needs less iterations than  Forbes zerofpr2. As the simulation progresses, less and less iterations are needed to converge. And the L-BFGS doesn't influence the convergence as much, so the two algorithms have about the same amount iterations till convergence.
 
 
 \section{Quadcopter model}
 The invention of electronic control systems has proven to be especially useful when controlling quadcopters. Because of their complex behavior they are hard to control manually by a pilot. However quadcopters are popular among unmanned aerial vehicles, because they can be controlled by a fast electronic controller.
 
 \subsection{Mathematical model}
-The mathematical model of the quad copter is obtained from \cite{Agudelo}. The behavior of the quad copter is described by a set of nonlinear equations as illustrated in \eqref{eq:mathematical model quadcopter}. The $x$, $y$ and $z$ states, are the coordinates towards the origin, also called the inertial frame. The $\gamma$, $\theta$ and $\phi$ states are the angles displayed in figure~\ref{fig:quadcopter model diagram}. And finally $\omega_x$,$\omega_x$ and $\omega_x$ are the angular velocities.
+The mathematical model of the quad copter is obtained from \cite{Agudelo}. The behavior of the quad copter is described by a set of nonlinear equations as illustrated in \eqref{eq:mathematical model quadcopter}. The $x$, $y$ and $z$ states, are the coordinates towards the origin, also called the inertial frame. The $\gamma$, $\theta$ and $\phi$ states are the angles displayed in Figure~\ref{fig:quadcopter model diagram}. And finally $\omega_x$,$\omega_x$ and $\omega_x$ are the angular velocities.
 
 \begin{table}[]
 	\centering
@@ -119,7 +119,7 @@ The mathematical model of the quad copter is obtained from \cite{Agudelo}. The b
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.7\textwidth]{quadcopter}
-	\caption{Diagram of the quadcopter model from  \cite{Agudelo}}
+	\caption{Diagram of the quadcopter model copied over from  \cite{Agudelo}}
 	\label{fig:quadcopter model diagram}
 \end{figure}
 
@@ -142,13 +142,13 @@ The mathematical model of the quad copter is obtained from \cite{Agudelo}. The b
 \end{equation}
 
 \subsection{Simulation results}
-Figure~\ref{fig:Simulation results with quadcopter} contains a simple simulation with the quad copter model, the path is displayed in figure~\ref{fig:solution path trailer quad}.The quad-copter moves from the star to the circle while avoiding 2 spheres as much as possible. The time till convergence of each step of the simulation is displayed in figure~\ref{fig:timings trailer quad}.
+Figure~\ref{fig:Simulation results with quadcopter} contains a simple simulation with the quad copter model, the path is displayed in Figure~\ref{fig:solution path trailer quad}.The quad-copter moves from the star to the circle while avoiding 2 spheres as much as possible. The time till convergence of each step of the simulation is displayed in Figure~\ref{fig:timings trailer quad}.
 
 As mentioned at the start of this chapter, the quad copter model is a computational expensive model. This means that the computational cost of solving a system, is more in line with the computational cost of the cost and gradient when using the quad copter model.
 
 A interior point method solves a system in each iteration. The interior method used from ipopt in this example solves its system directly, which has a computational cost of about $\mathcal{O}(n^3)$ . While PANOC only has to cope additional cost of about $\mathcal{O}(Ln)$ with L as the buffer size.  Because the L-BFGS algorithm only uses inner products and vector additions.
 
-This means that the difference between PANOC and ipopt is rather small when using the quad copter model. Which is confirmed by figure~\ref{fig:timings trailer quad}, where the ipopt line is near the PANOC draft line.
+This means that the difference between PANOC and ipopt is rather small when using the quad copter model. Which is confirmed by Figure~\ref{fig:timings trailer quad}, where the ipopt line is near the PANOC draft line.
 \begin{figure}[H]
 	\centering
 	\begin{subfigure}[b]{0.45\textwidth}
@@ -220,12 +220,12 @@ The benchmarks from appendix~\ref{appendix:benchmarks trailer without noise} are
 		\textbf{draft PANOC}&8 ms&18 ms&22 ms \\\hline
 		\textbf{OPTI:ipopt}&45 ms&51 ms&80 ms \\\hline
 	\end{tabular}
-	\caption{average till convergence in milliseconds}
+	\caption{Average till convergence in milliseconds}
 	\label{tbl:average till convergence noise}
 \end{table}
 
 \section{Problem with local minimum}
-One very common problem when using PANOC in MPC is visible in the third demo. The results of the third demo are illustrated in figure~\ref{fig:demo: local minimum problem}, the trailer drives through the obstacle which might be impossible in reality. In reality the trailer might crash into the obstacle, and get stuck. Of course it is possible to increase the weight on the obstacle, this will worsen the condition. As the condition will get worse, and the solution will stay about the same. The trainer will get stuck against the obstacle. PANOC is stuck inside a local minimum.
+A problem that can occur when using PANOC with MPC is visible in the third demo. The results of the third demo are illustrated in Figure~\ref{fig:demo: local minimum problem}, the trailer drives through the obstacle which might be impossible in reality. In reality the trailer might crash into the obstacle, and get stuck. Of course it is possible to increase the weight on the obstacle, this will worsen the condition. As the condition will get worse, and the solution will stay about the same. The trainer will get stuck against the obstacle. PANOC is stuck inside a local minimum.
 
 \begin{figure}[H]
 	\centering
@@ -236,4 +236,4 @@ One very common problem when using PANOC in MPC is visible in the third demo. Th
 
 \section{Conclusion}
 
-The simulations clearly indicate that a great speed up his gained by implementing the PANOC algorithm in C. As the algorithm doesn't require a lot of memory, and it can be run efficiently on small embedded devices. PANOC behaves well when noise is introduced. The performance of PANOC is very good compared to ipopt if the models are simple. However as the models get more complex, PANOC loses its speed edge over ipopt. It still does use significantly less memory then ipopt.
+The simulations clearly indicate that a great speed up is gained by implementing the PANOC algorithm in C. As the algorithm doesn't require a lot of memory, and it can be run efficiently on small embedded devices. PANOC behaves well when noise is introduced. The performance of PANOC is very good compared to ipopt if the models are simple. However as the models get more complex, PANOC loses its speed edge over ipopt. It still does use significantly less memory then ipopt.
