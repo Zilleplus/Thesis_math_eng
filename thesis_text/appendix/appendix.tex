@@ -21,7 +21,7 @@ Tot slot blijkt uit recentelijk onderzoek dat het gebruik van de "augmented Lagr
 			\boxfunction_{1D}(u) =
 			\begin{cases}
 				 1 & u \in [-U_b:U_b]\\
-				 0 & \other
+				 0 & \otherwise
 			\end{cases}
 			\label{eq:box function 1 dimension}
 		\end{equation}
@@ -35,34 +35,20 @@ Tot slot blijkt uit recentelijk onderzoek dat het gebruik van de "augmented Lagr
 		\begin{equation}
 			I_{\boxfunction}(u)=
 			\begin{cases}
-				0 & u \in [-U_b:U_b]\\
-				\inf & \other
+				0 & \underline{u}\leq u \leq \overline{u}\\
+				\inf & \otherwise
 			\end{cases}
 		\end{equation}
 		
 		\begin{equation}
 			\prox_{\gamma I_{\boxfunction}}(u)=
 			\begin{cases}
-				u & u \in [-U_b:U_b]\\
-				-U_b & u \in [-\inf:-U_b)\\
-				-U_b & u \in (U_b:\inf]\\
+				u & \underline{u}\leq u \leq \overline{u}\\
+				\underline{u} & -\inf \leq u \leq \underline{u}\\
+				\overline{u} & \overline{u}\leq u \leq \inf\\
 			\end{cases}
 		\end{equation}
-	\section{Conjugate of strongly convex function}
-	\label{appendix:conjugate of strongly convex function}
-		\begin{equation}
-			f^*(x)= \underset{u \in dom(f)}{<y,x>-f(y)}
-		\end{equation}
-		
-		If $\nabla f^*$ is Lipschitz and obeys \eqref{eq:appendix f lip}, then $f^*$ is well defined and differentiable. (assume dom(f) is convex and closed)
-		\begin{equation}
-			\nabla f^*(x) = y^* = \argmax <y,x> - f(y)
-		\end{equation}
-		
-		\begin{equation}
-			|| \nabla f^*(x) - \nabla f^*(y) ||_2 \leq \mu^{-1} ||x-y||_2
-			\label{eq:appendix f lip}
-		\end{equation}
+	
 		
 \chapter{Benchmarks with trailer model}
 \label{appendix:paths trailer simulations}
